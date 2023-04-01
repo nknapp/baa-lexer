@@ -15,9 +15,8 @@ export class BaaLexer<T extends LexerTypings> {
     const context = new DefaultBaaContext<T>(string);
     while (context.offset < string.length) {
       this.#states.main.process(context);
-      if (context.nextToken != null) {
-        yield context.nextToken;
-      }
+      yield* context.tokenBuffer
+      context.tokenBuffer = []
     }
   }
 }
@@ -25,7 +24,7 @@ export class BaaLexer<T extends LexerTypings> {
 class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   string: string;
   offset = 0;
-  nextToken: Token<T> | null = null;
+  tokenBuffer: Token<T>[] = []
 
 
   constructor(string: string) {
@@ -33,7 +32,7 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   }
 
   addToken(type: TokenType<T>, original: string, value: string): void {
-    this.nextToken = {
+    this.tokenBuffer.push({
       type,
       value,
       original: original,
@@ -43,9 +42,9 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
       },
       end: {
         line: 1,
-        column: this.offset + 1,
+        column: this.offset + original.length,
       },
-    };
-    this.offset++;
+    });
+    this.offset+=original.length;
   }
 }

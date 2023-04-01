@@ -2,15 +2,22 @@ import { CompiledState, LexerTypings, TokenType } from "../types";
 import { RegexMatcher, RegexMatchingRule } from "./RegexMatcher";
 import { RuleBasedState } from "./RuleBasedState";
 
+export interface RulesOptions<T extends LexerTypings> {
+  matcher: RuleMatcherFactory<T>;
+  fallback?: FallbackRule<T>;
+}
+
 export function rules<T extends LexerTypings>(
-  matcher: RuleMatcherFactory<T>
+  options: RulesOptions<T>
 ): CompiledState<T> {
-  return new RuleBasedState<T>(matcher);
+  return new RuleBasedState<T>(options);
 }
 
 export interface BaseRule<T extends LexerTypings> {
   type: TokenType<T>;
 }
+
+export type FallbackRule<T extends LexerTypings> = BaseRule<T>;
 
 export interface Match<T extends LexerTypings> {
   rule: BaseRule<T>;
@@ -18,7 +25,7 @@ export interface Match<T extends LexerTypings> {
   offset: number;
 }
 
-export type RuleMatcherFactory<T extends LexerTypings> = () => RuleMatcher<T>;
+export type RuleMatcherFactory<T extends LexerTypings> = (fallbackEnabled: boolean) => RuleMatcher<T>;
 
 export interface RuleMatcher<T extends LexerTypings> {
   exec(string: string, offset: number): Match<T> | null;
@@ -27,5 +34,5 @@ export interface RuleMatcher<T extends LexerTypings> {
 export function regex<T extends LexerTypings>(
   ...rules: RegexMatchingRule<T>[]
 ): RuleMatcherFactory<T> {
-  return () => new RegexMatcher(rules);
+  return (fallbackEnabled) => new RegexMatcher(rules, fallbackEnabled);
 }
