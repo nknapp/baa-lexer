@@ -1,0 +1,15 @@
+{
+  "include": ["vite.config.ts", "package.json"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist-node",
+    "composite": true,
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "target": "ESNext"
+  }
+}
