@@ -6,13 +6,13 @@ export interface BaseRule<T extends LexerTypings> {
 
 export type ErrorRule<T extends LexerTypings> = BaseRule<T>;
 export interface FallbackRule<T extends LexerTypings> extends BaseRule<T> {
-  lineBreaks?: true;
+  lineBreaks?: boolean;
 }
 export interface MatchRule<T extends LexerTypings> extends BaseRule<T> {
   pop?: 1;
   push?: StateName<T>;
   next?: StateName<T>;
-  lineBreaks?: true;
+  lineBreaks?: boolean;
   value?: (original: string) => string;
 }
 
