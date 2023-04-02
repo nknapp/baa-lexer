@@ -51,4 +51,15 @@ describe("RegexMatcher", function () {
       text: "b",
     });
   })
+
+  it("if fallback is disabled, only matches strings at the current location", () => {
+    const matcher = new RegexMatcher(
+        [
+          { type: "A", regex: /a/ },
+          { type: "B", regex: /b/ },
+        ],
+        false
+    );
+    expect(matcher.exec("---b-", 0)).toEqual(null);
+  })
 });
