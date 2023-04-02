@@ -292,4 +292,36 @@ describe("baa-lexer", () => {
       ]);
     });
   });
+
+  it("transforms values", () => {
+    const lexer = baa({
+      main: rules({
+        matcher: regex({
+          type: "A",
+          regex: /a/,
+          value: (original) => `(${original})`,
+        }),
+      }),
+    });
+    expectTokens(lexer, "a", [token("A", "a", "(a)", "1:0", "1:1")]);
+  });
+
+  it("uses lookahead to determine token type", () => {
+    const lexer = baa({
+      main: rules({
+        matcher: regex(
+          { type: "A1", regex: /a/, lookahead: /1/ },
+          { type: "A2", regex: /a/, lookahead: /2/ },
+          { type: "NUMBER", regex: /\d/ }
+        ),
+      }),
+    });
+
+    expectTokens(lexer, "a1a2", [
+      token("A1", "a", "a", "1:0", "1:1"),
+      token("NUMBER", "1", "1", "1:1", "1:2"),
+      token("A2", "a", "a", "1:2", "1:3"),
+      token("NUMBER", "2", "2", "1:3", "1:4"),
+    ]);
+  });
 });

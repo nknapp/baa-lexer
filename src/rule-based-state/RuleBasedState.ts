@@ -1,6 +1,11 @@
 import { BaaContext, CompiledState, LexerTypings } from "../types";
 
-import {ErrorRule, FallbackRule, Match, RuleMatcher} from "./RuleBasedState.types";
+import {
+  ErrorRule,
+  FallbackRule,
+  Match,
+  RuleMatcher,
+} from "./RuleBasedState.types";
 import { RulesOptions } from "./RuleBasedState.factory";
 
 export class RuleBasedState<T extends LexerTypings>
@@ -23,7 +28,11 @@ export class RuleBasedState<T extends LexerTypings>
         const original = context.string.slice(context.offset, match.offset);
         context.addToken(this.#fallbackRule.type, original, original);
       }
-      context.addToken(match.rule.type, match.text, match.text);
+      context.addToken(
+        match.rule.type,
+        match.text,
+        match.rule.value == null ? match.text : match.rule.value(match.text)
+      );
       this.#handleStateChange(match, context);
     } else {
       context.addTokenUpToEnd(
@@ -38,7 +47,7 @@ export class RuleBasedState<T extends LexerTypings>
     if (match.rule.push) {
       context.pushState(match.rule.push);
     } else if (match.rule.next) {
-      context.replaceState(match.rule.next)
+      context.replaceState(match.rule.next);
     } else if (match.rule.pop) {
       context.popState();
     }

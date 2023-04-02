@@ -1,18 +1,27 @@
-import {LexerTypings, TokenType} from "../types";
+import { LexerTypings, TokenType } from "../types";
 
-import { Match, MatchRule, RuleMatcher} from "./RuleBasedState.types"
+import { Match, MatchRule, RuleMatcher } from "./RuleBasedState.types";
 
-export interface RegexMatchingRule<T extends LexerTypings> extends MatchRule<T> {
+export interface RegexMatchingRule<T extends LexerTypings>
+  extends MatchRule<T> {
   regex: RegExp;
+  lookahead?: RegExp;
 }
 
 export class RegexMatcher<T extends LexerTypings> implements RuleMatcher<T> {
-  #rules: RegexMatchingRule<T>[];
+  readonly #rules: RegexMatchingRule<T>[];
   #combinedRegex: RegExp;
 
   constructor(rules: RegexMatchingRule<T>[], stateHasFallbackRule: boolean) {
     this.#rules = rules;
-    const sources = rules.map((rule) => `(${rule.regex.source})`);
+    const sources = rules.map((rule) => {
+
+      let regex = `(${rule.regex.source})`;
+      if (rule.lookahead != null) {
+        regex += `(?=${rule.lookahead.source})`
+      }
+      return regex;
+    });
     this.#combinedRegex = new RegExp(
       sources.join("|"),
       stateHasFallbackRule ? "g" : "gy"
@@ -41,6 +50,6 @@ export class RegexMatcher<T extends LexerTypings> implements RuleMatcher<T> {
   }
 
   expectedTypes(): TokenType<T>[] {
-    return this.#rules.map(rule => rule.type)
+    return this.#rules.map((rule) => rule.type);
   }
 }

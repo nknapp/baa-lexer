@@ -1,18 +1,19 @@
-import {LexerTypings, StateName, TokenType} from "../types";
+import { LexerTypings, StateName, TokenType } from "../types";
 
 export interface BaseRule<T extends LexerTypings> {
   type: TokenType<T>;
 }
 
-export type ErrorRule<T extends LexerTypings> = BaseRule<T>
+export type ErrorRule<T extends LexerTypings> = BaseRule<T>;
 export interface FallbackRule<T extends LexerTypings> extends BaseRule<T> {
-  lineBreaks?: true
+  lineBreaks?: true;
 }
 export interface MatchRule<T extends LexerTypings> extends BaseRule<T> {
-  pop?: 1,
-  push?: StateName<T>
-  next?: StateName<T>
-  lineBreaks?: true
+  pop?: 1;
+  push?: StateName<T>;
+  next?: StateName<T>;
+  lineBreaks?: true;
+  value?: (original: string) => string;
 }
 
 export interface Match<T extends LexerTypings> {
@@ -27,5 +28,5 @@ export type RuleMatcherFactory<T extends LexerTypings> = (
 
 export interface RuleMatcher<T extends LexerTypings> {
   exec(string: string, offset: number): Match<T> | null;
-  expectedTypes(): TokenType<T>[]
+  expectedTypes(): TokenType<T>[];
 }
