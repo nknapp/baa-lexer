@@ -344,26 +344,53 @@ describe("moo-like config", () => {
     ]);
   });
 
-  function expectTokens<T extends LexerTypings>(
-    lexer: BaaLexer<T>,
-    template: string,
-    expectedTokens: TestToken[]
-  ) {
-    for (let i = 0; i < 2; i++) {
-      const actualTokens = [...lexer.lex(template)];
-      try {
-        expect(actualTokens).toEqual(expectedTokens);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log("Unexpected tokens for template", template, actualTokens);
-        throw error;
-      }
-    }
-  }
+  it("allows shorthand rules that are just a regex", () => {
+    const lexer = createLexer({
+      main: {
+        A: /a/,
+        B: /b/,
+      },
+    });
+    expectTokens(lexer, "ab", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("B", "b", "b", "1:1", "1:2"),
+    ]);
+  })
+
+  it("allows shorthand rules that are just a string", () => {
+    const lexer = createLexer({
+      main: {
+        A: "a",
+        B: "b",
+      },
+    });
+    expectTokens(lexer, "ab", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("B", "b", "b", "1:1", "1:2"),
+    ]);
+  })
+
 });
 
 type LocationSpec = `${number}:${number}`;
 type TestToken = Token<{ tokenType: string; stateName: string }>;
+
+function expectTokens<T extends LexerTypings>(
+    lexer: BaaLexer<T>,
+    template: string,
+    expectedTokens: TestToken[]
+) {
+  for (let i = 0; i < 2; i++) {
+    const actualTokens = [...lexer.lex(template)];
+    try {
+      expect(actualTokens).toEqual(expectedTokens);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log("Unexpected tokens for template", template, actualTokens);
+      throw error;
+    }
+  }
+}
 
 function token(
   type: string,

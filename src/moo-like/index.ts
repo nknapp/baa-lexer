@@ -4,6 +4,7 @@ import { mapValues } from "../utils/mapValues";
 import { MatchRule, MooState, MooStates } from "./moo.types";
 import { RuleWithType, splitByRuleKind } from "./splitByRuleKind";
 import { RegexMatchingRule } from "../rule-based-state/RegexMatcher";
+import {escapeRegExp} from "../utils/regex-escape";
 
 export type {MooState,MooStates} from './moo.types'
 export function convertMooConfig<T extends LexerTypings>(
@@ -38,6 +39,12 @@ function toRegexMatchRule<T extends LexerTypings>({
   type,
   rule,
 }: RuleWithType<T, MatchRule<T>>): RegexMatchingRule<T> {
+  if (rule instanceof RegExp) {
+    return {type, regex: rule }
+  }
+  if (typeof rule === "string") {
+    return {type, regex: new RegExp(escapeRegExp(rule))}
+  }
   return {
     type,
     regex: rule.match,

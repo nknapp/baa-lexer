@@ -9,7 +9,9 @@ export type Rule<T extends LexerTypings> =
     | FallbackRule
     | ErrorRule;
 
-export interface MatchRule<T extends LexerTypings> {
+export type MatchRule<T extends LexerTypings> = ObjectMatchRule<T> | RegExp | string
+
+export interface ObjectMatchRule<T extends LexerTypings> {
     match: RegExp;
     lineBreaks?: boolean;
     lookaheadMatch?: RegExp;
