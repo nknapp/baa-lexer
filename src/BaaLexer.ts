@@ -26,6 +26,7 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   tokenBufferIndex = 0;
   tokenBuffer: Token<T>[] = [];
   #stateStack: StateName<T>[] = ["main"];
+  currentState: StateName<T> = "main"
   line = 1
   column = 0;
   currentLocation: Location = { line: 1, column: 0 };
@@ -58,16 +59,15 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
 
   pushState(name: StateName<T>) {
     this.#stateStack.unshift(name);
+    this.currentState = name
   }
   replaceState(name: StateName<T>) {
     this.#stateStack[0] = name
+    this.currentState = name
   }
 
   popState() {
     this.#stateStack.shift();
-  }
-
-  get currentState(): StateName<T> {
-    return this.#stateStack[0];
+    this.currentState = this.#stateStack[0]
   }
 }

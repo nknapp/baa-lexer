@@ -370,6 +370,19 @@ describe("moo-like config", () => {
     ]);
   })
 
+  it("allows strings in match rules instead of regex", () => {
+    const lexer = createLexer({
+      main: {
+        A: { match: "a" },
+        B: { match: "b" },
+      },
+    });
+    expectTokens(lexer, "ab", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("B", "b", "b", "1:1", "1:2"),
+    ]);
+  })
+
 });
 
 type LocationSpec = `${number}:${number}`;

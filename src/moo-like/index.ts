@@ -47,7 +47,7 @@ function toRegexMatchRule<T extends LexerTypings>({
   }
   return {
     type,
-    regex: rule.match,
+    regex: rule.match instanceof RegExp ? rule.match : new RegExp(escapeRegExp(rule.match)),
     lookahead: rule.lookaheadMatch,
     next: rule.next,
     push: rule.push,

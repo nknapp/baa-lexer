@@ -12,7 +12,7 @@ export type Rule<T extends LexerTypings> =
 export type MatchRule<T extends LexerTypings> = ObjectMatchRule<T> | RegExp | string
 
 export interface ObjectMatchRule<T extends LexerTypings> {
-    match: RegExp;
+    match: RegExp | string;
     lineBreaks?: boolean;
     lookaheadMatch?: RegExp;
     push?: StateName<T>;
