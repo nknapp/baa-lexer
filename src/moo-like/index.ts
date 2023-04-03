@@ -45,6 +45,7 @@ function toRegexMatchRule<T extends LexerTypings>({
     next: rule.next,
     push: rule.push,
     pop: rule.pop,
-    value: rule.value
+    value: rule.value,
+    lineBreaks: rule.lineBreaks
   };
 }

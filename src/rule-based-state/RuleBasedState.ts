@@ -26,12 +26,18 @@ export class RuleBasedState<T extends LexerTypings>
     if (match != null) {
       if (match.offset > context.offset && this.#fallbackRule != null) {
         const original = context.string.slice(context.offset, match.offset);
-        context.addToken(this.#fallbackRule.type, original, original);
+        context.addToken(
+          this.#fallbackRule.type,
+          original,
+          original,
+          this.#fallbackRule.lineBreaks
+        );
       }
       context.addToken(
         match.rule.type,
         match.text,
-        match.rule.value == null ? match.text : match.rule.value(match.text)
+        match.rule.value == null ? match.text : match.rule.value(match.text),
+        match.rule.lineBreaks
       );
       this.#handleStateChange(match, context);
     } else {

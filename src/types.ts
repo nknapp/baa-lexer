@@ -24,7 +24,7 @@ export interface Location {
 export interface BaaContext<T extends LexerTypings> {
     string: string
     offset: number
-    addToken(type: TokenType<T>, original: string, value: string): void
+    addToken(type: TokenType<T>, original: string, value: string, linebreaks?: boolean): void
     addTokenUpToEnd(type: TokenType<T>): void
     pushState(name: StateName<T>): void
     replaceState(name: StateName<T>): void

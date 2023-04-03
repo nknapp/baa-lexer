@@ -1,7 +1,16 @@
 {
   "name": "baa-lexer",
   "version": "0.0.1",
-  "main": "dist/index.js",
+  "main": "dist/baa-lexer.umd.cjs",
+  "module": "dist/baa-lexer.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/baa-lexer.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/baa-lexer.umd.cjs"
+    }
+  },
   "type": "module",
   "license": "MIT",
   "scripts": {

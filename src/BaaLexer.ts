@@ -12,8 +12,10 @@ export class BaaLexer<T extends LexerTypings> {
     const context = new DefaultBaaContext<T>(string);
     while (context.offset < string.length) {
       this.#states[context.currentState].process(context);
-      yield* context.tokenBuffer;
-      context.tokenBuffer = [];
+      for (let i=0; i<context.tokenBufferIndex; i++) {
+        yield context.tokenBuffer[i];
+      }
+      context.tokenBufferIndex = 0
     }
   }
 }
@@ -21,31 +23,37 @@ export class BaaLexer<T extends LexerTypings> {
 class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   string: string;
   offset = 0;
+  tokenBufferIndex = 0;
   tokenBuffer: Token<T>[] = [];
   #stateStack: StateName<T>[] = ["main"];
+  line = 1
+  column = 0;
   currentLocation: Location = { line: 1, column: 0 };
 
   constructor(string: string) {
     this.string = string;
   }
 
-  addToken(type: TokenType<T>, original: string, value: string): void {
+  addToken(type: TokenType<T>, original: string, value: string, lineBreaks: boolean): void {
     const start = this.currentLocation;
-    const end: Location = endLocationMultiline(start, original)
+    const end: Location = lineBreaks ? endLocationMultiline(start, original) : {
+      line: this.currentLocation.line,
+      column: this.currentLocation.column + original.length
+    }
     this.currentLocation = end
     this.offset += original.length;
-    this.tokenBuffer.push({
+    this.tokenBuffer[this.tokenBufferIndex++] ={
       type,
       value,
       original: original,
       start,
       end
-    });
+    };
   }
 
   addTokenUpToEnd(type: TokenType<T>) {
     const original = this.string.slice(this.offset);
-    this.addToken(type, original, original);
+    this.addToken(type, original, original, true);
   }
 
   pushState(name: StateName<T>) {
