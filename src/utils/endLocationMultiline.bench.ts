@@ -12,14 +12,19 @@ describe.each([
     endLocationMultiline({ line: 4, column: 4 }, "string ".repeat(200));
   });
 
-  bench("alternative", () => {
-    alternative({ line: 4, column: 4 }, "string ".repeat(200));
+  bench("split strategy", () => {
+    splitStrategy({ line: 4, column: 4 }, "string ".repeat(200));
   });
+
+  bench("re-exec strategy", () => {
+    reExecStrategy({ line: 4, column: 4 }, "string ".repeat(200));
+  });
+
 });
 
 // When trying out new implementations, put the original implementation here
 // and modify endLocationMultiline to make comparisons.
-const alternative = function endLocationMultiline(
+function splitStrategy(
     startPosition: Location,
     substring: string
 ): Location {
@@ -37,3 +42,27 @@ const alternative = function endLocationMultiline(
     column: startPosition.column + substring.length,
   };
 };
+
+
+function reExecStrategy(
+    startPosition: Location,
+    substring: string
+): Location {
+  const reNewline = /\n/g
+  let linebreaks = 0;
+  let lastLineBreak = -1;
+  while (reNewline.exec(substring)) {
+    linebreaks++;
+    lastLineBreak = reNewline.lastIndex
+  }
+  if (linebreaks === 0) {
+    return {
+      line: startPosition.line,
+      column: startPosition.column + substring.length,
+    };
+  }
+  return {
+    line: startPosition.line + linebreaks,
+    column: substring.length - lastLineBreak,
+  };
+}
