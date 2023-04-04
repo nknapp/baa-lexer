@@ -12,12 +12,16 @@ describe.each([
     endLocationMultiline({ line: 4, column: 4 }, "string ".repeat(200));
   });
 
-  bench("split strategy", () => {
+  bench("splitStrategy", () => {
     splitStrategy({ line: 4, column: 4 }, "string ".repeat(200));
   });
 
-  bench("re-exec strategy", () => {
+  bench("reExecStrategy", () => {
     reExecStrategy({ line: 4, column: 4 }, "string ".repeat(200));
+  });
+
+  bench("iterateIndexOf", () => {
+    iterateIndexOf({ line: 4, column: 4 }, "string ".repeat(200));
   });
 });
 
@@ -56,5 +60,28 @@ function reExecStrategy(startPosition: Location, substring: string): Location {
   return {
     line: startPosition.line + linebreaks,
     column: substring.length - lastLineBreak,
+  };
+}
+function iterateIndexOf(
+    startPosition: Location,
+    substring: string
+): Location {
+  let lastLineBreak = -1;
+  let current = substring.indexOf("\n");
+  if (current < 0) {
+    return {
+      line: startPosition.line,
+      column: startPosition.column + substring.length,
+    };
+  }
+  let linebreaks = 0;
+  while (current >= 0) {
+    lastLineBreak = current;
+    current = substring.indexOf("\n", current + 1);
+    linebreaks++;
+  }
+  return {
+    line: startPosition.line + linebreaks,
+    column: substring.length - lastLineBreak - 1,
   };
 }

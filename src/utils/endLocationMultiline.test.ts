@@ -22,6 +22,10 @@ describe("endLocationMultiline", () => {
   it("adjusts the colIndex based on the last position of a newline in the string", () => {
     testEndLocation("4:4", "12\n\n45", "6:2");
   });
+
+  it("finds many newlines", () => {
+    testEndLocation("4:4", "\n".repeat(1000), "1004:0");
+  });
 });
 
 function testEndLocation(start: string, tokenString: string, end: string) {

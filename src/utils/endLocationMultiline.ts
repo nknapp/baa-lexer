@@ -1,25 +1,24 @@
 import { Location } from "../types";
+import { endLocationSingleLine } from "./endLocationSingleLine";
 
 export function endLocationMultiline(
   startPosition: Location,
-  substring: string
+  tokenOriginal: string
 ): Location {
   let lastLineBreak = -1;
-  let current = substring.indexOf("\n");
+  let current = tokenOriginal.indexOf("\n");
   if (current < 0) {
-    return {
-      line: startPosition.line,
-      column: startPosition.column + substring.length,
-    };
+    return endLocationSingleLine(startPosition, tokenOriginal);
   }
   let linebreaks = 0;
-  while (current >= 0 && linebreaks < 20) {
+  while (current >= 0) {
     lastLineBreak = current;
-    current = substring.indexOf("\n", current + 1);
+    current = tokenOriginal.indexOf("\n", current + 1);
     linebreaks++;
   }
   return {
     line: startPosition.line + linebreaks,
-    column: substring.length - lastLineBreak - 1,
+    column: tokenOriginal.length - lastLineBreak - 1,
   };
 }
+
