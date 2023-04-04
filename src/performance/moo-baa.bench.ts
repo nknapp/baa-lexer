@@ -1,9 +1,8 @@
 /// <reference types="vite/client" />
 import { moo as mooBaa } from "../index";
-import moo from "moo";
+import moo, { Rules as MooRules } from "moo";
 import { bench, describe } from "vitest";
 import { allTests } from "./allTests";
-import { toMooConfig } from "./toMooConfig";
 
 describe.each(allTests)("moo-baa test: $name ($index)", ({ rules, text }) => {
   const baaLexer = mooBaa(rules);
@@ -13,7 +12,7 @@ describe.each(allTests)("moo-baa test: $name ($index)", ({ rules, text }) => {
     }
   });
 
-  const mooLexer = moo.states(toMooConfig(rules));
+  const mooLexer = moo.states(rules as Record<string, MooRules>);
   bench("moo", () => {
     mooLexer.reset(text);
     for (const ignoredToken of mooLexer) {
