@@ -1,5 +1,6 @@
 import { describe, bench } from "vitest";
 import { endLocationMultiline } from "./endLocationMultiline";
+import {Location} from "../types";
 
 describe.each([
   { name: "single line", string: "string ".repeat(200) },
@@ -18,4 +19,21 @@ describe.each([
 
 // When trying out new implementations, put the original implementation here
 // and modify endLocationMultiline to make comparisons.
-const alternative = endLocationMultiline;
+const alternative = function endLocationMultiline(
+    startPosition: Location,
+    substring: string
+): Location {
+  const lines = substring.split(/\n/);
+  const nrLines = lines.length - 1;
+  if (nrLines > 0) {
+    const lastLine = lines[lines.length - 1];
+    return {
+      line: startPosition.line + nrLines,
+      column: lastLine.length,
+    };
+  }
+  return {
+    line: startPosition.line,
+    column: startPosition.column + substring.length,
+  };
+};
