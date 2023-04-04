@@ -1,2 +1,2 @@
 export { rules } from "./RuleBasedState.factory";
-export { regex } from "./RegexMatcher.factory";
+export { regex, withLookAhead } from "./RegexMatcher.factory";

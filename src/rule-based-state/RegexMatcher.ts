@@ -5,7 +5,6 @@ import { Match, MatchRule, RuleMatcher } from "./RuleBasedState.types";
 export interface RegexMatchingRule<T extends LexerTypings>
   extends MatchRule<T> {
   regex: RegExp;
-  lookahead?: RegExp;
 }
 
 export class RegexMatcher<T extends LexerTypings> implements RuleMatcher<T> {
@@ -14,17 +13,10 @@ export class RegexMatcher<T extends LexerTypings> implements RuleMatcher<T> {
 
   constructor(rules: RegexMatchingRule<T>[], stateHasFallbackRule: boolean) {
     this.#rules = rules;
-    const sources = rules.map((rule) => {
-
-      let regex = `(${rule.regex.source})`;
-      if (rule.lookahead != null) {
-        regex += `(?=${rule.lookahead.source})`
-      }
-      return regex;
-    });
+    const sources = rules.map((rule) => `(${rule.regex.source})`);
     this.#combinedRegex = new RegExp(
       sources.join("|"),
-      stateHasFallbackRule ? "g" : "gy"
+      stateHasFallbackRule ? "g" : "y"
     );
   }
 

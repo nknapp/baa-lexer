@@ -7,3 +7,7 @@ export function regex<T extends LexerTypings>(
 ): RuleMatcherFactory<T> {
   return (fallbackEnabled) => new RegexMatcher(rules, fallbackEnabled);
 }
+
+export function withLookAhead(regex: RegExp, lookahead: RegExp): RegExp {
+  return new RegExp(regex.source + `(?=${lookahead.source})`)
+}

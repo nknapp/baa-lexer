@@ -1,17 +1,17 @@
 import { LexerTypings, Token } from "./index";
-import {BaaContext, Location, StateDict, StateName, TokenType} from "./types";
+import {BaaContext, CompiledState, Location, StateDict, StateName, TokenType} from "./types";
 import {endLocationMultiline} from "./utils/endLocationMultiline";
 
 export class BaaLexer<T extends LexerTypings> {
-  #states: StateDict<T>;
+  readonly #states: StateDict<T>;
 
   constructor(states: StateDict<T>) {
     this.#states = states;
   }
   *lex(string: string): IterableIterator<Token<T>> {
-    const context = new DefaultBaaContext<T>(string);
+    const context = new DefaultBaaContext<T>(string, this.#states);
     while (context.offset < string.length) {
-      this.#states[context.currentState].process(context);
+      context.currentState.process(context);
       for (let i=0; i<context.tokenBufferIndex; i++) {
         yield context.tokenBuffer[i];
       }
@@ -25,14 +25,16 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   offset = 0;
   tokenBufferIndex = 0;
   tokenBuffer: Token<T>[] = [];
-  #stateStack: StateName<T>[] = ["main"];
-  currentState: StateName<T> = "main"
-  line = 1
-  column = 0;
+  readonly #stateStack: CompiledState<T>[];
+  currentState: CompiledState<T>;
   currentLocation: Location = { line: 1, column: 0 };
+  readonly #states: StateDict<T>;
 
-  constructor(string: string) {
+  constructor(string: string, states: StateDict<T>) {
     this.string = string;
+    this.#states = states
+    this.#stateStack = [this.#states.main]
+    this.currentState = this.#states.main
   }
 
   addToken(type: TokenType<T>, original: string, value: string, lineBreaks: boolean): void {
@@ -43,12 +45,12 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
     }
     this.currentLocation = end
     this.offset += original.length;
-    this.tokenBuffer[this.tokenBufferIndex++] ={
+    this.tokenBuffer[this.tokenBufferIndex++] = {
       type,
       value,
-      original: original,
+      original,
       start,
-      end
+      end,
     };
   }
 
@@ -58,12 +60,13 @@ class DefaultBaaContext<T extends LexerTypings> implements BaaContext<T> {
   }
 
   pushState(name: StateName<T>) {
-    this.#stateStack.unshift(name);
-    this.currentState = name
+    this.currentState = this.#states[name]
+    this.#stateStack.unshift(this.currentState);
+
   }
   replaceState(name: StateName<T>) {
-    this.#stateStack[0] = name
-    this.currentState = name
+    this.currentState = this.#states[name]
+    this.#stateStack[0] = this.currentState
   }
 
   popState() {

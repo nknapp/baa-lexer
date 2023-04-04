@@ -1,5 +1,6 @@
 import { PerformanceTest } from "../types";
 import { MooState, MooStates } from "../../moo-like";
+import {withLookAhead} from "../../rule-based-state";
 
 export type MustacheOpenType = "OPEN_UNESCAPED" | "OPEN";
 export type MustacheCloseType = "CLOSE_UNESCAPED" | "CLOSE";
@@ -32,12 +33,10 @@ export function createHbsLexerSpec(): MooStates<HbsLexerTypes> {
   const mustacheRules: MooState<HbsLexerTypes> = {
     SPACE: { match: /[ \t\n]/, lineBreaks: true },
     NUMBER: {
-      match: /-?\d+(?:\.\d+)?/,
-      lookaheadMatch: LITERAL_LOOKAHEAD,
+      match: withLookAhead(/-?\d+(?:\.\d+)?/, LITERAL_LOOKAHEAD)
     },
     ID: {
-      match: /[^\n \t!"#%&'()*+,./;<=>@[\\\]^`{|}~]+?/,
-      lookaheadMatch: LOOK_AHEAD,
+      match: withLookAhead(/[^\n \t!"#%&'()*+,./;<=>@[\\\]^`{|}~]+?/,LOOK_AHEAD)
     },
     SQUARE_WRAPPED_ID: {
       match: /\[[^[]*?]/,

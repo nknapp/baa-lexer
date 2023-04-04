@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baa, regex, rules } from "./index";
+import {baa, regex, rules, withLookAhead} from "./index";
 import { expectTokens, token } from "./test-utils/expectToken";
 
 describe("baa-lexer", () => {
@@ -310,8 +310,8 @@ describe("baa-lexer", () => {
     const lexer = baa({
       main: rules({
         matcher: regex(
-          { type: "A1", regex: /a/, lookahead: /1/ },
-          { type: "A2", regex: /a/, lookahead: /2/ },
+          { type: "A1", regex: withLookAhead(/a/,/1/) },
+          { type: "A2", regex: withLookAhead(/a/,/2/) },
           { type: "NUMBER", regex: /\d/ }
         ),
       }),

@@ -14,7 +14,6 @@ export type MatchRule<T extends LexerTypings> = ObjectMatchRule<T> | RegExp | st
 export interface ObjectMatchRule<T extends LexerTypings> {
     match: RegExp | string;
     lineBreaks?: boolean;
-    lookaheadMatch?: RegExp;
     push?: StateName<T>;
     pop?: 1;
     next?: StateName<T>;

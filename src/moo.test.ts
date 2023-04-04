@@ -1,4 +1,4 @@
-import { Token, LexerTypings, BaaLexer, moo } from "./index";
+import {Token, LexerTypings, BaaLexer, moo, withLookAhead} from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./moo-like";
@@ -310,12 +310,10 @@ describe("moo-like config", () => {
     const lexer = createLexer({
       main: {
         A1: {
-          match: /a/,
-          lookaheadMatch: /1/,
+          match: withLookAhead(/a/,/1/)
         },
         A2: {
-          match: /a/,
-          lookaheadMatch: /2/,
+          match: withLookAhead(/a/,/2/)
         },
         NUMBER: {
           match: /\d/,
