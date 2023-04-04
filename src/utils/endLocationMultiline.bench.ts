@@ -1,6 +1,6 @@
 import { describe, bench } from "vitest";
 import { endLocationMultiline } from "./endLocationMultiline";
-import {Location} from "../types";
+import { Location } from "../types";
 
 describe.each([
   { name: "single line", string: "string ".repeat(200) },
@@ -19,15 +19,11 @@ describe.each([
   bench("re-exec strategy", () => {
     reExecStrategy({ line: 4, column: 4 }, "string ".repeat(200));
   });
-
 });
 
 // When trying out new implementations, put the original implementation here
 // and modify endLocationMultiline to make comparisons.
-function splitStrategy(
-    startPosition: Location,
-    substring: string
-): Location {
+function splitStrategy(startPosition: Location, substring: string): Location {
   const lines = substring.split(/\n/);
   const nrLines = lines.length - 1;
   if (nrLines > 0) {
@@ -41,19 +37,15 @@ function splitStrategy(
     line: startPosition.line,
     column: startPosition.column + substring.length,
   };
-};
+}
 
-
-function reExecStrategy(
-    startPosition: Location,
-    substring: string
-): Location {
-  const reNewline = /\n/g
+function reExecStrategy(startPosition: Location, substring: string): Location {
+  const reNewline = /\n/g;
   let linebreaks = 0;
   let lastLineBreak = -1;
   while (reNewline.exec(substring)) {
     linebreaks++;
-    lastLineBreak = reNewline.lastIndex
+    lastLineBreak = reNewline.lastIndex;
   }
   if (linebreaks === 0) {
     return {
