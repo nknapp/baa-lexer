@@ -1,18 +1,9 @@
-import { LexerTypings, StateDict } from "./types";
+import { LexerTypings, MooStates, Lexer } from "./types";
 import { BaaLexer } from "./BaaLexer";
-import {MooStates, convertMooConfig} from "./moo-like";
 
-export { BaaLexer } from "./BaaLexer";
+export type { MooStates, Token, LexerTypings, Lexer } from "./types";
 
-export type { Token, LexerTypings } from "./types";
-
-export {rules, regex, withLookAhead} from './rule-based-state'
-
-export function baa<T extends LexerTypings>(states: StateDict<T>): BaaLexer<T> {
-    return new BaaLexer(states)
+export { withLookAhead } from "./utils/withLookAhead";
+export function moo<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
+  return new BaaLexer<T>(states);
 }
-
-export function moo<T extends LexerTypings>(states: MooStates<T>): BaaLexer<T> {
-    return new BaaLexer<T>(convertMooConfig(states))
-}
-

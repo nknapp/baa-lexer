@@ -1,4 +1,4 @@
-import { MooStates } from "../moo-like";
+import { MooStates } from "../types";
 
 export interface TestTypes {
   stateName: string;

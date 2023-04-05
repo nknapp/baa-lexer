@@ -1,6 +1,6 @@
 import { PerformanceTest } from "../types";
-import { MooState, MooStates } from "../../moo-like";
-import {withLookAhead} from "../../rule-based-state";
+import { MooState, MooStates } from "../../types";
+import {withLookAhead} from "../..";
 
 export type MustacheOpenType = "OPEN_UNESCAPED" | "OPEN";
 export type MustacheCloseType = "CLOSE_UNESCAPED" | "CLOSE";
