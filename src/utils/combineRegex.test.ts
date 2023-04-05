@@ -47,11 +47,16 @@ describe("combineRegex", () => {
 
         it("advances in multiple matches", () => {
             const matchingA = combineRegex([/a/]);
-            matchingA.exec("aa");
-            matchingA.exec("aa");
-            expect(matchingA.lastIndex).toBe(2)
+            matchingA.exec("aba");
+            matchingA.exec("aba");
+            expect(matchingA.lastIndex).toBe(3)
             expect(matchingA.lastMatch).toBe("a")
             expect(matchingA.lastGroup).toBe(0)
+        })
+
+        it("with sticky option set, does not jump chars", () => {
+            const matchingA = combineRegex([/a/], {sticky: true});
+            expect(matchingA.exec("ba")).toBe(false)
         })
     })
 })

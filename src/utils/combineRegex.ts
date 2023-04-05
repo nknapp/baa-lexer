@@ -6,8 +6,8 @@ interface CombinedRegex {
   exec(string: string): boolean;
 }
 
-export function combineRegex(regExps: RegExp[]): CombinedRegex {
-  return new CombinedRegexImpl(regExps);
+export function combineRegex(regExps: RegExp[], { sticky = false } = {}): CombinedRegex {
+  return new CombinedRegexImpl(regExps, {sticky});
 }
 
 class CombinedRegexImpl implements CombinedRegex {
@@ -16,14 +16,13 @@ class CombinedRegexImpl implements CombinedRegex {
   lastGroup = -1;
   regex: RegExp
 
-  constructor(regexes: RegExp[]) {
-      this.regex = new RegExp(regexes[0].source,"g")
+  constructor(regexes: RegExp[],  { sticky = false } = {}) {
+      this.regex = new RegExp(regexes[0].source,sticky ? "y" : "g")
   }
 
   exec(string: string): boolean {
       const match = this.regex.exec(string);
       if (match != null) {
-
           this.lastMatch = match[0]
           this.lastGroup = 0
           this.lastIndex = this.regex.lastIndex
