@@ -1,4 +1,4 @@
-interface CombinedRegex {
+export interface CombinedRegex {
   lastMatch: string | null;
   lastIndex: number;
   lastRegex: number;

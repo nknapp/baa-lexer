@@ -31,9 +31,9 @@ export interface ErrorRule {
   error: true;
 }
 
-export type MooState<T extends LexerTypings> = Partial<
-  Record<TokenType<T>, Rule<T>>
->;
+export type MooState<T extends LexerTypings> = {
+  [P in TokenType<T>]?: Rule<T>;
+}
 
 export type MooStates<T extends LexerTypings> = Record<
   StateName<T>,
