@@ -6,7 +6,6 @@ import {
   TokenType,
 } from "../types";
 import { CombinedRegex, combineRegex } from "./combineRegex";
-import { fallback } from "moo";
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
