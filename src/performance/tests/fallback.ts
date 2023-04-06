@@ -6,12 +6,15 @@ export default {
       A: {
         match: /a/,
       },
+      FALLBACK: {
+        fallback: true
+      },
       B: {
         match: /b/,
       },
     },
   },
   texts: [
-      "abaabbaabaabbbaab".repeat(10000)
+      "abcdefghijklmnopqrstuvwxyz".repeat(1000)
   ],
 } satisfies PerformanceTest;

@@ -1,13 +1,26 @@
 import { Lexer, LexerTypings, Location, MooStates, Token } from "./types";
-import { CompiledState, compileState } from "./utils/compileState";
-import { endLocationSingleLine } from "./utils/endLocationSingleLine";
+import {
+  CompiledRule,
+  CompiledState,
+  compileState, Match,
+} from "./utils/compileState";
+import {endLocationSingleLine} from "./utils/endLocationSingleLine";
+
+const DONE = {
+  done: true,
+  value: undefined,
+} as const;
 
 export class BaaLexer<T extends LexerTypings>
   implements Lexer<T>, IterableIterator<Token<T>>
 {
-  #state: CompiledState<LexerTypings>;
+  #state: CompiledState<T>;
   #string = "";
   #currentLocation: Location = { line: 1, column: 0 };
+
+  #match = "";
+  #offset = -1;
+  #rule: CompiledRule<T> | null = null;
 
   constructor(states: MooStates<T>) {
     this.#state = compileState(states.main);
@@ -16,6 +29,7 @@ export class BaaLexer<T extends LexerTypings>
   lex(string: string): IterableIterator<Token<T>> {
     this.#string = string;
     this.#currentLocation = { line: 1, column: 0 };
+    this.#offset = 0
     return this;
   }
 
@@ -24,28 +38,35 @@ export class BaaLexer<T extends LexerTypings>
   }
 
   next(): IteratorResult<Token<T>> {
-    const regex = this.#state.regex;
-    if (regex.exec(this.#string)) {
-      const matchingRule = this.#state.rules[regex.lastRegex];
-      const original = regex.lastMatch as string;
-
-      const start = this.#currentLocation;
-      const end = endLocationSingleLine(start, original);
-      this.#currentLocation = end;
-      return {
-        done: false,
-        value: {
-          type: matchingRule.type,
-          original,
-          value: original,
-          start,
-          end,
-        },
-      };
+    const match = this.#state.nextMatch(this.#string, this.#offset);
+    if (match == null) {
+      return DONE;
     }
+    this.#offset+= match.text.length;
+
+    const start = this.#currentLocation;
+    this.#advanceLocation(match.text);
+    const end = this.#currentLocation;
+    this.#currentLocation = end;
     return {
-      done: true,
-      value: null,
+      done: false,
+      value: this.#createToken(match, start, end),
+    };
+  }
+
+  #advanceLocation(text: string) {
+    this.#currentLocation = endLocationSingleLine(this.#currentLocation, text);
+  }
+
+  #createToken(match: Match<T>, start: Location, end: Location) {
+    return {
+      type: match.rule.type,
+      original: match.text,
+      value: match.text,
+      start,
+      end,
     };
   }
 }
+
+

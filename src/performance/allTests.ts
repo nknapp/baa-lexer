@@ -12,4 +12,4 @@ export const allTests = Object.entries(modules).flatMap((entry) => {
         text,
         index,
     }));
-}).filter(test => test.name.match(/abab/))
+}).filter(test => test.name.match(/abab|fallback/))
