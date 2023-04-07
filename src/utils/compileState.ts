@@ -1,5 +1,4 @@
 import {
-  FallbackRule,
   LexerTypings,
   MooState,
   Rule,
@@ -69,7 +68,8 @@ export class CompiledState<T extends LexerTypings> {
           text: string.slice(offset, string.length),
         };
       }
-      throw new Error("Error");
+      const expectedTokens = this.rules.map(rule => rule.type)
+      throw new BaaSyntaxError(expectedTokens, string[offset]);
     }
     if (match.offset > offset) {
       if (this.fallback) {
@@ -97,6 +97,16 @@ export class CompiledState<T extends LexerTypings> {
       };
     }
     return null;
+  }
+}
+
+export class BaaSyntaxError  extends Error {
+  readonly expectedTokenTypes: string[];
+  readonly foundChar: string;
+  constructor(expectedTokenTypes: string[], foundChar: string) {
+    super("Syntax error")
+    this.expectedTokenTypes = expectedTokenTypes;
+    this.foundChar = foundChar
   }
 }
 

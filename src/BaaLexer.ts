@@ -1,10 +1,12 @@
 import { Lexer, LexerTypings, Location, MooStates, Token } from "./types";
 import {
+  BaaSyntaxError,
   CompiledRule,
   CompiledState,
-  compileState, Match,
+  compileState,
+  Match,
 } from "./utils/compileState";
-import {endLocationSingleLine} from "./utils/endLocationSingleLine";
+import { endLocationSingleLine } from "./utils/endLocationSingleLine";
 
 const DONE = {
   done: true,
@@ -29,7 +31,7 @@ export class BaaLexer<T extends LexerTypings>
   lex(string: string): IterableIterator<Token<T>> {
     this.#string = string;
     this.#currentLocation = { line: 1, column: 0 };
-    this.#offset = 0
+    this.#offset = 0;
     return this;
   }
 
@@ -41,8 +43,8 @@ export class BaaLexer<T extends LexerTypings>
     if (this.#offset >= this.#string.length) {
       return DONE;
     }
-    const match = this.#state.nextMatch(this.#string, this.#offset);
-    this.#offset+= match.text.length;
+    const match = this.#tryNextMatch();
+    this.#offset += match.text.length;
 
     const start = this.#currentLocation;
     this.#advanceLocation(match.text);
@@ -52,6 +54,26 @@ export class BaaLexer<T extends LexerTypings>
       done: false,
       value: this.#createToken(match, start, end),
     };
+  }
+
+  #tryNextMatch() {
+    try {
+      return this.#state.nextMatch(this.#string, this.#offset);
+    } catch (error) {
+      if (error instanceof BaaSyntaxError) {
+        throw new Error(this.#createSyntaxErrorMessage(error));
+      }
+      throw error;
+    }
+  }
+
+  #createSyntaxErrorMessage(error: BaaSyntaxError) {
+    const line = this.#currentLocation.line;
+    const column = this.#currentLocation.column;
+    const types = error.expectedTokenTypes
+      .map((type) => "`" + type + "`")
+      .join(", ");
+    return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
   }
 
   #advanceLocation(text: string) {
@@ -68,5 +90,3 @@ export class BaaLexer<T extends LexerTypings>
     };
   }
 }
-
-
