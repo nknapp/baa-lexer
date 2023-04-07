@@ -20,7 +20,7 @@ export interface Match<T extends LexerTypings> {
 export function compileState<T extends LexerTypings>(
   state: MooState<T>
 ): CompiledState<T> {
-  const { match, fallback } = splitRules(state);
+  const { error, match, fallback } = splitRules(state);
   const regexes: RegExp[] = [];
   const rules: CompiledRule<T>[] = [];
   for (const { type, rule } of match) {
@@ -31,7 +31,8 @@ export function compileState<T extends LexerTypings>(
   return new CompiledState<T>(
     rules,
     combinedRegex,
-    fallback ? { type: fallback.type } : null
+    fallback ? { type: fallback.type } : null,
+    error? { type: error.type } : null
   );
 }
 
@@ -39,17 +40,20 @@ export class CompiledState<T extends LexerTypings> {
   readonly rules: CompiledRule<T>[];
   readonly regex: CombinedRegex;
   readonly fallback: CompiledRule<T> | null = null;
+  readonly error: CompiledRule<T> | null = null;
 
   pendingMatch: Match<T> | null = null;
 
   constructor(
     rules: CompiledRule<T>[],
     regex: CombinedRegex,
-    fallback: CompiledRule<T> | null
+    fallback: CompiledRule<T> | null,
+    error: CompiledRule<T> | null
   ) {
     this.rules = rules;
     this.regex = regex;
     this.fallback = fallback;
+    this.error = error;
   }
 
   nextMatch(string: string, offset: number): Match<T> {
@@ -61,15 +65,12 @@ export class CompiledState<T extends LexerTypings> {
     this.regex.reset(offset);
     const match = this.computeMatch(string, offset);
     if (match == null) {
-      if (this.fallback != null) {
-        return {
-          rule: this.fallback,
-          offset,
-          text: string.slice(offset, string.length),
-        };
-      }
-      const expectedTokens = this.rules.map(rule => rule.type)
-      throw new BaaSyntaxError(expectedTokens, string[offset]);
+      const rule = this.fallback ?? this.error ?? this.#throwError(string, offset)
+      return {
+        rule,
+        offset,
+        text: string.slice(offset, string.length),
+      };
     }
     if (match.offset > offset) {
       if (this.fallback) {
@@ -84,6 +85,11 @@ export class CompiledState<T extends LexerTypings> {
       }
     }
     return match;
+  }
+
+  #throwError(string: string, offset: number): never {
+    const expectedTokens = this.rules.map(rule => rule.type)
+    throw new BaaSyntaxError(expectedTokens, string[offset]);
   }
 
   computeMatch(string: string, offset: number): Match<T> | null {

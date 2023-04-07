@@ -36,7 +36,7 @@ describe("compileState", function () {
     ) {
       const compiledState = compileState(state1);
       try {
-        for (let i=0; i<string.length; i++) {
+        for (let i = 0; i < string.length; i++) {
           compiledState.nextMatch(string, i);
         }
         expect.fail("Should throw an exception");
@@ -59,23 +59,35 @@ describe("compileState", function () {
     });
     it("throw BaaSyntaxError with different values for a different state and string", () => {
       expectError(
-          {
-            B: { match: /b/ },
-          },
-          "c",
-          ["B"],
-          "c"
+        {
+          B: { match: /b/ },
+        },
+        "c",
+        ["B"],
+        "c"
       );
     });
     it("throw BaaSyntaxError with different foundChar from different offset", () => {
       expectError(
-          {
-            B: { match: /b/ },
-          },
-          "bbc",
-          ["B"],
-          "c"
+        {
+          B: { match: /b/ },
+        },
+        "bbc",
+        ["B"],
+        "c"
       );
+    });
+
+    it("delivers error token", () => {
+      const state = compileState({
+        A: { match: /a/ },
+        ERROR: { error: true },
+      });
+      expect(state.nextMatch("ba", 0)).toEqual({
+        rule: { type: "ERROR" },
+        text: "ba",
+        offset: 0,
+      });
     });
   });
 });

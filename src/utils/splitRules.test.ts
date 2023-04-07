@@ -36,13 +36,15 @@ describe("splitRules", () => {
       B: { fallback: true },
     });
     expect(result.fallback).toEqual({ type: "B", rule: { fallback: true } });
+    expect(result.match).toEqual([{ type: "A", rule: { match: /a/ } }]);
   });
 
-  it("does not push fallback rule into 'match'", () => {
+  it("state with a error rule", () => {
     const result = splitRules({
       A: { match: /a/ },
-      B: { fallback: true },
+      B: { error: true },
     });
+    expect(result.error).toEqual({ type: "B", rule: { error: true } });
     expect(result.match).toEqual([{ type: "A", rule: { match: /a/ } }]);
   });
 });
