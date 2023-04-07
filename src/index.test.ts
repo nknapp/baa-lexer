@@ -383,23 +383,6 @@ describe("moo-like config", () => {
 type LocationSpec = `${number}:${number}`;
 type TestToken = Token<{ tokenType: string; stateName: string }>;
 
-// function expectTokens<T extends LexerTypings>(
-//   lexer: Lexer<T>,true
-//   template: string,
-//   expectedTokens: TestToken[]
-// ) {
-//   for (let i = 0; i < 2; i++) {
-//     const actualTokens = [...lexer.lex(template)];
-//     try {
-//       expect(actualTokens).toEqual(expectedTokens);
-//     } catch (error) {
-//       // eslint-disable-next-line no-console
-//       console.log("Unexpected tokens for template", template, actualTokens);
-//       throw error;
-//     }
-//   }
-// }
-
 function token(
   type: string,
   original: string,
