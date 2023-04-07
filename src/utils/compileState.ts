@@ -6,6 +6,7 @@ import {
   TokenType,
 } from "../types";
 import { CombinedRegex, combineRegex } from "./combineRegex";
+import { splitRules } from "./splitRules";
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
@@ -20,7 +21,19 @@ export interface Match<T extends LexerTypings> {
 export function compileState<T extends LexerTypings>(
   state: MooState<T>
 ): CompiledState<T> {
-  return new CompiledState<T>(state);
+  const { match, fallback } = splitRules(state);
+  const regexes: RegExp[] = [];
+  const rules: CompiledRule<T>[] = [];
+  for (const { type, rule } of match) {
+    regexes.push(regexFromRule(rule));
+    rules.push({ type });
+  }
+  const combinedRegex = combineRegex(regexes, { sticky: fallback == null });
+  return new CompiledState<T>(
+    rules,
+    combinedRegex,
+    fallback ? { type: fallback.type } : null
+  );
 }
 
 export class CompiledState<T extends LexerTypings> {
@@ -30,34 +43,33 @@ export class CompiledState<T extends LexerTypings> {
 
   pendingMatch: Match<T> | null = null;
 
-  constructor(state: MooState<T>) {
-    const regexes: RegExp[] = [];
-    this.rules = [];
-    const stateRecord = state as Record<TokenType<T>, Rule<T>>;
-    for (const [type, rule] of entries(stateRecord)) {
-      if (isFallbackRule(rule)) {
-        this.fallback = { type };
-      } else {
-        regexes.push(regexFromRule(rule));
-        this.rules.push({ type });
-      }
-    }
-    this.regex = combineRegex(regexes, { sticky: this.fallback == null });
+  constructor(
+    rules: CompiledRule<T>[],
+    regex: CombinedRegex,
+    fallback: CompiledRule<T> | null
+  ) {
+    this.rules = rules;
+    this.regex = regex;
+    this.fallback = fallback;
   }
 
-  nextMatch(string: string, offset: number): Match<T>{
+  nextMatch(string: string, offset: number): Match<T> {
     if (this.pendingMatch != null) {
       const match = this.pendingMatch;
       this.pendingMatch = null;
       return match;
     }
-    this.regex.reset(offset)
+    this.regex.reset(offset);
     const match = this.computeMatch(string, offset);
     if (match == null) {
       if (this.fallback != null) {
-        return { rule: this.fallback, offset, text: string.slice(offset, string.length) };
+        return {
+          rule: this.fallback,
+          offset,
+          text: string.slice(offset, string.length),
+        };
       }
-      throw new Error("Error")
+      throw new Error("Error");
     }
     if (match.offset > offset) {
       if (this.fallback) {
@@ -67,13 +79,15 @@ export class CompiledState<T extends LexerTypings> {
           offset,
           text: string.slice(offset, match.offset),
         };
-      } else { throw new Error("Error")}
+      } else {
+        throw new Error("Error");
+      }
     }
     return match;
   }
 
   computeMatch(string: string, offset: number): Match<T> | null {
-    this.regex.matchIndex = offset
+    this.regex.matchIndex = offset;
     if (this.regex.exec(string)) {
       const matchingRule = this.rules[this.regex.matchingRegex];
       return {
@@ -86,16 +100,6 @@ export class CompiledState<T extends LexerTypings> {
   }
 }
 
-function isFallbackRule<T extends LexerTypings>(
-  rule: Rule<T>
-): rule is FallbackRule {
-  return (rule as FallbackRule).fallback;
-}
-
 function regexFromRule<T extends LexerTypings>(rule: Rule<T>): RegExp {
   return (rule as { match: RegExp }).match;
 }
-
-const entries = Object.entries as <K extends string, V>(
-  object: Record<K, V>
-) => [K, V][];
