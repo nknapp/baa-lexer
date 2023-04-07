@@ -73,7 +73,7 @@ describe("compileState", function () {
         ERROR: { error: true },
       });
       expect(state.nextMatch("ba", 0)).toEqual({
-        rule: { type: "ERROR" },
+        rule: { type: "ERROR", lineBreaks: false},
         text: "ba",
         offset: 0,
       });
