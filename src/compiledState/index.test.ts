@@ -11,7 +11,7 @@ describe("compileState", function () {
 
     expect(state.nextMatch("a", 0)).toEqual({
       offset: 0,
-      rule: { type: "A" },
+      rule: { type: "A", lineBreaks: false },
       text: "a",
     });
   });
@@ -85,31 +85,54 @@ describe("compileState", function () {
       A: { match: /a/, push: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", push: "newState" },
+      rule: { type: "A", push: "newState", lineBreaks: false },
       text: "a",
       offset: 0,
     });
-  })
+  });
 
   it("'pop' property is part of the match", () => {
     const state = compileState({
       A: { match: /a/, pop: 1 },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", pop: 1 },
+      rule: { type: "A", pop: 1, lineBreaks: false },
       text: "a",
       offset: 0,
     });
-  })
+  });
 
   it("'next' property is part of the match", () => {
     const state = compileState({
-      A: { match: /a/, next: 'newState' },
+      A: { match: /a/, next: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", next:'newState' },
+      rule: { type: "A", next: "newState", lineBreaks: false },
       text: "a",
       offset: 0,
     });
-  })
+  });
+
+  it("'lineBreaks' property is part of the match for match-rules", () => {
+    const state = compileState({
+      A: { match: /a/, lineBreaks: true },
+    });
+    expect(state.nextMatch("a", 0)).toEqual({
+      rule: { type: "A", lineBreaks: true },
+      text: "a",
+      offset: 0,
+    });
+  });
+
+  it("'lineBreaks' property is part of the match for fallback-rules", () => {
+    const state = compileState({
+      A: { match: /a/ },
+      B: { fallback: true, lineBreaks: true },
+    });
+    expect(state.nextMatch("b", 0)).toEqual({
+      rule: { type: "B", lineBreaks: true },
+      text: "b",
+      offset: 0,
+    });
+  });
 });

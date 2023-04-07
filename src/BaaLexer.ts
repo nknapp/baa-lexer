@@ -12,7 +12,7 @@ import {
   InternalSyntaxError,
   Match,
 } from "./compiledState";
-import { LocationTracker } from "./location/LocationTracker";
+import { LocationTracker } from "./LocationTracker";
 import { mapValues } from "./utils/mapValues";
 
 const DONE = {
@@ -56,7 +56,7 @@ export class BaaLexer<T extends LexerTypings>
     this.#offset += match.text.length;
 
     const start = this.#location.current;
-    this.#location.advance(match.text);
+    this.#location.advance(match.text, {multiline: match.rule.lineBreaks});
     const end = this.#location.current;
 
     const token = this.#createToken(match, start, end);

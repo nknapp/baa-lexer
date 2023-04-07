@@ -28,4 +28,18 @@ describe("LocationTracker", () => {
       column: 0,
     });
   });
+
+  it("advances lines if line-breaks are in the token", () => {
+    const locationTracker = new LocationTracker();
+    locationTracker.advance("a\nbc", { multiline: true });
+    expect(locationTracker.current).toEqual({
+      line: 2,
+      column: 2,
+    });
+    locationTracker.advance("a\n\nbcd", { multiline: true });
+    expect(locationTracker.current).toEqual({
+      line: 4,
+      column: 3,
+    });
+  });
 });

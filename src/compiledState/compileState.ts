@@ -16,6 +16,7 @@ export interface CompiledRule<T extends LexerTypings> {
   push?: StateName<T>;
   pop?: 1;
   next?: StateName<T>;
+  lineBreaks: boolean;
 }
 
 export interface Match<T extends LexerTypings> {
@@ -42,14 +43,17 @@ export function compileState<T extends LexerTypings>(
       push: normalizedRule.push,
       pop: normalizedRule.pop,
       next: normalizedRule.next,
+      lineBreaks: normalizedRule.lineBreaks ?? false,
     });
   }
   const combinedRegex = combineRegex(regexes, { sticky: fallback == null });
   return new RuleBasedCompiledState<T>(
     rules,
     combinedRegex,
-    fallback ? { type: fallback.type } : null,
-    error ? { type: error.type } : null
+    fallback
+      ? { type: fallback.type, lineBreaks: fallback.rule.lineBreaks ?? false }
+      : null,
+    error ? { type: error.type, lineBreaks: false } : null
   );
 }
 
