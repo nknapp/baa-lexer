@@ -5,30 +5,19 @@ import { LexerTypings, MooState } from "../types";
 import { InternalSyntaxError } from "./InternalSyntaxError";
 
 describe("compileState", function () {
-  it("an empty state has no rules", () => {
-    const state = compileState({});
-    expect(state.rules).toEqual([]);
-    expect(state.regex).toEqual(combineRegex([], { sticky: true }));
-    expect(state.fallback).toBeNull();
-  });
-
-  it("a state with one rule", () => {
+  it("a state without fallback rule matches at the current offset", () => {
     const state = compileState({
       A: { match: /a/ },
     });
-    expect(state.rules).toEqual([{ type: "A" }]);
-    expect(state.regex).toEqual(combineRegex([/a/], { sticky: true }));
-    expect(state.fallback).toEqual(null);
+
+    expect(state.nextMatch("a", 0)).toEqual({
+      offset: 0,
+      rule: { type: "A" },
+      text: "a",
+    });
   });
 
-  it("a state with a fallback rule", () => {
-    const state = compileState({ A: { match: /a/ }, B: { fallback: true } });
-    expect(state.rules).toEqual([{ type: "A" }]);
-    expect(state.regex).toEqual(combineRegex([/a/], { sticky: false }));
-    expect(state.fallback).toEqual({ type: "B" });
-  });
-
-  describe(" when there is no match an now fallback rule", () => {
+  describe("when there is no match an now fallback rule", () => {
     function expectError<T extends LexerTypings>(
       state1: MooState<T>,
       string: string,

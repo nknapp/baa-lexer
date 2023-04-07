@@ -1,8 +1,8 @@
 import { Lexer, LexerTypings, Location, MooStates, Token } from "./types";
 import {
-  CompiledRule,
   CompiledState,
-  compileState, InternalSyntaxError,
+  compileState,
+  InternalSyntaxError,
   Match,
 } from "./compiledState";
 import { LocationTracker } from "./location/LocationTracker";
@@ -19,9 +19,7 @@ export class BaaLexer<T extends LexerTypings>
   #string = "";
   #location = new LocationTracker();
 
-  #match = "";
   #offset = -1;
-  #rule: CompiledRule<T> | null = null;
 
   constructor(states: MooStates<T>) {
     this.#state = compileState(states.main);
