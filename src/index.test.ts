@@ -384,7 +384,7 @@ type LocationSpec = `${number}:${number}`;
 type TestToken = Token<{ tokenType: string; stateName: string }>;
 
 // function expectTokens<T extends LexerTypings>(
-//   lexer: Lexer<T>,
+//   lexer: Lexer<T>,true
 //   template: string,
 //   expectedTokens: TestToken[]
 // ) {

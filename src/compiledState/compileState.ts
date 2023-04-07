@@ -3,13 +3,13 @@ import {
   MatchRule,
   MooState,
   ObjectMatchRule,
-  Rule,
   StateName,
   TokenType,
 } from "../types";
 import { combineRegex } from "./combineRegex";
 import { splitRules } from "./splitRules";
 import { RuleBasedCompiledState } from "./RuleBasedCompiledState";
+import { escapeRegExp } from "../utils/regex-escape";
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
@@ -17,6 +17,7 @@ export interface CompiledRule<T extends LexerTypings> {
   pop?: 1;
   next?: StateName<T>;
   lineBreaks: boolean;
+  value?: (original: string) => string
 }
 
 export interface Match<T extends LexerTypings> {
@@ -37,12 +38,13 @@ export function compileState<T extends LexerTypings>(
   const rules: CompiledRule<T>[] = [];
   for (const { type, rule } of match) {
     const normalizedRule = normalizeRule(rule);
-    regexes.push(regexFromRule(rule));
+    regexes.push(regexFromRule(normalizedRule));
     rules.push({
       type,
       push: normalizedRule.push,
       pop: normalizedRule.pop,
       next: normalizedRule.next,
+      value: normalizedRule.value,
       lineBreaks: normalizedRule.lineBreaks ?? false,
     });
   }
@@ -57,12 +59,18 @@ export function compileState<T extends LexerTypings>(
   );
 }
 
-function regexFromRule<T extends LexerTypings>(rule: Rule<T>): RegExp {
-  return (rule as { match: RegExp }).match;
-}
-
 function normalizeRule<T extends LexerTypings>(
   rule: MatchRule<T>
 ): ObjectMatchRule<T> {
-  return rule as ObjectMatchRule<T>;
+  if (rule instanceof RegExp || typeof rule === 'string') {
+    return { match: rule };
+  }
+  return rule;
+}
+
+function regexFromRule(rule: ObjectMatchRule<LexerTypings>): RegExp {
+  if (rule.match instanceof RegExp) {
+    return rule.match
+  }
+  return new RegExp(escapeRegExp(rule.match))
 }

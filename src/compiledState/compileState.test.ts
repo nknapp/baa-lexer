@@ -73,7 +73,7 @@ describe("compileState", function () {
         ERROR: { error: true },
       });
       expect(state.nextMatch("ba", 0)).toEqual({
-        rule: { type: "ERROR", lineBreaks: false},
+        rule: { type: "ERROR", lineBreaks: false },
         text: "ba",
         offset: 0,
       });
@@ -132,6 +132,18 @@ describe("compileState", function () {
     expect(state.nextMatch("b", 0)).toEqual({
       rule: { type: "B", lineBreaks: true },
       text: "b",
+      offset: 0,
+    });
+  });
+
+  it("'value' property is part of the match", () => {
+    const value = (v: string) => `(${v})`;
+    const state = compileState({
+      A: { match: /a/, value },
+    });
+    expect(state.nextMatch("a", 0)).toEqual({
+      rule: { type: "A", lineBreaks: false, value },
+      text: "a",
       offset: 0,
     });
   });
