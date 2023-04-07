@@ -80,5 +80,12 @@ describe("combineRegex", () => {
           matchingAB.exec("xb")
           expect(matchingAB.lastIndex).toBe(2)
       })
+
+      it("starts matching at 'lastIndex", () => {
+          const matchingAB = combineRegex([/a/,/b/])
+          matchingAB.lastIndex = 1
+          matchingAB.exec("ab")
+          expect(matchingAB.lastMatch).toEqual("b")
+      })
   })
 });

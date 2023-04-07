@@ -38,10 +38,10 @@ export class BaaLexer<T extends LexerTypings>
   }
 
   next(): IteratorResult<Token<T>> {
-    const match = this.#state.nextMatch(this.#string, this.#offset);
-    if (match == null) {
+    if (this.#offset >= this.#string.length) {
       return DONE;
     }
+    const match = this.#state.nextMatch(this.#string, this.#offset);
     this.#offset+= match.text.length;
 
     const start = this.#currentLocation;

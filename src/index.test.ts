@@ -1,12 +1,10 @@
-import {Token, LexerTypings, Lexer, moo, withLookAhead} from "./index";
+import { Token, LexerTypings, Lexer, moo, withLookAhead } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
 
 describe("moo-like config", () => {
-  function createLexer<T extends LexerTypings>(
-      states: MooStates<T>
-  ): Lexer<T> {
+  function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
     return moo(states);
   }
 
@@ -75,6 +73,23 @@ describe("moo-like config", () => {
     expectTokens(lexer, "---", [token("DEFAULT", "---", "---", "1:0", "1:3")]);
   });
 
+  it("allows a string, that ends with fallback", () => {
+    const lexer = createLexer({
+      main: {
+        A: {
+          match: /a/,
+        },
+        DEFAULT: {
+          fallback: true,
+        },
+      },
+    });
+    expectTokens(lexer, "a---", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("DEFAULT", "---", "---", "1:1", "1:4"),
+    ]);
+  });
+
   it("identifies boundary of fallback token surrounded by multi-char tokens", () => {
     const lexer = createLexer({
       main: {
@@ -107,7 +122,7 @@ describe("moo-like config", () => {
     const tokens = lexer.lex("aa---aa");
     expect(tokens.next().value).toEqual(token("A", "aa", "aa", "1:0", "1:2"));
     expect(() => tokens.next()).toThrow(
-        "Syntax error at 1:2, expected one of `A`, `B` but got '-'"
+      "Syntax error at 1:2, expected one of `A`, `B` but got '-'"
     );
   });
 
@@ -310,10 +325,10 @@ describe("moo-like config", () => {
     const lexer = createLexer({
       main: {
         A1: {
-          match: withLookAhead(/a/,/1/)
+          match: withLookAhead(/a/, /1/),
         },
         A2: {
-          match: withLookAhead(/a/,/2/)
+          match: withLookAhead(/a/, /2/),
         },
         NUMBER: {
           match: /\d/,
@@ -353,7 +368,7 @@ describe("moo-like config", () => {
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
-  })
+  });
 
   it("allows shorthand rules that are just a string", () => {
     const lexer = createLexer({
@@ -366,7 +381,7 @@ describe("moo-like config", () => {
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
-  })
+  });
 
   it("allows strings in match rules instead of regex", () => {
     const lexer = createLexer({
@@ -379,17 +394,16 @@ describe("moo-like config", () => {
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
-  })
-
+  });
 });
 
 type LocationSpec = `${number}:${number}`;
 type TestToken = Token<{ tokenType: string; stateName: string }>;
 
 function expectTokens<T extends LexerTypings>(
-    lexer: Lexer<T>,
-    template: string,
-    expectedTokens: TestToken[]
+  lexer: Lexer<T>,
+  template: string,
+  expectedTokens: TestToken[]
 ) {
   for (let i = 0; i < 2; i++) {
     const actualTokens = [...lexer.lex(template)];
@@ -404,11 +418,11 @@ function expectTokens<T extends LexerTypings>(
 }
 
 function token(
-    type: string,
-    original: string,
-    value: string,
-    start: LocationSpec,
-    end: LocationSpec
+  type: string,
+  original: string,
+  value: string,
+  start: LocationSpec,
+  end: LocationSpec
 ): TestToken {
   // e.g. 1:0 - 1:5 (columns 0-5 on first line)
   return {

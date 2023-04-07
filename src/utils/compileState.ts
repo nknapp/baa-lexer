@@ -45,31 +45,34 @@ export class CompiledState<T extends LexerTypings> {
     this.regex = combineRegex(regexes, { sticky: this.fallback == null });
   }
 
-  nextMatch(string: string, offset: number): Match<T> | null {
+  nextMatch(string: string, offset: number): Match<T>{
     if (this.pendingMatch != null) {
       const match = this.pendingMatch;
       this.pendingMatch = null;
       return match;
     }
-    const match = this.computeMatch(string);
+    const match = this.computeMatch(string, offset);
     if (match == null) {
-      if (offset < string.length && this.fallback != null) {
-        return { rule: this.fallback, offset, text: string.slice(offset) };
+      if (this.fallback != null) {
+        return { rule: this.fallback, offset, text: string.slice(offset, string.length) };
       }
-      return null;
+      throw new Error("Error")
     }
-    if (match.offset > offset && this.fallback) {
-      this.pendingMatch = match;
-      return {
-        rule: this.fallback,
-        offset,
-        text: string.slice(offset, match.offset),
-      };
+    if (match.offset > offset) {
+      if (this.fallback) {
+        this.pendingMatch = match;
+        return {
+          rule: this.fallback,
+          offset,
+          text: string.slice(offset, match.offset),
+        };
+      } else { throw new Error("Error")}
     }
     return match;
   }
 
-  computeMatch(string: string): Match<T> | null {
+  computeMatch(string: string, offset: number): Match<T> | null {
+    this.regex.lastIndex = offset
     if (this.regex.exec(string)) {
       const matchingRule = this.rules[this.regex.lastRegex];
       return {

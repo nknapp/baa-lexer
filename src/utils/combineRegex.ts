@@ -25,6 +25,7 @@ class CombinedRegexImpl implements CombinedRegex {
   }
 
   exec(string: string): boolean {
+    this.regex.lastIndex = this.lastIndex
     const match = this.regex.exec(string);
     if (match != null) {
       this.lastMatch = match[0];
