@@ -1,4 +1,4 @@
-export type { CompiledState, Match } from "./compileState";
+export type { CompiledState, CompiledRule, Match } from "./compileState";
 
 export { compileState } from "./compileState";
 

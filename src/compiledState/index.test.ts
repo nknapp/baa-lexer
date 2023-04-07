@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compileState } from "./compileState";
-import { combineRegex } from "./combineRegex";
+import { compileState } from "./index";
 import { LexerTypings, MooState } from "../types";
 import { InternalSyntaxError } from "./InternalSyntaxError";
 
@@ -80,4 +79,37 @@ describe("compileState", function () {
       });
     });
   });
+
+  it("'push' property is part of the match", () => {
+    const state = compileState({
+      A: { match: /a/, push: "newState" },
+    });
+    expect(state.nextMatch("a", 0)).toEqual({
+      rule: { type: "A", push: "newState" },
+      text: "a",
+      offset: 0,
+    });
+  })
+
+  it("'pop' property is part of the match", () => {
+    const state = compileState({
+      A: { match: /a/, pop: 1 },
+    });
+    expect(state.nextMatch("a", 0)).toEqual({
+      rule: { type: "A", pop: 1 },
+      text: "a",
+      offset: 0,
+    });
+  })
+
+  it("'next' property is part of the match", () => {
+    const state = compileState({
+      A: { match: /a/, next: 'newState' },
+    });
+    expect(state.nextMatch("a", 0)).toEqual({
+      rule: { type: "A", next:'newState' },
+      text: "a",
+      offset: 0,
+    });
+  })
 });

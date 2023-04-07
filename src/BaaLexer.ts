@@ -1,4 +1,11 @@
-import { Lexer, LexerTypings, Location, MooStates, Token } from "./types";
+import {
+  Lexer,
+  LexerTypings,
+  Location,
+  MooStates,
+  StateName,
+  Token,
+} from "./types";
 import {
   CompiledState,
   compileState,
@@ -6,6 +13,7 @@ import {
   Match,
 } from "./compiledState";
 import { LocationTracker } from "./location/LocationTracker";
+import { mapValues } from "./utils/mapValues";
 
 const DONE = {
   done: true,
@@ -20,9 +28,13 @@ export class BaaLexer<T extends LexerTypings>
   #location = new LocationTracker();
 
   #offset = -1;
+  #states: Record<StateName<T>, CompiledState<T>>;
+  #stateStack: CompiledState<T>[];
 
   constructor(states: MooStates<T>) {
-    this.#state = compileState(states.main);
+    this.#states = mapValues(states, (state) => compileState(state));
+    this.#stateStack = [this.#states.main];
+    this.#state = this.#states.main;
   }
 
   lex(string: string): IterableIterator<Token<T>> {
@@ -47,9 +59,24 @@ export class BaaLexer<T extends LexerTypings>
     this.#location.advance(match.text);
     const end = this.#location.current;
 
+    const token = this.#createToken(match, start, end);
+
+    if (match.rule.push != null) {
+      const newState = this.#states[match.rule.push];
+      this.#stateStack.unshift(newState);
+      this.#state = newState;
+    }
+    if (match.rule.pop != null) {
+      this.#stateStack.shift()
+      this.#state = this.#stateStack[0]
+    }
+    if (match.rule.next != null) {
+      this.#state = this.#states[match.rule.next];
+    }
+
     return {
       done: false,
-      value: this.#createToken(match, start, end),
+      value: token,
     };
   }
 
