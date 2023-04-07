@@ -2,16 +2,10 @@ import { describe, expect, it } from "vitest";
 import { combineRegex } from "./combineRegex";
 
 describe("combineRegex", () => {
-  it("returns an object with lastIndex, lastRegex, lastMatch", () => {
-    expect(combineRegex([/a/])).toHaveProperty("lastIndex");
-    expect(combineRegex([/a/])).toHaveProperty("lastRegex");
-    expect(combineRegex([/a/])).toHaveProperty("lastMatch");
-  });
-
   it("initially, lastIndex is 0, lastMatch is null, lastRegex is -1", () => {
-    expect(combineRegex([/a/]).lastIndex).toBe(0);
-    expect(combineRegex([/a/]).lastMatch).toBe(null);
-    expect(combineRegex([/a/]).lastRegex).toBe(-1);
+    expect(combineRegex([/a/]).matchIndex).toBe(0);
+    expect(combineRegex([/a/]).match).toBe(null);
+    expect(combineRegex([/a/]).matchingRegex).toBe(-1);
   });
 
   describe("when initialized with a single regex, calling the exec method", () => {
@@ -27,28 +21,28 @@ describe("combineRegex", () => {
     it("stores the match in lastMatch", () => {
       const matchingA = combineRegex([/a/]);
       matchingA.exec("a");
-      expect(matchingA.lastMatch).toBe("a");
+      expect(matchingA.match).toBe("a");
     });
 
     it("stores 0 in lastRegex", () => {
       const matchingA = combineRegex([/a/]);
-      matchingA.exec("a");
-      expect(matchingA.lastRegex).toBe(0);
+      matchingA.exec("aa");
+      expect(matchingA.matchingRegex).toBe(0);
     });
 
-    it("stores lastIndex", () => {
+    it("stores matching position within string as 'matchIndex'", () => {
       const matchingA = combineRegex([/a/]);
       matchingA.exec("a");
-      expect(matchingA.lastIndex).toBe(1);
+      expect(matchingA.matchIndex).toBe(0);
     });
 
     it("advances in multiple matches", () => {
       const matchingA = combineRegex([/a/]);
       matchingA.exec("aba");
       matchingA.exec("aba");
-      expect(matchingA.lastIndex).toBe(3);
-      expect(matchingA.lastMatch).toBe("a");
-      expect(matchingA.lastRegex).toBe(0);
+      expect(matchingA.matchIndex).toBe(2);
+      expect(matchingA.match).toBe("a");
+      expect(matchingA.matchingRegex).toBe(0);
     });
 
     it("with sticky option set, does not jump chars", () => {
@@ -66,26 +60,26 @@ describe("combineRegex", () => {
       it("stores the match for the seconds regex", () => {
           const matchingAB = combineRegex([/a/,/b/])
           matchingAB.exec("xb")
-          expect(matchingAB.lastMatch).toBe("b")
+          expect(matchingAB.match).toBe("b")
       })
 
-      it("stores lastRegex of 1 for the second regex", () => {
+      it("stores matchingRegex of 1 for the second regex", () => {
           const matchingAB = combineRegex([/a/,/b/])
           matchingAB.exec("xb")
-          expect(matchingAB.lastRegex).toBe(1)
+          expect(matchingAB.matchingRegex).toBe(1)
       })
 
-      it("stores lastIndex for the second regex", () => {
+      it("stores matchingIndex for the second regex", () => {
           const matchingAB = combineRegex([/a/,/b/])
           matchingAB.exec("xb")
-          expect(matchingAB.lastIndex).toBe(2)
+          expect(matchingAB.matchIndex).toBe(1)
       })
 
       it("starts matching at 'lastIndex", () => {
           const matchingAB = combineRegex([/a/,/b/])
-          matchingAB.lastIndex = 1
+          matchingAB.reset(1)
           matchingAB.exec("ab")
-          expect(matchingAB.lastMatch).toEqual("b")
+          expect(matchingAB.match).toEqual("b")
       })
   })
 });

@@ -1,9 +1,11 @@
 export interface CombinedRegex {
-  lastMatch: string | null;
-  lastIndex: number;
-  lastRegex: number;
+  match: string | null;
+  matchIndex: number;
+  matchingRegex: number;
 
   exec(string: string): boolean;
+
+  reset(index: number): void;
 }
 
 export function combineRegex(
@@ -14,9 +16,9 @@ export function combineRegex(
 }
 
 class CombinedRegexImpl implements CombinedRegex {
-  lastMatch: string | null = null;
-  lastIndex = 0;
-  lastRegex = -1;
+  match: string | null = null;
+  matchIndex = 0;
+  matchingRegex = -1;
   regex: RegExp;
 
   constructor(regexes: RegExp[], { sticky = false } = {}) {
@@ -24,16 +26,19 @@ class CombinedRegexImpl implements CombinedRegex {
     this.regex = new RegExp(sources.join("|"), sticky ? "y" : "g");
   }
 
+  reset(index: number) {
+    this.regex.lastIndex = index
+  }
+
   exec(string: string): boolean {
-    this.regex.lastIndex = this.lastIndex
     const match = this.regex.exec(string);
     if (match != null) {
-      this.lastMatch = match[0];
-      this.lastRegex = 0;
-      while (match[this.lastRegex + 1] == null) {
-        this.lastRegex++;
+      this.match = match[0];
+      this.matchingRegex = 0;
+      while (match[this.matchingRegex + 1] == null) {
+        this.matchingRegex++;
       }
-      this.lastIndex = this.regex.lastIndex;
+      this.matchIndex = match.index;
       return true;
     }
     return false;

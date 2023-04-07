@@ -51,6 +51,7 @@ export class CompiledState<T extends LexerTypings> {
       this.pendingMatch = null;
       return match;
     }
+    this.regex.reset(offset)
     const match = this.computeMatch(string, offset);
     if (match == null) {
       if (this.fallback != null) {
@@ -72,13 +73,13 @@ export class CompiledState<T extends LexerTypings> {
   }
 
   computeMatch(string: string, offset: number): Match<T> | null {
-    this.regex.lastIndex = offset
+    this.regex.matchIndex = offset
     if (this.regex.exec(string)) {
-      const matchingRule = this.rules[this.regex.lastRegex];
+      const matchingRule = this.rules[this.regex.matchingRegex];
       return {
         rule: matchingRule,
-        text: this.regex.lastMatch as string,
-        offset: this.regex.lastIndex - 1,
+        text: this.regex.match as string,
+        offset: this.regex.matchIndex,
       };
     }
     return null;
