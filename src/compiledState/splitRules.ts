@@ -7,7 +7,7 @@ import {
   Rule,
   TokenType,
 } from "../types";
-import { entries } from "./entries";
+import { entries } from "../utils/entries";
 
 interface TypeRuleTuple<T extends LexerTypings, R extends Rule<T>> {
   type: TokenType<T>;

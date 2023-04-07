@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { BaaSyntaxError, compileState } from "./compileState";
+import { compileState } from "./compileState";
 import { combineRegex } from "./combineRegex";
 import { LexerTypings, MooState } from "../types";
+import { InternalSyntaxError } from "./InternalSyntaxError";
 
 describe("compileState", function () {
   it("an empty state has no rules", () => {
@@ -41,13 +42,13 @@ describe("compileState", function () {
         }
         expect.fail("Should throw an exception");
       } catch (error) {
-        expect(error).toBeInstanceOf(BaaSyntaxError);
+        expect(error).toBeInstanceOf(InternalSyntaxError);
         expect(error).toHaveProperty("expectedTokenTypes", expectedTokenTypes);
         expect(error).toHaveProperty("foundChar", foundChar);
       }
     }
 
-    it("throw BaaSyntaxError containing the expected tokens and the found char", () => {
+    it("throw InternalSyntaxError containing the expected tokens and the found char", () => {
       expectError(
         {
           A: { match: /a/ },
@@ -57,7 +58,7 @@ describe("compileState", function () {
         "b"
       );
     });
-    it("throw BaaSyntaxError with different values for a different state and string", () => {
+    it("throw InternalSyntaxError with different values for a different state and string", () => {
       expectError(
         {
           B: { match: /b/ },
@@ -67,7 +68,7 @@ describe("compileState", function () {
         "c"
       );
     });
-    it("throw BaaSyntaxError with different foundChar from different offset", () => {
+    it("throw InternalSyntaxError with different foundChar from different offset", () => {
       expectError(
         {
           B: { match: /b/ },

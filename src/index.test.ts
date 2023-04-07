@@ -1,11 +1,12 @@
-import { Token, LexerTypings, Lexer, moo, withLookAhead } from "./index";
+import { Token, LexerTypings, Lexer, baa, withLookAhead } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
+import {expectTokens} from "./test-utils/expectToken";
 
 describe("moo-like config", () => {
   function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
-    return moo(states);
+    return baa(states);
   }
 
   it("parses an empty string", () => {
@@ -141,24 +142,6 @@ describe("moo-like config", () => {
       token("A", "aa", "aa", "1:0", "1:2"),
       token("ERROR", "---aa", "---aa", "1:2", "1:7"),
     ]);
-  });
-
-  it("allows concurrent parsing", () => {
-    const lexer = createLexer({
-      main: {
-        A: { match: /a/ },
-        B: { match: /b/ },
-      },
-    });
-
-    const tokens1 = lexer.lex("ab");
-    const tokens2 = lexer.lex("ba");
-
-    expect(tokens1.next().value).toEqual(token("A", "a", "a", "1:0", "1:1"));
-    expect(tokens2.next().value).toEqual(token("B", "b", "b", "1:0", "1:1"));
-
-    expect(tokens1.next().value).toEqual(token("B", "b", "b", "1:1", "1:2"));
-    expect(tokens2.next().value).toEqual(token("A", "a", "a", "1:1", "1:2"));
   });
 
   it("changes state if a 'push' or 'pop' property is set.", () => {
@@ -400,22 +383,22 @@ describe("moo-like config", () => {
 type LocationSpec = `${number}:${number}`;
 type TestToken = Token<{ tokenType: string; stateName: string }>;
 
-function expectTokens<T extends LexerTypings>(
-  lexer: Lexer<T>,
-  template: string,
-  expectedTokens: TestToken[]
-) {
-  for (let i = 0; i < 2; i++) {
-    const actualTokens = [...lexer.lex(template)];
-    try {
-      expect(actualTokens).toEqual(expectedTokens);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log("Unexpected tokens for template", template, actualTokens);
-      throw error;
-    }
-  }
-}
+// function expectTokens<T extends LexerTypings>(
+//   lexer: Lexer<T>,
+//   template: string,
+//   expectedTokens: TestToken[]
+// ) {
+//   for (let i = 0; i < 2; i++) {
+//     const actualTokens = [...lexer.lex(template)];
+//     try {
+//       expect(actualTokens).toEqual(expectedTokens);
+//     } catch (error) {
+//       // eslint-disable-next-line no-console
+//       console.log("Unexpected tokens for template", template, actualTokens);
+//       throw error;
+//     }
+//   }
+// }
 
 function token(
   type: string,

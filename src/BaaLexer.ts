@@ -1,12 +1,11 @@
 import { Lexer, LexerTypings, Location, MooStates, Token } from "./types";
 import {
-  BaaSyntaxError,
   CompiledRule,
   CompiledState,
-  compileState,
+  compileState, InternalSyntaxError,
   Match,
-} from "./utils/compileState";
-import { endLocationSingleLine } from "./utils/endLocationSingleLine";
+} from "./compiledState";
+import { LocationTracker } from "./location/LocationTracker";
 
 const DONE = {
   done: true,
@@ -18,7 +17,7 @@ export class BaaLexer<T extends LexerTypings>
 {
   #state: CompiledState<T>;
   #string = "";
-  #currentLocation: Location = { line: 1, column: 0 };
+  #location = new LocationTracker();
 
   #match = "";
   #offset = -1;
@@ -30,7 +29,7 @@ export class BaaLexer<T extends LexerTypings>
 
   lex(string: string): IterableIterator<Token<T>> {
     this.#string = string;
-    this.#currentLocation = { line: 1, column: 0 };
+    this.#location = new LocationTracker();
     this.#offset = 0;
     return this;
   }
@@ -43,41 +42,37 @@ export class BaaLexer<T extends LexerTypings>
     if (this.#offset >= this.#string.length) {
       return DONE;
     }
-    const match = this.#tryNextMatch();
+    const match = this.#nextMatchOrThrowSyntaxError();
     this.#offset += match.text.length;
 
-    const start = this.#currentLocation;
-    this.#advanceLocation(match.text);
-    const end = this.#currentLocation;
-    this.#currentLocation = end;
+    const start = this.#location.current;
+    this.#location.advance(match.text);
+    const end = this.#location.current;
+
     return {
       done: false,
       value: this.#createToken(match, start, end),
     };
   }
 
-  #tryNextMatch() {
+  #nextMatchOrThrowSyntaxError() {
     try {
       return this.#state.nextMatch(this.#string, this.#offset);
     } catch (error) {
-      if (error instanceof BaaSyntaxError) {
+      if (error instanceof InternalSyntaxError) {
         throw new Error(this.#createSyntaxErrorMessage(error));
       }
       throw error;
     }
   }
 
-  #createSyntaxErrorMessage(error: BaaSyntaxError) {
-    const line = this.#currentLocation.line;
-    const column = this.#currentLocation.column;
+  #createSyntaxErrorMessage(error: InternalSyntaxError) {
+    const line = this.#location.current.line;
+    const column = this.#location.current.column;
     const types = error.expectedTokenTypes
       .map((type) => "`" + type + "`")
       .join(", ");
     return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
-  }
-
-  #advanceLocation(text: string) {
-    this.#currentLocation = endLocationSingleLine(this.#currentLocation, text);
   }
 
   #createToken(match: Match<T>, start: Location, end: Location) {

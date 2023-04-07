@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { moo as mooBaa } from "../index";
+import { baa as mooBaa } from "../index";
 import moo, { Rules as MooRules } from "moo";
 import { bench, describe } from "vitest";
 import { allTests } from "./allTests";

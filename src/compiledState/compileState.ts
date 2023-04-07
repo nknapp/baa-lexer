@@ -6,6 +6,7 @@ import {
 } from "../types";
 import { CombinedRegex, combineRegex } from "./combineRegex";
 import { splitRules } from "./splitRules";
+import {InternalSyntaxError} from "./InternalSyntaxError";
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
@@ -89,7 +90,7 @@ export class CompiledState<T extends LexerTypings> {
 
   #throwError(string: string, offset: number): never {
     const expectedTokens = this.rules.map(rule => rule.type)
-    throw new BaaSyntaxError(expectedTokens, string[offset]);
+    throw new InternalSyntaxError(expectedTokens, string[offset]);
   }
 
   computeMatch(string: string, offset: number): Match<T> | null {
@@ -106,15 +107,6 @@ export class CompiledState<T extends LexerTypings> {
   }
 }
 
-export class BaaSyntaxError  extends Error {
-  readonly expectedTokenTypes: string[];
-  readonly foundChar: string;
-  constructor(expectedTokenTypes: string[], foundChar: string) {
-    super("Syntax error")
-    this.expectedTokenTypes = expectedTokenTypes;
-    this.foundChar = foundChar
-  }
-}
 
 function regexFromRule<T extends LexerTypings>(rule: Rule<T>): RegExp {
   return (rule as { match: RegExp }).match;
