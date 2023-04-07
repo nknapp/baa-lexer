@@ -104,7 +104,7 @@ export class BaaLexer<T extends LexerTypings>
     return {
       type: match.rule.type,
       original: match.text,
-      value: match.text,
+      value: match.rule.value ? match.rule.value(match.text) : match.text,
       start,
       end,
     };
