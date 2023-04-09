@@ -11,7 +11,7 @@ export class RegexMatcher<T extends LexerTypings> {
   }
 
   match(string: string, offset: number): Match<T> | null {
-    this.#regex.reset(offset)
+    this.#regex.reset(offset);
     if (this.#regex.exec(string)) {
       const matchingRule = this.#rules[this.#regex.matchingRegex];
       return {

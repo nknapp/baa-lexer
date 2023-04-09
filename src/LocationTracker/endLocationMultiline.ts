@@ -21,4 +21,3 @@ export function endLocationMultiline(
     column: tokenOriginal.length - lastLineBreak - 1,
   };
 }
-

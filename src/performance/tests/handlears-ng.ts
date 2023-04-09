@@ -1,6 +1,6 @@
 import { PerformanceTest } from "../types";
 import { MooState, MooStates } from "../../types";
-import {withLookAhead} from "../..";
+import { withLookAhead } from "../..";
 
 export type MustacheOpenType = "OPEN_UNESCAPED" | "OPEN";
 export type MustacheCloseType = "CLOSE_UNESCAPED" | "CLOSE";
@@ -33,10 +33,13 @@ export function createHbsLexerSpec(): MooStates<HbsLexerTypes> {
   const mustacheRules: MooState<HbsLexerTypes> = {
     SPACE: { match: /[ \t\n]/, lineBreaks: true },
     NUMBER: {
-      match: withLookAhead(/-?\d+(?:\.\d+)?/, LITERAL_LOOKAHEAD)
+      match: withLookAhead(/-?\d+(?:\.\d+)?/, LITERAL_LOOKAHEAD),
     },
     ID: {
-      match: withLookAhead(/[^\n \t!"#%&'()*+,./;<=>@[\\\]^`{|}~]+?/,LOOK_AHEAD)
+      match: withLookAhead(
+        /[^\n \t!"#%&'()*+,./;<=>@[\\\]^`{|}~]+?/,
+        LOOK_AHEAD
+      ),
     },
     SQUARE_WRAPPED_ID: {
       match: /\[[^[]*?]/,
@@ -87,7 +90,8 @@ export default {
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " +
       "{{a1.a2.a3.a4.a5.a6.a7}}"
     ).repeat(50),
-    ("Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " +
+    (
+      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " +
       "{{a1}}" +
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n" +
       "{{a2}}" +
@@ -97,8 +101,10 @@ export default {
       "{{a4}}" +
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n" +
       "{{a5}}" +
-      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n").repeat(50),
-    ("Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " +
+      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n"
+    ).repeat(50),
+    (
+      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " +
       "{{a1}}" +
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n" +
       "{{a2}}" +
@@ -108,6 +114,7 @@ export default {
       "{{a4}}" +
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n" +
       "{{a5}}" +
-      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n").repeat(1),
+      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n"
+    ).repeat(1),
   ],
 } satisfies PerformanceTest;

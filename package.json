@@ -26,6 +26,7 @@
     "test-and-build": "yarn test && yarn build",
     "clean": "rm dist dist-node -rf",
     "---- chores ----": "",
+    "format": "prettier -w .",
     "prepare": "husky install",
     "deps": "yarn upgrade-interactive"
   },

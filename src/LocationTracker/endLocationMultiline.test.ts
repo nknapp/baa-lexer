@@ -1,6 +1,6 @@
 import { parseLocation } from "../test-utils/parseLocation";
 import { endLocationMultiline } from "./endLocationMultiline";
-import {describe, expect, it} from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("endLocationMultiline", () => {
   it("returns the start location if the string is empty", () => {

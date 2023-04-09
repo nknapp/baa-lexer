@@ -52,34 +52,34 @@ describe("combineRegex", () => {
   });
 
   describe("with multiple regexes", () => {
-      it("also matches the second string string", () => {
-          const matchingAB = combineRegex([/a/,/b/])
-          expect(matchingAB.exec("xb")).toBe(true)
-      })
+    it("also matches the second string string", () => {
+      const matchingAB = combineRegex([/a/, /b/]);
+      expect(matchingAB.exec("xb")).toBe(true);
+    });
 
-      it("stores the match for the seconds regex", () => {
-          const matchingAB = combineRegex([/a/,/b/])
-          matchingAB.exec("xb")
-          expect(matchingAB.match).toBe("b")
-      })
+    it("stores the match for the seconds regex", () => {
+      const matchingAB = combineRegex([/a/, /b/]);
+      matchingAB.exec("xb");
+      expect(matchingAB.match).toBe("b");
+    });
 
-      it("stores matchingRegex of 1 for the second regex", () => {
-          const matchingAB = combineRegex([/a/,/b/])
-          matchingAB.exec("xb")
-          expect(matchingAB.matchingRegex).toBe(1)
-      })
+    it("stores matchingRegex of 1 for the second regex", () => {
+      const matchingAB = combineRegex([/a/, /b/]);
+      matchingAB.exec("xb");
+      expect(matchingAB.matchingRegex).toBe(1);
+    });
 
-      it("stores matchingIndex for the second regex", () => {
-          const matchingAB = combineRegex([/a/,/b/])
-          matchingAB.exec("xb")
-          expect(matchingAB.matchIndex).toBe(1)
-      })
+    it("stores matchingIndex for the second regex", () => {
+      const matchingAB = combineRegex([/a/, /b/]);
+      matchingAB.exec("xb");
+      expect(matchingAB.matchIndex).toBe(1);
+    });
 
-      it("starts matching at 'lastIndex", () => {
-          const matchingAB = combineRegex([/a/,/b/])
-          matchingAB.reset(1)
-          matchingAB.exec("ab")
-          expect(matchingAB.match).toEqual("b")
-      })
-  })
+    it("starts matching at 'lastIndex", () => {
+      const matchingAB = combineRegex([/a/, /b/]);
+      matchingAB.reset(1);
+      matchingAB.exec("ab");
+      expect(matchingAB.match).toEqual("b");
+    });
+  });
 });

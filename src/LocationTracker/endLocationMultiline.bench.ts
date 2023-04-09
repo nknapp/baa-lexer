@@ -62,10 +62,7 @@ function reExecStrategy(startPosition: Location, substring: string): Location {
     column: substring.length - lastLineBreak,
   };
 }
-function iterateIndexOf(
-    startPosition: Location,
-    substring: string
-): Location {
+function iterateIndexOf(startPosition: Location, substring: string): Location {
   let lastLineBreak = -1;
   let current = substring.indexOf("\n");
   if (current < 0) {

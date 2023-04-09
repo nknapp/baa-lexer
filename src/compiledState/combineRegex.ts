@@ -27,7 +27,7 @@ class CombinedRegexImpl implements CombinedRegex {
   }
 
   reset(index: number) {
-    this.regex.lastIndex = index
+    this.regex.lastIndex = index;
   }
 
   exec(string: string): boolean {

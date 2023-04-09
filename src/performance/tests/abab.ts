@@ -11,7 +11,5 @@ export default {
       },
     },
   },
-  texts: [
-      "abaabbaabaabbbaab".repeat(10000)
-  ],
+  texts: ["abaabbaabaabbbaab".repeat(10000)],
 } satisfies PerformanceTest;

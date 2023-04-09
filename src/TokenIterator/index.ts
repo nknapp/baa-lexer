@@ -1,2 +1,1 @@
-
-export {TokenIterator} from './TokenIterator'
+export { TokenIterator } from "./TokenIterator";

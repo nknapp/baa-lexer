@@ -7,5 +7,5 @@ export interface TestTypes {
 
 export interface PerformanceTest {
   rules: MooStates<TestTypes>;
-  texts: string[]
+  texts: string[];
 }

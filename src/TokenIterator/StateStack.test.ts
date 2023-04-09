@@ -3,9 +3,8 @@ import { StateStack } from "./StateStack";
 import { DummyCompiledState } from "../test-utils/DummyCompiledState";
 
 const compiledStateA = new DummyCompiledState("A");
-const compiledStateB = new DummyCompiledState("B")
-const compiledStateC = new DummyCompiledState("C")
-
+const compiledStateB = new DummyCompiledState("B");
+const compiledStateC = new DummyCompiledState("C");
 
 describe("StateStack", function () {
   it("initially contains the main state", () => {
@@ -41,33 +40,33 @@ describe("StateStack", function () {
       b: compiledStateB,
     });
 
-    stack.next("b")
-    expect(stack.current).toEqual(compiledStateB)
-  })
+    stack.next("b");
+    expect(stack.current).toEqual(compiledStateB);
+  });
 
   it("'push', 'next' and then 'pop' reverts to the stack before the push", () => {
     const stack = new StateStack({
       main: compiledStateA,
       b: compiledStateB,
       c: compiledStateC,
-    })
+    });
 
-    stack.push("b")
-    stack.next("c")
-    stack.pop()
-    expect(stack.current).toEqual(compiledStateA)
-  })
+    stack.push("b");
+    stack.next("c");
+    stack.pop();
+    expect(stack.current).toEqual(compiledStateA);
+  });
 
   it("'next' and then 'push' and 'pop' reverts to the stack before the push", () => {
     const stack = new StateStack({
       main: compiledStateA,
       b: compiledStateB,
       c: compiledStateC,
-    })
+    });
 
-    stack.next("c")
-    stack.push("b")
-    stack.pop()
-    expect(stack.current).toEqual(compiledStateC)
-  })
+    stack.next("c");
+    stack.push("b");
+    stack.pop();
+    expect(stack.current).toEqual(compiledStateC);
+  });
 });

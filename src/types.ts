@@ -33,7 +33,7 @@ export interface ErrorRule {
 
 export type MooState<T extends LexerTypings> = {
   [P in TokenType<T>]?: Rule<T>;
-}
+};
 
 export type MooStates<T extends LexerTypings> = Record<
   StateName<T>,

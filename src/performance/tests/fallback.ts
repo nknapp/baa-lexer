@@ -7,14 +7,12 @@ export default {
         match: /a/,
       },
       FALLBACK: {
-        fallback: true
+        fallback: true,
       },
       B: {
         match: /b/,
       },
     },
   },
-  texts: [
-      "abcdefghijklmnopqrstuvwxyz".repeat(1000)
-  ],
+  texts: ["abcdefghijklmnopqrstuvwxyz".repeat(1000)],
 } satisfies PerformanceTest;

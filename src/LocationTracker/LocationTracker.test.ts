@@ -50,7 +50,9 @@ describe("LocationTracker", () => {
       line: 2,
       column: 2,
     });
-    const newLocation = locationTracker.advance("a\n\nbcd", { multiline: true });
+    const newLocation = locationTracker.advance("a\n\nbcd", {
+      multiline: true,
+    });
     expect(newLocation).toEqual({
       line: 4,
       column: 3,

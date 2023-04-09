@@ -2,7 +2,7 @@ import { Token, LexerTypings, Lexer, baa, withLookAhead } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
-import {runTwiceAndExpectTokens} from "./test-utils/expectToken";
+import { runTwiceAndExpectTokens } from "./test-utils/expectToken";
 
 describe("moo-like config", () => {
   function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
@@ -71,7 +71,9 @@ describe("moo-like config", () => {
         },
       },
     });
-    runTwiceAndExpectTokens(lexer, "---", [token("DEFAULT", "---", "---", "1:0", "1:3")]);
+    runTwiceAndExpectTokens(lexer, "---", [
+      token("DEFAULT", "---", "---", "1:0", "1:3"),
+    ]);
   });
 
   it("allows a string, that ends with fallback", () => {
@@ -274,7 +276,7 @@ describe("moo-like config", () => {
       token("OPEN", "(", "(", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
     ]);
-  })
+  });
 
   it("allows concurrent parsing", () => {
     const lexer = createLexer({
@@ -421,7 +423,6 @@ describe("moo-like config", () => {
       token("B", "b", "b", "1:1", "1:2"),
     ]);
   });
-
 });
 
 type LocationSpec = `${number}:${number}`;
