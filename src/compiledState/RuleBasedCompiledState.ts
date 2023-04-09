@@ -43,7 +43,7 @@ export class RuleBasedCompiledState<T extends LexerTypings>
           text: string.slice(offset, match.offset),
         };
       } else {
-        // This cannot happen since all
+        // This cannot if there is no fallback, the regex gets the "/y" flag
         throw new Error("Unexpected error");
       }
     }

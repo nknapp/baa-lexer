@@ -1,30 +1,27 @@
-import { LexerTypings, Location, StateName, Token } from "../types";
-import { CompiledState, InternalSyntaxError, Match } from "../compiledState";
-import { LocationTracker } from "../LocationTracker";
+import { LexerTypings, StateName, Token } from "../types";
+import { CompiledState, InternalSyntaxError } from "../compiledState";
+import { StateStack } from "./StateStack";
+import { TokenFactory } from "./TokenFactory";
 
 const DONE = {
-    done: true,
-    value: undefined,
+  done: true,
+  value: undefined,
 } as const;
 
 export class TokenIterator<T extends LexerTypings>
   implements IterableIterator<Token<T>>
 {
-  #states: Record<StateName<T>, CompiledState<T>>;
-  #string: string;
+  readonly #string: string;
+  readonly states: StateStack<T>;
+  readonly #tokenFactory: TokenFactory<T>;
 
-  #state: CompiledState<T>;
-  #location: LocationTracker;
   #offset: number;
-  #stateStack: CompiledState<T>[];
 
   constructor(states: Record<StateName<T>, CompiledState<T>>, string: string) {
-    this.#states = states;
     this.#string = string;
-    this.#location = new LocationTracker();
     this.#offset = 0;
-    this.#stateStack = [this.#states.main];
-    this.#state = this.#states.main;
+    this.states = new StateStack<T>(states);
+    this.#tokenFactory = new TokenFactory<T>();
   }
 
   [Symbol.iterator](): IterableIterator<Token<T>> {
@@ -35,27 +32,13 @@ export class TokenIterator<T extends LexerTypings>
     if (this.#offset >= this.#string.length) {
       return DONE;
     }
-    const match = this.#nextMatchOrThrowSyntaxError();
+    const match = this.#nextMatchOrSyntaxError();
     this.#offset += match.text.length;
+    const token = this.#tokenFactory.createToken(match);
 
-    const start = this.#location.current;
-    this.#location.advance(match.text, { multiline: match.rule.lineBreaks });
-    const end = this.#location.current;
-
-    const token = this.#createToken(match, start, end);
-
-    if (match.rule.push != null) {
-      const newState = this.#states[match.rule.push];
-      this.#stateStack.unshift(newState);
-      this.#state = newState;
-    }
-    if (match.rule.pop != null) {
-      this.#stateStack.shift();
-      this.#state = this.#stateStack[0];
-    }
-    if (match.rule.next != null) {
-      this.#state = this.#states[match.rule.next];
-    }
+    if (match.rule.push) this.states.push(match.rule.push);
+    if (match.rule.pop) this.states.pop();
+    if (match.rule.next) this.states.next(match.rule.next);
 
     return {
       done: false,
@@ -63,9 +46,9 @@ export class TokenIterator<T extends LexerTypings>
     };
   }
 
-  #nextMatchOrThrowSyntaxError() {
+  #nextMatchOrSyntaxError() {
     try {
-      return this.#state.nextMatch(this.#string, this.#offset);
+      return this.states.current.nextMatch(this.#string, this.#offset);
     } catch (error) {
       if (error instanceof InternalSyntaxError) {
         throw new Error(this.#createSyntaxErrorMessage(error));
@@ -73,23 +56,11 @@ export class TokenIterator<T extends LexerTypings>
       throw error;
     }
   }
-
   #createSyntaxErrorMessage(error: InternalSyntaxError) {
-    const line = this.#location.current.line;
-    const column = this.#location.current.column;
+    const { line, column } = this.#tokenFactory.currentLocation;
     const types = error.expectedTokenTypes
       .map((type) => "`" + type + "`")
       .join(", ");
     return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
-  }
-
-  #createToken(match: Match<T>, start: Location, end: Location) {
-    return {
-      type: match.rule.type,
-      original: match.text,
-      value: match.rule.value ? match.rule.value(match.text) : match.text,
-      start,
-      end,
-    };
   }
 }

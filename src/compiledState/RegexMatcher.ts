@@ -3,8 +3,8 @@ import { CombinedRegex } from "./combineRegex";
 import { LexerTypings } from "../types";
 
 export class RegexMatcher<T extends LexerTypings> {
-  #rules: CompiledRule<T>[];
-  #regex: CombinedRegex;
+  readonly #rules: CompiledRule<T>[];
+  readonly #regex: CombinedRegex;
   constructor(rules: CompiledRule<T>[], regex: CombinedRegex) {
     this.#rules = rules;
     this.#regex = regex;

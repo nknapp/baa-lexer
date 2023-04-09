@@ -42,4 +42,18 @@ describe("LocationTracker", () => {
       column: 3,
     });
   });
+
+  it("'advance' returns the new location", () => {
+    const locationTracker = new LocationTracker();
+    locationTracker.advance("a\nbc", { multiline: true });
+    expect(locationTracker.current).toEqual({
+      line: 2,
+      column: 2,
+    });
+    const newLocation = locationTracker.advance("a\n\nbcd", { multiline: true });
+    expect(newLocation).toEqual({
+      line: 4,
+      column: 3,
+    });
+  });
 });

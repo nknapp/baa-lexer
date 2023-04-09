@@ -1,5 +1,5 @@
-import {Lexer, LexerTypings, Location, MooStates, StateName, Token} from "./types";
-import {CompiledState, compileState, Match} from "./compiledState";
+import { Lexer, LexerTypings, MooStates, StateName, Token } from "./types";
+import { CompiledState, compileState } from "./compiledState";
 import { mapValues } from "./utils/mapValues";
 import { TokenIterator } from "./TokenIterator";
 
@@ -12,15 +12,5 @@ export class BaaLexer<T extends LexerTypings> implements Lexer<T> {
 
   lex(string: string): IterableIterator<Token<T>> {
     return new TokenIterator<T>(this.#states, string);
-  }
-
-  #createToken(match: Match<T>, start: Location, end: Location) {
-    return {
-      type: match.rule.type,
-      original: match.text,
-      value: match.rule.value ? match.rule.value(match.text) : match.text,
-      start,
-      end,
-    };
   }
 }

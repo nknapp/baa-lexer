@@ -20,7 +20,8 @@ module.exports = {
     "no-unused": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { varsIgnorePattern: "[iI]gnored" },
+      { varsIgnorePattern: "[iI]gnored",
+        argsIgnorePattern: "[iI]gnored"},
     ],
     eqeqeq: ["error", "smart"],
     "no-console": ["error"],
