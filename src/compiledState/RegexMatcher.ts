@@ -1,6 +1,6 @@
-import { CompiledRule, Match } from "./compileState";
 import { CombinedRegex } from "./combineRegex";
 import { LexerTypings } from "../types";
+import { CompiledRule, Match } from "../internal-types";
 
 export class RegexMatcher<T extends LexerTypings> {
   readonly #rules: CompiledRule<T>[];

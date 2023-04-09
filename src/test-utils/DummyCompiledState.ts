@@ -1,5 +1,5 @@
-import { CompiledState, Match } from "../compiledState";
 import { LexerTypings } from "../types";
+import { CompiledState, Match } from "../internal-types";
 
 export class DummyCompiledState implements CompiledState<LexerTypings> {
   name: string;

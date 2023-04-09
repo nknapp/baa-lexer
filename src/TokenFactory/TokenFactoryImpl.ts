@@ -1,8 +1,8 @@
-import { Match } from "../compiledState";
 import { LexerTypings, Location } from "../types";
-import { LocationTracker } from "../LocationTracker";
+import { LocationTracker } from "./LocationTracker";
+import { Match } from "../internal-types";
 
-export class TokenFactory<T extends LexerTypings> {
+export class TokenFactoryImpl<T extends LexerTypings> {
   #location = new LocationTracker();
 
   createToken(match: Match<T>) {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { compileState } from "./index";
 import { LexerTypings, MooState } from "../types";
-import { InternalSyntaxError } from "./InternalSyntaxError";
+import { InternalSyntaxError } from "../InternalSyntaxError";
 
 describe("compileState", function () {
   it("a state without fallback rule matches at the current offset", () => {

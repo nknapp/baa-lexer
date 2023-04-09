@@ -1,12 +1,12 @@
-import { CompiledState } from "../compiledState";
+import { CompiledState, CompiledStateDict } from "../internal-types";
 import { LexerTypings, StateName } from "../types";
 
 export class StateStack<T extends LexerTypings> {
-  readonly #states: Record<StateName<T>, CompiledState<T>>;
+  readonly #states: CompiledStateDict<T>;
   readonly #stateStack: CompiledState<T>[];
   current: CompiledState<T>;
 
-  constructor(states: Record<StateName<T>, CompiledState<T>>) {
+  constructor(states: CompiledStateDict<T>) {
     this.#states = states;
     this.#stateStack = [this.#states.main];
     this.current = this.#states.main;

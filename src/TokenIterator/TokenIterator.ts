@@ -1,7 +1,7 @@
-import { LexerTypings, StateName, Token } from "../types";
-import { CompiledState, InternalSyntaxError } from "../compiledState";
+import { LexerTypings, Token } from "../types";
+import { InternalSyntaxError } from "../InternalSyntaxError";
 import { StateStack } from "./StateStack";
-import { TokenFactory } from "./TokenFactory";
+import { CompiledStateDict, TokenFactory } from "../internal-types";
 
 const DONE = {
   done: true,
@@ -17,11 +17,15 @@ export class TokenIterator<T extends LexerTypings>
 
   #offset: number;
 
-  constructor(states: Record<StateName<T>, CompiledState<T>>, string: string) {
+  constructor(
+    states: CompiledStateDict<T>,
+    string: string,
+    tokenFactory: TokenFactory<T>
+  ) {
     this.#string = string;
     this.#offset = 0;
     this.states = new StateStack<T>(states);
-    this.#tokenFactory = new TokenFactory<T>();
+    this.#tokenFactory = tokenFactory;
   }
 
   [Symbol.iterator](): IterableIterator<Token<T>> {

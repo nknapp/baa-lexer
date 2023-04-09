@@ -1,35 +1,10 @@
-import {
-  LexerTypings,
-  MatchRule,
-  MooState,
-  ObjectMatchRule,
-  StateName,
-  TokenType,
-} from "../types";
+import { LexerTypings, MatchRule, MooState, ObjectMatchRule } from "../types";
 import { combineRegex } from "./combineRegex";
 import { splitRules } from "./splitRules";
 import { RuleBasedCompiledState } from "./RuleBasedCompiledState";
 import { escapeRegExp } from "../utils/regex-escape";
 import { RegexMatcher } from "./RegexMatcher";
-
-export interface CompiledRule<T extends LexerTypings> {
-  type: TokenType<T>;
-  push?: StateName<T>;
-  pop?: 1;
-  next?: StateName<T>;
-  lineBreaks: boolean;
-  value?: (original: string) => string;
-}
-
-export interface Match<T extends LexerTypings> {
-  rule: CompiledRule<T>;
-  text: string;
-  offset: number;
-}
-
-export interface CompiledState<T extends LexerTypings> {
-  nextMatch(string: string, offset: number): Match<T>;
-}
+import { CompiledRule, CompiledState } from "../internal-types";
 
 export function compileState<T extends LexerTypings>(
   state: MooState<T>

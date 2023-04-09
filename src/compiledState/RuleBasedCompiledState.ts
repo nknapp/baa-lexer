@@ -1,7 +1,7 @@
 import { LexerTypings } from "../types";
-import { InternalSyntaxError } from "./InternalSyntaxError";
-import { CompiledRule, CompiledState, Match } from "./compileState";
+import { InternalSyntaxError } from "../InternalSyntaxError";
 import { RegexMatcher } from "./RegexMatcher";
+import { CompiledRule, CompiledState, Match } from "../internal-types";
 
 export class RuleBasedCompiledState<T extends LexerTypings>
   implements CompiledState<T>
