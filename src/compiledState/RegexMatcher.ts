@@ -10,12 +10,8 @@ export class RegexMatcher<T extends LexerTypings> {
     this.#regex = regex;
   }
 
-  reset(offset: number) {
-    this.#regex.reset(offset);
-  }
-
   match(string: string, offset: number): Match<T> | null {
-    this.#regex.matchIndex = offset;
+    this.#regex.reset(offset)
     if (this.#regex.exec(string)) {
       const matchingRule = this.#rules[this.#regex.matchingRegex];
       return {

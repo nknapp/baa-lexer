@@ -2,7 +2,7 @@ import { Token, LexerTypings, Lexer, baa, withLookAhead } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
-import {expectTokens} from "./test-utils/expectToken";
+import {runTwiceAndExpectTokens} from "./test-utils/expectToken";
 
 describe("moo-like config", () => {
   function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
@@ -20,7 +20,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "", []);
+    runTwiceAndExpectTokens(lexer, "", []);
   });
 
   it("parses simple tokens", () => {
@@ -34,7 +34,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "abab", [
+    runTwiceAndExpectTokens(lexer, "abab", [
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
       token("A", "a", "a", "1:2", "1:3"),
@@ -53,7 +53,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "a---a", [
+    runTwiceAndExpectTokens(lexer, "a---a", [
       token("A", "a", "a", "1:0", "1:1"),
       token("DEFAULT", "---", "---", "1:1", "1:4"),
       token("A", "a", "a", "1:4", "1:5"),
@@ -71,7 +71,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "---", [token("DEFAULT", "---", "---", "1:0", "1:3")]);
+    runTwiceAndExpectTokens(lexer, "---", [token("DEFAULT", "---", "---", "1:0", "1:3")]);
   });
 
   it("allows a string, that ends with fallback", () => {
@@ -85,7 +85,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "a---", [
+    runTwiceAndExpectTokens(lexer, "a---", [
       token("A", "a", "a", "1:0", "1:1"),
       token("DEFAULT", "---", "---", "1:1", "1:4"),
     ]);
@@ -102,7 +102,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "aa---aa", [
+    runTwiceAndExpectTokens(lexer, "aa---aa", [
       token("A", "aa", "aa", "1:0", "1:2"),
       token("DEFAULT", "---", "---", "1:2", "1:5"),
       token("A", "aa", "aa", "1:5", "1:7"),
@@ -138,7 +138,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "aa---aa", [
+    runTwiceAndExpectTokens(lexer, "aa---aa", [
       token("A", "aa", "aa", "1:0", "1:2"),
       token("ERROR", "---aa", "---aa", "1:2", "1:7"),
     ]);
@@ -162,7 +162,7 @@ describe("moo-like config", () => {
       },
     });
 
-    expectTokens(lexer, "a(b)a", [
+    runTwiceAndExpectTokens(lexer, "a(b)a", [
       token("A", "a", "a", "1:0", "1:1"),
       token("OPEN", "(", "(", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
@@ -189,7 +189,7 @@ describe("moo-like config", () => {
       },
     });
 
-    expectTokens(lexer, "a(b)a", [
+    runTwiceAndExpectTokens(lexer, "a(b)a", [
       token("A", "a", "a", "1:0", "1:1"),
       token("OPEN", "(", "(", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
@@ -216,7 +216,7 @@ describe("moo-like config", () => {
       },
     });
 
-    expectTokens(lexer, "a(b)", [
+    runTwiceAndExpectTokens(lexer, "a(b)", [
       token("A", "a", "a", "1:0", "1:1"),
       token("OPEN", "(", "(", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
@@ -242,7 +242,7 @@ describe("moo-like config", () => {
       },
     });
 
-    expectTokens(lexer, "a(b)a", [
+    runTwiceAndExpectTokens(lexer, "a(b)a", [
       token("A", "a", "a", "1:0", "1:1"),
       token("OPEN", "(", "(", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
@@ -250,6 +250,31 @@ describe("moo-like config", () => {
       token("A", "a", "a", "1:4", "1:5"),
     ]);
   });
+
+  it("resets state when lexer is used again", () => {
+    const lexer = createLexer({
+      main: {
+        A: { fallback: true },
+        OPEN: {
+          match: /\(/,
+          push: "brackets",
+        },
+      },
+      brackets: {
+        B: { match: /b/ },
+        CLOSE: {
+          match: /\)/,
+          pop: 1,
+        },
+      },
+    });
+
+    runTwiceAndExpectTokens(lexer, "a(b", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("OPEN", "(", "(", "1:1", "1:2"),
+      token("B", "b", "b", "1:2", "1:3"),
+    ]);
+  })
 
   it("identifies line-breaks in the fallback rule", () => {
     const lexer = createLexer({
@@ -263,7 +288,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "aa\naa", [
+    runTwiceAndExpectTokens(lexer, "aa\naa", [
       token("A", "aa", "aa", "1:0", "1:2"),
       token("DEFAULT", "\n", "\n", "1:2", "2:0"),
       token("A", "aa", "aa", "2:0", "2:2"),
@@ -282,7 +307,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "a\na", [
+    runTwiceAndExpectTokens(lexer, "a\na", [
       token("A", "a", "a", "1:0", "1:1"),
       token("NEWLINE", "\n", "\n", "1:1", "2:0"),
       token("A", "a", "a", "2:0", "2:1"),
@@ -301,7 +326,7 @@ describe("moo-like config", () => {
         },
       },
     });
-    expectTokens(lexer, "a", [token("A", "a", "(a)", "1:0", "1:1")]);
+    runTwiceAndExpectTokens(lexer, "a", [token("A", "a", "(a)", "1:0", "1:1")]);
   });
 
   it("uses lookahead to determine token type", () => {
@@ -319,7 +344,7 @@ describe("moo-like config", () => {
       },
     });
 
-    expectTokens(lexer, "a1a2", [
+    runTwiceAndExpectTokens(lexer, "a1a2", [
       token("A1", "a", "a", "1:0", "1:1"),
       token("NUMBER", "1", "1", "1:1", "1:2"),
       token("A2", "a", "a", "1:2", "1:3"),
@@ -334,7 +359,7 @@ describe("moo-like config", () => {
         B: { fallback: true },
       },
     });
-    expectTokens(lexer, "ab", [
+    runTwiceAndExpectTokens(lexer, "ab", [
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
@@ -347,7 +372,7 @@ describe("moo-like config", () => {
         B: /b/,
       },
     });
-    expectTokens(lexer, "ab", [
+    runTwiceAndExpectTokens(lexer, "ab", [
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
@@ -360,7 +385,7 @@ describe("moo-like config", () => {
         B: "b",
       },
     });
-    expectTokens(lexer, "ab", [
+    runTwiceAndExpectTokens(lexer, "ab", [
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
@@ -373,11 +398,12 @@ describe("moo-like config", () => {
         B: { match: "b" },
       },
     });
-    expectTokens(lexer, "ab", [
+    runTwiceAndExpectTokens(lexer, "ab", [
       token("A", "a", "a", "1:0", "1:1"),
       token("B", "b", "b", "1:1", "1:2"),
     ]);
   });
+
 });
 
 type LocationSpec = `${number}:${number}`;

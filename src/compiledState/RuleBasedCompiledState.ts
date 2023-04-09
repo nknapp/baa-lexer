@@ -28,10 +28,11 @@ export class RuleBasedCompiledState<T extends LexerTypings>
       this.pendingMatch = null;
       return match;
     }
-    this.matcher.reset(offset);
     const match = this.matcher.match(string, offset);
     if (match == null) {
-      return this.#fallbackOrError(string, offset, string.length);
+      const rule =
+        this.fallback ?? this.error ?? this.#throwError(string, offset);
+      return this.#createMatch(rule, offset, string);
     }
     if (match.offset > offset) {
       if (this.fallback) {
@@ -49,13 +50,11 @@ export class RuleBasedCompiledState<T extends LexerTypings>
     return match;
   }
 
-  #fallbackOrError(string: string, startOffset: number, endOffset: number) {
-    const rule =
-      this.fallback ?? this.error ?? this.#throwError(string, startOffset);
+  #createMatch(rule: CompiledRule<T>, offset: number, string: string) {
     return {
       rule,
-      offset: startOffset,
-      text: string.slice(startOffset, endOffset),
+      offset,
+      text: string.slice(offset),
     };
   }
 

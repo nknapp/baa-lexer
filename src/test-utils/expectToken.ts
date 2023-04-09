@@ -2,7 +2,7 @@ import { Lexer, LexerTypings, Token } from "../types";
 import { expect } from "vitest";
 import { parseLocation } from "./parseLocation";
 
-export function expectTokens<T extends LexerTypings>(
+export function runTwiceAndExpectTokens<T extends LexerTypings>(
   lexer: Lexer<T>,
   template: string,
   expectedTokens: TestToken[]
