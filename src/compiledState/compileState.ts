@@ -5,6 +5,7 @@ import { RuleBasedCompiledState } from "./RuleBasedCompiledState";
 import { escapeRegExp } from "../utils/regex-escape";
 import { RegexMatcher } from "./RegexMatcher";
 import { CompiledRule, CompiledState } from "../internal-types";
+import { compileRule } from "./compileRule";
 
 export function compileState<T extends LexerTypings>(
   state: MooState<T>
@@ -12,25 +13,19 @@ export function compileState<T extends LexerTypings>(
   const { error, match, fallback } = splitRules(state);
   const regexes: RegExp[] = [];
   const rules: CompiledRule<T>[] = [];
+  const fastMatch: (number|null)[] = []
   for (const { type, rule } of match) {
     const normalizedRule = normalizeRule(rule);
     regexes.push(regexFromRule(normalizedRule));
-    rules.push({
-      type,
-      push: normalizedRule.push,
-      pop: normalizedRule.pop,
-      next: normalizedRule.next,
-      value: normalizedRule.value,
-      lineBreaks: normalizedRule.lineBreaks ?? false,
-    });
+    rules.push(compileRule(type, rule));
+    const code = typeof normalizedRule.match === 'string' && normalizedRule.match.length === 1 ? normalizedRule.match.charCodeAt(0) : null
+    fastMatch.push(code)
   }
-  const combinedRegex = combineRegex(regexes, { sticky: fallback == null });
+  const combinedRegex = combineRegex(regexes, { sticky: fallback == null, fastMatch });
   return new RuleBasedCompiledState<T>(
     new RegexMatcher<T>(rules, combinedRegex),
-    fallback
-      ? { type: fallback.type, lineBreaks: fallback.rule.lineBreaks ?? false }
-      : null,
-    error ? { type: error.type, lineBreaks: false } : null
+    fallback ? compileRule(fallback.type, fallback.rule) : null,
+    error ? compileRule(error.type, error.rule) : null
   );
 }
 

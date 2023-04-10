@@ -5,13 +5,16 @@ export interface TokenFactory<T extends LexerTypings> {
   currentLocation: Location;
 }
 
+export type Transform = (original: string) => string;
+
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
-  push?: StateName<T>;
-  pop?: 1;
-  next?: StateName<T>;
+  fastMatch: number | null;
+  push: StateName<T> | null;
+  pop: boolean;
+  next: StateName<T> | null;
   lineBreaks: boolean;
-  value?: (original: string) => string;
+  value: Transform | null;
 }
 
 export interface Match<T extends LexerTypings> {

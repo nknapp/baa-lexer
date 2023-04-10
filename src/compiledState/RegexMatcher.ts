@@ -1,8 +1,9 @@
 import { CombinedRegex } from "./combineRegex";
 import { LexerTypings } from "../types";
 import { CompiledRule, Match } from "../internal-types";
+import {Matcher} from "./types";
 
-export class RegexMatcher<T extends LexerTypings> {
+export class RegexMatcher<T extends LexerTypings> implements Matcher<T>{
   readonly #rules: CompiledRule<T>[];
   readonly #regex: CombinedRegex;
   constructor(rules: CompiledRule<T>[], regex: CombinedRegex) {

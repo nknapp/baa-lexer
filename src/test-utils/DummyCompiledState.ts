@@ -10,7 +10,15 @@ export class DummyCompiledState implements CompiledState<LexerTypings> {
 
   nextMatch(ignoredString: string, ignoredOffset: number): Match<LexerTypings> {
     return {
-      rule: { type: "A", lineBreaks: false },
+      rule: {
+        type: "A",
+        lineBreaks: false,
+        fastMatch: null,
+        push: null,
+        next: null,
+        pop: false,
+        value: null,
+      },
       offset: 0,
       text: "dummy",
     };

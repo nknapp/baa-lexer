@@ -11,7 +11,7 @@ describe("compileState", function () {
 
     expect(state.nextMatch("a", 0)).toEqual({
       offset: 0,
-      rule: { type: "A", lineBreaks: false },
+      rule: expect.objectContaining({ type: "A", lineBreaks: false }),
       text: "a",
     });
   });
@@ -73,7 +73,7 @@ describe("compileState", function () {
         ERROR: { error: true },
       });
       expect(state.nextMatch("ba", 0)).toEqual({
-        rule: { type: "ERROR", lineBreaks: false },
+        rule: expect.objectContaining({ type: "ERROR", lineBreaks: false }),
         text: "ba",
         offset: 0,
       });
@@ -85,7 +85,7 @@ describe("compileState", function () {
       A: { match: /a/, push: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", push: "newState", lineBreaks: false },
+      rule: expect.objectContaining({ type: "A", push: "newState", lineBreaks: false }),
       text: "a",
       offset: 0,
     });
@@ -96,7 +96,7 @@ describe("compileState", function () {
       A: { match: /a/, pop: 1 },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", pop: 1, lineBreaks: false },
+      rule: expect.objectContaining({ type: "A", pop: true, lineBreaks: false }),
       text: "a",
       offset: 0,
     });
@@ -107,7 +107,7 @@ describe("compileState", function () {
       A: { match: /a/, next: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", next: "newState", lineBreaks: false },
+      rule: expect.objectContaining({ type: "A", next: "newState", lineBreaks: false }),
       text: "a",
       offset: 0,
     });
@@ -118,7 +118,7 @@ describe("compileState", function () {
       A: { match: /a/, lineBreaks: true },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", lineBreaks: true },
+      rule: expect.objectContaining({ type: "A", lineBreaks: true }),
       text: "a",
       offset: 0,
     });
@@ -130,7 +130,7 @@ describe("compileState", function () {
       B: { fallback: true, lineBreaks: true },
     });
     expect(state.nextMatch("b", 0)).toEqual({
-      rule: { type: "B", lineBreaks: true },
+      rule: expect.objectContaining({ type: "B", lineBreaks: true }),
       text: "b",
       offset: 0,
     });
@@ -142,7 +142,7 @@ describe("compileState", function () {
       A: { match: /a/, value },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: { type: "A", lineBreaks: false, value },
+      rule: expect.objectContaining({ type: "A", lineBreaks: false, value }),
       text: "a",
       offset: 0,
     });

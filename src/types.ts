@@ -29,6 +29,7 @@ export interface FallbackRule {
 
 export interface ErrorRule {
   error: true;
+  lineBreaks?: boolean
 }
 
 export type MooState<T extends LexerTypings> = {
