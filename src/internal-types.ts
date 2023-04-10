@@ -9,7 +9,6 @@ export type Transform = (original: string) => string;
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
-  fastMatch: number | null;
   push: StateName<T> | null;
   pop: boolean;
   next: StateName<T> | null;

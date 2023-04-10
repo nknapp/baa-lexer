@@ -13,7 +13,6 @@ export class DummyCompiledState implements CompiledState<LexerTypings> {
       rule: {
         type: "A",
         lineBreaks: false,
-        fastMatch: null,
         push: null,
         next: null,
         pop: false,

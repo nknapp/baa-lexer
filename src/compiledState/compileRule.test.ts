@@ -14,10 +14,6 @@ describe("compileRule", () => {
     expect(compileRule("A", {fallback: true, lineBreaks: true}).lineBreaks).toBe(true);
   });
 
-  it("sets 'fastmatch' for basic strings of length 1", () => {
-    expect(compileRule("A", "{").fastMatch).toEqual("{".charCodeAt(0));
-  });
-
   it("sets 'pop' for object rules with 'pop: 1'", () => {
     expect(compileRule("A", { match: /a/, pop: 1 }).pop).toBe(true);
   });

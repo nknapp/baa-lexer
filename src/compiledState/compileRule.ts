@@ -18,10 +18,6 @@ export function compileRule<T extends LexerTypings>(
     value = ("value" in rule ? rule.value : null) ?? null
   }
 
-  let fastMatch = null
-  if (typeof rule === 'string' && rule.length === 1) {
-    fastMatch = rule.charCodeAt(0)
-  }
-  return {type, lineBreaks, fastMatch, pop, push, next, value}
+  return {type, lineBreaks, pop, push, next, value}
 }
 
