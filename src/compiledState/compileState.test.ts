@@ -11,7 +11,7 @@ describe("compileState", function () {
 
     expect(state.nextMatch("a", 0)).toEqual({
       offset: 0,
-      rule: expect.objectContaining({ type: "A", lineBreaks: false }),
+      rule: expect.objectContaining({ type: "A" }),
       text: "a",
     });
   });
@@ -73,7 +73,7 @@ describe("compileState", function () {
         ERROR: { error: true },
       });
       expect(state.nextMatch("ba", 0)).toEqual({
-        rule: expect.objectContaining({ type: "ERROR", lineBreaks: false }),
+        rule: expect.objectContaining({ type: "ERROR" }),
         text: "ba",
         offset: 0,
       });
@@ -85,7 +85,7 @@ describe("compileState", function () {
       A: { match: /a/, push: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: expect.objectContaining({ type: "A", push: "newState", lineBreaks: false }),
+      rule: expect.objectContaining({ type: "A", push: "newState" }),
       text: "a",
       offset: 0,
     });
@@ -96,7 +96,7 @@ describe("compileState", function () {
       A: { match: /a/, pop: 1 },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: expect.objectContaining({ type: "A", pop: true, lineBreaks: false }),
+      rule: expect.objectContaining({ type: "A", pop: 1 }),
       text: "a",
       offset: 0,
     });
@@ -107,7 +107,7 @@ describe("compileState", function () {
       A: { match: /a/, next: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: expect.objectContaining({ type: "A", next: "newState", lineBreaks: false }),
+      rule: expect.objectContaining({ type: "A", next: "newState" }),
       text: "a",
       offset: 0,
     });
@@ -142,7 +142,7 @@ describe("compileState", function () {
       A: { match: /a/, value },
     });
     expect(state.nextMatch("a", 0)).toEqual({
-      rule: expect.objectContaining({ type: "A", lineBreaks: false, value }),
+      rule: expect.objectContaining({ type: "A", value }),
       text: "a",
       offset: 0,
     });

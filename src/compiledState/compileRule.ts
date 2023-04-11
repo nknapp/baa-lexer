@@ -1,23 +1,36 @@
-import {LexerTypings, Rule, StateName, TokenType} from "../types";
-import {CompiledRule, Transform} from "../internal-types";
+import { LexerTypings, Rule, StateName, TokenType } from "../types";
+import { CompiledRule, Transform } from "../internal-types";
 
 export function compileRule<T extends LexerTypings>(
   type: TokenType<T>,
   rule: Rule<T>
 ): CompiledRule<T> {
-  let lineBreaks = false
-  let pop = false
-  let push: StateName<T> | null = null
-  let next: StateName<T> | null = null
-  let value: Transform | null = null
-  if (typeof rule === 'object') {
-    lineBreaks = ("lineBreaks" in rule && rule.lineBreaks) ?? false
-    pop = ("pop" in rule && rule.pop === 1)
-    push = ("push" in rule ? rule.push : null) ?? null
-    next = ("next" in rule ? rule.next : null) ?? null
-    value = ("value" in rule ? rule.value : null) ?? null
+  if (rule instanceof RegExp) {
+    return new CompiledRuleImpl(type, {});
   }
-
-  return {type, lineBreaks, pop, push, next, value}
+  if (typeof rule === "string") {
+    return new CompiledRuleImpl(type, {});
+  }
+  return new CompiledRuleImpl(type, rule);
 }
 
+class CompiledRuleImpl<T extends LexerTypings> {
+  type: TokenType<T>;
+  push?: StateName<T>;
+  pop?: 1;
+  next?: StateName<T>;
+  lineBreaks?: boolean;
+  value?: Transform;
+
+  constructor(
+    type: TokenType<T>,
+    rule: Partial<Omit<CompiledRule<T>, "type">>
+  ) {
+    this.type = type;
+    this.pop = rule.pop;
+    this.push = rule.push;
+    this.next = rule.next;
+    this.lineBreaks = rule.lineBreaks;
+    this.value = rule.value;
+  }
+}

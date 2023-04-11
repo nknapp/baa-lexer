@@ -9,11 +9,11 @@ export type Transform = (original: string) => string;
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
-  push: StateName<T> | null;
-  pop: boolean;
-  next: StateName<T> | null;
-  lineBreaks: boolean;
-  value: Transform | null;
+  push?: StateName<T>
+  pop?: 1;
+  next?: StateName<T>;
+  lineBreaks?: boolean;
+  value?: Transform
 }
 
 export interface Match<T extends LexerTypings> {
