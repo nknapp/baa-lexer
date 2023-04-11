@@ -1,4 +1,4 @@
-import { LexerTypings } from "../types";
+import { LexerTypings } from "baa-lexer";
 import { CompiledState, Match } from "../internal-types";
 
 export class DummyCompiledState implements CompiledState<LexerTypings> {

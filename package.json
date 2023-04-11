@@ -15,7 +15,7 @@
   "license": "MIT",
   "scripts": {
     "build": "vite build && tsc -p ./tsconfig.build.json && size-limit",
-    "perf": "vitest bench src/performance/moo-baa.bench.ts",
+    "perf": "vitest bench performance/moo-baa.bench.ts",
     "test": "concurrently --kill-others-on-fail npm:test:*",
     "test:unit": "vitest --run",
     "test:types": "tsc --build",

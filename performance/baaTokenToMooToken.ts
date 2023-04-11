@@ -1,5 +1,5 @@
 import { Lexer } from "moo";
-import { Token } from "../types";
+import { Token } from "baa-lexer";
 import { TestTypes } from "./types";
 
 export function* baaTokenToMooToken(moo: Lexer): Generator<Token<TestTypes>> {

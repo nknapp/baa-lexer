@@ -9,5 +9,10 @@ export default defineConfig({
       formats: ["es", "umd"],
     },
   },
+  resolve: {
+    alias: {
+      "baa-lexer": path.resolve(__dirname, "src/index.ts")
+    }
+  },
   test: {},
 });

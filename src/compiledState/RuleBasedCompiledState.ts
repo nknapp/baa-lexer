@@ -1,19 +1,18 @@
 import { LexerTypings } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
-import { RegexMatcher } from "./RegexMatcher";
-import { CompiledRule, CompiledState, Match } from "../internal-types";
+import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 
 export class RuleBasedCompiledState<T extends LexerTypings>
   implements CompiledState<T>
 {
-  readonly matcher: RegexMatcher<T>;
+  readonly matcher: Matcher<T>;
   readonly fallback: CompiledRule<T> | null = null;
   readonly error: CompiledRule<T> | null = null;
 
   pendingMatch: Match<T> | null = null;
 
   constructor(
-    matcher: RegexMatcher<T>,
+    matcher: Matcher<T>,
     fallback: CompiledRule<T> | null,
     error: CompiledRule<T> | null
   ) {

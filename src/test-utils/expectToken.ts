@@ -1,4 +1,4 @@
-import { Lexer, LexerTypings, Token } from "../types";
+import { Lexer, LexerTypings, Token } from "baa-lexer";
 import { expect } from "vitest";
 import { parseLocation } from "./parseLocation";
 

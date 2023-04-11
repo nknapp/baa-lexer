@@ -1,6 +1,6 @@
 import { describe, bench } from "vitest";
 import { endLocationMultiline } from "./endLocationMultiline";
-import { Location } from "../types";
+import { Location } from "baa-lexer";
 
 describe.each([
   { name: "single line", string: "string ".repeat(200) },

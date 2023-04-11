@@ -1,12 +1,11 @@
 import { PerformanceTest } from "../types";
-import { MooState, MooStates } from "../../types";
-import { withLookAhead } from "../..";
+import { withLookAhead, MooState, MooStates } from "baa-lexer";
 
 export type MustacheOpenType = "OPEN_UNESCAPED" | "OPEN";
 export type MustacheCloseType = "CLOSE_UNESCAPED" | "CLOSE";
 export type TokenType =
   | "CONTENT"
-  | "NEWLLINE"
+  | "NEWLINE"
   | "SPACE"
   | "ID"
   | "SQUARE_WRAPPED_ID"

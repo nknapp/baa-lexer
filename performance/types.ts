@@ -1,4 +1,4 @@
-import { MooStates } from "../types";
+import { MooStates } from "baa-lexer";
 
 export interface TestTypes {
   stateName: string;
