@@ -1,7 +1,6 @@
 import { CombinedRegex, combineRegex } from "./combineRegex";
 import { LexerTypings, TokenType } from "../types";
 import { CompiledRule, Match, Matcher } from "../internal-types";
-import { escapeRegExp } from "../utils/regex-escape";
 
 export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   readonly #rules: CompiledRule<T>[];
@@ -29,10 +28,12 @@ export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   }
 }
 
+const reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
 function regexFromRule(rule: CompiledRule<LexerTypings>): RegExp {
   if (rule.match == null) throw new Error("Rule with match expected");
   if (rule.match instanceof RegExp) {
     return rule.match;
   }
-  return new RegExp(escapeRegExp(rule.match));
+  return new RegExp(rule.match.replace(reRegExpChar, "\\$&"));
 }

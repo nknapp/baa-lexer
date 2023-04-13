@@ -31,7 +31,11 @@ export class RuleBasedCompiledState<T extends LexerTypings>
     if (match == null) {
       const rule =
         this.fallback ?? this.error ?? this.#throwError(string, offset);
-      return this.#createMatch(rule, offset, string);
+      return {
+        rule,
+        offset,
+        text: string.slice(offset),
+      };
     }
     if (match.offset > offset) {
       if (this.fallback) {
@@ -48,15 +52,6 @@ export class RuleBasedCompiledState<T extends LexerTypings>
     }
     return match;
   }
-
-  #createMatch(rule: CompiledRule<T>, offset: number, string: string) {
-    return {
-      rule,
-      offset,
-      text: string.slice(offset),
-    };
-  }
-
   #throwError(string: string, offset: number): never {
     const expectedTokens = this.matcher.expectedTypes();
     throw new InternalSyntaxError(expectedTokens, string[offset]);

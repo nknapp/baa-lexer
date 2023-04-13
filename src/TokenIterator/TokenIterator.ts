@@ -55,12 +55,12 @@ export class TokenIterator<T extends LexerTypings>
       return this.states.current.nextMatch(this.#string, this.#offset);
     } catch (error) {
       if (error instanceof InternalSyntaxError) {
-        throw new Error(this.#createSyntaxErrorMessage(error));
+        throw new Error(this.#syntaxError(error));
       }
       throw error;
     }
   }
-  #createSyntaxErrorMessage(error: InternalSyntaxError) {
+  #syntaxError(error: InternalSyntaxError) {
     const { line, column } = this.#tokenFactory.currentLocation;
     const types = error.expectedTokenTypes
       .map((type) => "`" + type + "`")

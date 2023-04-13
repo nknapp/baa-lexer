@@ -5,13 +5,35 @@ type StringMatchingRule<T extends LexerTypings> = CompiledRule<T> & {
   match: string;
 };
 
+
 export function createSingleCharMatcher<T extends LexerTypings>(
   rules: CompiledRule<T>[]
 ): Matcher<T>  {
-  if (rules.some(rule => !isSingleCharRule(rule))) {
+  if (!everyRuleIsSingleChar(rules)) {
     throw new Error("All rules must be single chars")
   }
-  return new SingleCharMatcher<T>(rules as StringMatchingRule<T>[]);
+
+  const types: TokenType<T>[] = [];
+  const rulesByCharCode: StringMatchingRule<T>[] = [];
+
+  for (const rule of rules) {
+    types.push(rule.type)
+    rulesByCharCode[rule.match.charCodeAt(0)] = rule;
+  }
+  return {
+    match(string: string, offset: number): Match<T> | null {
+      const matchingRule = rulesByCharCode[string.charCodeAt(offset)]
+      if (matchingRule == null) return null
+      return {
+        rule: matchingRule,
+        offset,
+        text: matchingRule.match
+      }
+    },
+    expectedTypes(): TokenType<T>[] {
+      return types;
+    }
+  };
 }
 
 export function isSingleCharRule<T extends LexerTypings>(
@@ -20,30 +42,7 @@ export function isSingleCharRule<T extends LexerTypings>(
   return typeof rule.match === "string" && rule.match.length === 1;
 }
 
-class SingleCharMatcher<T extends LexerTypings> implements Matcher<T> {
-  readonly #types: TokenType<T>[];
-  readonly #rulesByCharCode: StringMatchingRule<T>[];
 
-  constructor(rules: StringMatchingRule<T>[]) {
-    this.#types = [];
-    this.#rulesByCharCode = [];
-    for (const rule of rules) {
-      this.#types.push(rule.type)
-      this.#rulesByCharCode[rule.match.charCodeAt(0)] = rule;
-    }
-  }
-
-  match(string: string, offset: number): Match<T> | null {
-    const matchingRule = this.#rulesByCharCode[string.charCodeAt(offset)]
-    if (matchingRule == null) return null
-    return {
-      rule: matchingRule,
-      offset,
-      text: matchingRule.match
-    }
-  }
-
-  expectedTypes(): TokenType<T>[] {
-    return this.#types;
-  }
+function everyRuleIsSingleChar<T extends LexerTypings>(rules: CompiledRule<T>[]): rules is StringMatchingRule<T>[] {
+  return rules.every((rule) => isSingleCharRule(rule));
 }
