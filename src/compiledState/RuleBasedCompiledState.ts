@@ -9,7 +9,7 @@ export class RuleBasedCompiledState<T extends LexerTypings>
   readonly fallback: CompiledRule<T> | null = null;
   readonly error: CompiledRule<T> | null = null;
 
-  pendingMatch: Match<T> | null = null;
+  #pendingMatch: Match<T> | null = null;
 
   constructor(
     matcher: Matcher<T>,
@@ -22,9 +22,9 @@ export class RuleBasedCompiledState<T extends LexerTypings>
   }
 
   nextMatch(string: string, offset: number): Match<T> {
-    if (this.pendingMatch != null) {
-      const match = this.pendingMatch;
-      this.pendingMatch = null;
+    if (this.#pendingMatch != null) {
+      const match = this.#pendingMatch;
+      this.#pendingMatch = null;
       return match;
     }
     const match = this.matcher.match(string, offset);
@@ -39,14 +39,14 @@ export class RuleBasedCompiledState<T extends LexerTypings>
     }
     if (match.offset > offset) {
       if (this.fallback) {
-        this.pendingMatch = match;
+        this.#pendingMatch = match;
         return {
           rule: this.fallback,
           offset,
           text: string.slice(offset, match.offset),
         };
       } else {
-        // This cannot be, because if there is no fallback, the regex gets the "/y" flag
+        // This cannot happen, because if there is no fallback, the regex gets the "/y" flag
         throw new Error("Unexpected error");
       }
     }
