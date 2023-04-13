@@ -1,13 +1,14 @@
-import { CombinedRegex } from "./combineRegex";
+import { CombinedRegex, combineRegex } from "./combineRegex";
 import { LexerTypings, TokenType } from "../types";
 import { CompiledRule, Match, Matcher } from "../internal-types";
+import { escapeRegExp } from "../utils/regex-escape";
 
 export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   readonly #rules: CompiledRule<T>[];
   readonly #regex: CombinedRegex;
-  constructor(rules: CompiledRule<T>[], regex: CombinedRegex) {
+  constructor(rules: CompiledRule<T>[], { sticky = false } = {}) {
     this.#rules = rules;
-    this.#regex = regex;
+    this.#regex = combineRegex(rules.map(regexFromRule), { sticky });
   }
 
   match(string: string, offset: number): Match<T> | null {
@@ -26,4 +27,12 @@ export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   expectedTypes(): TokenType<T>[] {
     return this.#rules.map((rule) => rule.type);
   }
+}
+
+function regexFromRule(rule: CompiledRule<LexerTypings>): RegExp {
+  if (rule.match == null) throw new Error("Rule with match expected");
+  if (rule.match instanceof RegExp) {
+    return rule.match;
+  }
+  return new RegExp(escapeRegExp(rule.match));
 }

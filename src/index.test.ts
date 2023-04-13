@@ -423,6 +423,21 @@ describe("moo-like config", () => {
       token("B", "b", "b", "1:1", "1:2"),
     ]);
   });
+
+  it("allows strings in match rules instead of regex, with fallback rule", () => {
+    const lexer = createLexer({
+      main: {
+        A: { match: "a" },
+        B: { match: "b" },
+        FALLBACK: { fallback: true },
+      },
+    });
+    runTwiceAndExpectTokens(lexer, "acb", [
+      token("A", "a", "a", "1:0", "1:1"),
+      token("FALLBACK", "c", "c", "1:1", "1:2"),
+      token("B", "b", "b", "1:2", "1:3"),
+    ]);
+  });
 });
 
 type LocationSpec = `${number}:${number}`;

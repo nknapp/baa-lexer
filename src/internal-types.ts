@@ -1,4 +1,5 @@
 import { LexerTypings, Location, StateName, Token, TokenType } from "./types";
+import {RegexMatcher} from "./compiledState/RegexMatcher";
 
 export interface TokenFactory<T extends LexerTypings> {
   createToken(match: Match<T>): Token<T>;
@@ -9,6 +10,7 @@ export type Transform = (original: string) => string;
 
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
+  match: string | RegExp | null;
   push?: StateName<T>
   pop?: 1;
   next?: StateName<T>;

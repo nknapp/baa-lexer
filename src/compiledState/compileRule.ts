@@ -1,26 +1,24 @@
 import { LexerTypings, Rule, StateName, TokenType } from "../types";
-import { CompiledRule, Transform } from "../internal-types";
+import {CompiledRule, Transform} from "../internal-types";
 
 export function compileRule<T extends LexerTypings>(
   type: TokenType<T>,
   rule: Rule<T>
 ): CompiledRule<T> {
-  if (rule instanceof RegExp) {
-    return new CompiledRuleImpl(type, {});
-  }
-  if (typeof rule === "string") {
-    return new CompiledRuleImpl(type, {});
+  if (rule instanceof RegExp || typeof rule === "string") {
+    return new CompiledRuleImpl(type, { match: rule});
   }
   return new CompiledRuleImpl(type, rule);
 }
 
-class CompiledRuleImpl<T extends LexerTypings> {
+class CompiledRuleImpl<T extends LexerTypings>  implements CompiledRule<T>{
   type: TokenType<T>;
   push?: StateName<T>;
   pop?: 1;
   next?: StateName<T>;
   lineBreaks?: boolean;
   value?: Transform;
+  match: string | RegExp | null
 
   constructor(
     type: TokenType<T>,
@@ -32,5 +30,6 @@ class CompiledRuleImpl<T extends LexerTypings> {
     this.next = rule.next;
     this.lineBreaks = rule.lineBreaks;
     this.value = rule.value;
+    this.match = rule.match ?? null
   }
 }

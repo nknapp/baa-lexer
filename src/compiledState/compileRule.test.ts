@@ -11,7 +11,9 @@ describe("compileRule", () => {
   });
 
   it("sets lineBreaks for fallback rules", () => {
-    expect(compileRule("A", {fallback: true, lineBreaks: true}).lineBreaks).toBe(true);
+    expect(
+      compileRule("A", { fallback: true, lineBreaks: true }).lineBreaks
+    ).toBe(true);
   });
 
   it("sets 'pop' for object rules with 'pop: 1'", () => {
@@ -23,11 +25,11 @@ describe("compileRule", () => {
   });
 
   it("sets 'push=null' for object rules without 'push'", () => {
-    expect(compileRule("A", { match: /a/ }).push).toBeFalsy()
+    expect(compileRule("A", { match: /a/ }).push).toBeFalsy();
   });
 
   it("sets 'push=null' for non-object rules", () => {
-    expect(compileRule("A", "a").push).toBeFalsy()
+    expect(compileRule("A", "a").push).toBeFalsy();
   });
 
   it("sets 'next' for object rules with 'next'", () => {
@@ -53,5 +55,21 @@ describe("compileRule", () => {
 
   it("sets 'value=null' for non-object rules", () => {
     expect(compileRule("A", "a").value).toBeFalsy();
+  });
+
+  it("sets 'match=null' for rules without match", () => {
+    expect(compileRule("A", { fallback: true }).match).toBeNull();
+  });
+
+  it("sets 'match' for rules with string match", () => {
+    expect(compileRule("A", { match: "a" }).match).toBe("a");
+  });
+
+  it("sets 'match' for simple rules with string match", () => {
+    expect(compileRule("A", "a").match).toBe("a");
+  });
+
+  it("sets 'match' for simple rules with regex match", () => {
+    expect(compileRule("A", /a/).match).toEqual(/a/);
   });
 });
