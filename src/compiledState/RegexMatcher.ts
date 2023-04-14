@@ -1,24 +1,29 @@
-import { CombinedRegex, combineRegex } from "./combineRegex";
 import { LexerTypings, TokenType } from "../types";
 import { CompiledRule, Match, Matcher } from "../internal-types";
 
+
 export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   readonly #rules: CompiledRule<T>[];
-  readonly #regex: CombinedRegex;
+  readonly #unionRegex: RegExp;
   constructor(rules: CompiledRule<T>[], { sticky = false } = {}) {
     this.#rules = rules;
-    this.#regex = combineRegex(rules.map(regexFromRule), { sticky });
+    const groups = rules.map(toRegexCaptureGroup);
+    this.#unionRegex = new RegExp(groups.join("|"), sticky ? "y" : "g");
   }
 
   match(string: string, offset: number): Match<T> | null {
-    this.#regex.reset(offset);
-    if (this.#regex.exec(string)) {
-      const matchingRule = this.#rules[this.#regex.matchingRegex];
-      return {
-        rule: matchingRule,
-        text: this.#regex.match as string,
-        offset: this.#regex.matchIndex,
-      };
+    this.#unionRegex.lastIndex = offset;
+    const match = this.#unionRegex.exec(string);
+    if (match != null) {
+      for (let i = 1; i <= this.#rules.length; i++) {
+        if (match[i] != null) {
+          return {
+            rule: this.#rules[i - 1],
+            offset: match.index,
+            text: match[0],
+          };
+        }
+      }
     }
     return null;
   }
@@ -28,12 +33,16 @@ export class RegexMatcher<T extends LexerTypings> implements Matcher<T> {
   }
 }
 
-const reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-function regexFromRule(rule: CompiledRule<LexerTypings>): RegExp {
-  if (rule.match == null) throw new Error("Rule with match expected");
-  if (rule.match instanceof RegExp) {
-    return rule.match;
+function toRegexCaptureGroup(rule: CompiledRule<LexerTypings>): string {
+  if (rule.match == null) {
+    throw new Error("All rules must have a 'match' property.");
   }
-  return new RegExp(rule.match.replace(reRegExpChar, "\\$&"));
+  const source =
+    rule.match instanceof RegExp ? rule.match.source : regexEscape(rule.match);
+  return `(${source})`;
+}
+
+const reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+function regexEscape(string: string) {
+  return string.replace(reRegExpChar, "\\$&");
 }

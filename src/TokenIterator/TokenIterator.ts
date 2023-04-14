@@ -1,12 +1,65 @@
-import { LexerTypings, Token } from "../types";
+import { LexerTypings, Location, Token } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
-import { StateStack } from "./StateStack";
+import { createStateStack, StateStack } from "./StateStack";
 import { CompiledStateDict, TokenFactory } from "../internal-types";
+import { token } from "../test-utils/expectToken";
 
 const DONE = {
   done: true,
   value: undefined,
 } as const;
+
+export function createTokenIterator<T extends LexerTypings>(
+  states: CompiledStateDict<T>,
+  string: string,
+  tokenFactory: TokenFactory<T>
+): IterableIterator<Token<T>> {
+  const stack = createStateStack(states);
+  let offset = 0;
+
+  function nextToken() {
+    if (offset >= string.length) {
+      return DONE;
+    }
+    const match = nextMatchOrSyntaxError();
+    offset += match.text.length;
+    const token = tokenFactory.createToken(match);
+
+    if (match.rule.push) stack.push(match.rule.push);
+    if (match.rule.pop) stack.pop();
+    if (match.rule.next) stack.next(match.rule.next);
+
+    return {
+      done: false,
+      value: token,
+    };
+  }
+
+  function nextMatchOrSyntaxError() {
+    try {
+      return stack.current.nextMatch(string, offset);
+    } catch (error) {
+      if (error instanceof InternalSyntaxError) {
+        throw new Error(syntaxError(error, tokenFactory.currentLocation));
+      }
+      throw error;
+    }
+  }
+
+  const result: IterableIterator<Token<T>> = {
+    [Symbol.iterator]: () => result,
+    next: nextToken,
+  };
+  return result;
+}
+
+function syntaxError(error: InternalSyntaxError, location: Location): string {
+  const { line, column } = location;
+  const types = error.expectedTokenTypes
+    .map((type) => "`" + type + "`")
+    .join(", ");
+  return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
+}
 
 export class TokenIterator<T extends LexerTypings>
   implements IterableIterator<Token<T>>
@@ -24,7 +77,7 @@ export class TokenIterator<T extends LexerTypings>
   ) {
     this.#string = string;
     this.#offset = 0;
-    this.states = new StateStack<T>(states);
+    this.states = createStateStack(states);
     this.#tokenFactory = tokenFactory;
   }
 

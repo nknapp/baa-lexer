@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { StateStack } from "./StateStack";
+import { createStateStack } from "./StateStack";
 import { DummyCompiledState } from "../test-utils/DummyCompiledState";
 
 const compiledStateA = new DummyCompiledState("A");
@@ -8,7 +8,7 @@ const compiledStateC = new DummyCompiledState("C");
 
 describe("StateStack", function () {
   it("initially contains the main state", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
     });
@@ -16,7 +16,7 @@ describe("StateStack", function () {
   });
 
   it("'push' changes the current state", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
     });
@@ -25,7 +25,7 @@ describe("StateStack", function () {
   });
 
   it("'push' and 'pop' returns the first current state", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
     });
@@ -35,7 +35,7 @@ describe("StateStack", function () {
   });
 
   it("'next' changes the current state", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
     });
@@ -45,7 +45,7 @@ describe("StateStack", function () {
   });
 
   it("'push', 'next' and then 'pop' reverts to the stack before the push", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
       c: compiledStateC,
@@ -58,7 +58,7 @@ describe("StateStack", function () {
   });
 
   it("'next' and then 'push' and 'pop' reverts to the stack before the push", () => {
-    const stack = new StateStack({
+    const stack = createStateStack({
       main: compiledStateA,
       b: compiledStateB,
       c: compiledStateC,

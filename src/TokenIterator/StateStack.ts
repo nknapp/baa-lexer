@@ -1,29 +1,30 @@
 import { CompiledState, CompiledStateDict } from "../internal-types";
 import { LexerTypings, StateName } from "../types";
 
-export class StateStack<T extends LexerTypings> {
-  readonly #states: CompiledStateDict<T>;
-  readonly #stateStack: CompiledState<T>[];
-  current: CompiledState<T>;
 
-  constructor(states: CompiledStateDict<T>) {
-    this.#states = states;
-    this.#stateStack = [this.#states.main];
-    this.current = this.#states.main;
-  }
+export interface StateStack<T extends LexerTypings> {
+  current: CompiledState<T>,
+  push(name: StateName<T>): void
+  next(name: StateName<T>): void
+  pop(): void
+}
 
-  push(name: StateName<T>) {
-    this.current = this.#states[name];
-    this.#stateStack.unshift(this.current);
+export function createStateStack<T extends LexerTypings>(states: CompiledStateDict<T>) {
+  const stateStack: CompiledState<T>[] = [states.main];
+  const result: StateStack<T> = {
+    current: states.main,
+    push(name: StateName<T>) {
+      this.current = states[name];
+      stateStack.unshift(this.current);
+    },
+    pop() {
+      stateStack.shift();
+      this.current = stateStack[0];
+    },
+    next(name: StateName<T>) {
+      this.current = states[name];
+      stateStack[0] = this.current;
+    }
   }
-
-  pop() {
-    this.#stateStack.shift();
-    this.current = this.#stateStack[0];
-  }
-
-  next(name: StateName<T>) {
-    this.current = this.#states[name];
-    this.#stateStack[0] = this.current;
-  }
+  return result;
 }

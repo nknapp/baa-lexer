@@ -5,7 +5,6 @@ import { TestTypes } from "../../performance/types";
 import { compileRule } from "./compileRule";
 import { LexerTypings } from "baa-lexer";
 
-const ruleRegexA = compileRule("A", /a/);
 const ruleDoubleA = compileRule("AA", "aa");
 const ruleSingleA = compileRule("A", "a");
 const ruleSingleB = compileRule("B", "b");
