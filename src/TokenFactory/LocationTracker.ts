@@ -1,26 +1,20 @@
 import { Location } from "../types";
 
-export class LocationTracker {
-  current = { line: 1, column: 0 };
+export function createLocationTracker() {
 
-  advance(token: string, { multiline = false } = {}): Location {
-    this.current = this.#nextLocation(token, multiline);
-    return this.current;
-  }
-
-  #nextLocation(token: string, multiline: boolean) {
+  function nextLocation(token: string, multiline: boolean) {
     if (!multiline) {
-      return this.#singleLine(token);
+      return singleLine(token);
     }
     const firstNewline = token.indexOf("\n");
     if (firstNewline < 0) {
-      return this.#singleLine(token);
+      return singleLine(token);
     }
-    return this.#multiLine(token, firstNewline);
+    return multiLine(token, firstNewline);
   }
 
-  #multiLine(token: string, firstNewline: number) {
-    let line = this.current.line;
+  function multiLine(token: string, firstNewline: number) {
+    let line = result.current.line;
     let lastNewline = firstNewline;
     let next: number = firstNewline;
     while (next >= 0) {
@@ -32,8 +26,20 @@ export class LocationTracker {
     return { line, column };
   }
 
-  #singleLine(token: string) {
-    const { line, column } = this.current;
+  function singleLine(token: string) {
+    const { line, column } = result.current;
     return { line, column: column + token.length };
   }
+
+
+  const result = {
+    current: { line: 1, column: 0 },
+    advance(token: string, { multiline = false } = {}): Location {
+      result.current = nextLocation(token, multiline);
+      return result.current;
+    }
+
+  }
+
+  return result
 }

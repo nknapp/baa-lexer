@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { LocationTracker } from "./LocationTracker";
+import { createLocationTracker } from "./LocationTracker";
 
 describe("LocationTracker", () => {
   it("has an initial location of 1:0", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     expect(locationTracker.current).toEqual({
       line: 1,
       column: 0,
@@ -11,7 +11,7 @@ describe("LocationTracker", () => {
   });
 
   it("advances the location by the number of chars in the token", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("abc");
     expect(locationTracker.current).toEqual({
       line: 1,
@@ -20,7 +20,7 @@ describe("LocationTracker", () => {
   });
 
   it("creates a new location for every 'advance'", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     const location = locationTracker.current;
     locationTracker.advance("abc");
     expect(location).toEqual({
@@ -30,7 +30,7 @@ describe("LocationTracker", () => {
   });
 
   it("handles single-line tokens correctly, even if 'multiline' is specified", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("abc", {multiline: true});
     expect(locationTracker.current).toEqual({
       line: 1,
@@ -44,7 +44,7 @@ describe("LocationTracker", () => {
   });
 
   it("advances a single newline", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("\n", {multiline: true});
     expect(locationTracker.current).toEqual({
       line: 2,
@@ -53,7 +53,7 @@ describe("LocationTracker", () => {
   });
 
   it("advances lines if line-breaks are in the token", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("a\nbc", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 2,
@@ -67,7 +67,7 @@ describe("LocationTracker", () => {
   });
 
   it("advances any number of lines", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("a\n\nb\n\n\ncd", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 6,
@@ -77,7 +77,7 @@ describe("LocationTracker", () => {
 
 
   it("'advance' returns the new location", () => {
-    const locationTracker = new LocationTracker();
+    const locationTracker = createLocationTracker();
     locationTracker.advance("a\nbc", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 2,

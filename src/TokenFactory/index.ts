@@ -1,1 +1,1 @@
-export { LocationTracker } from "./LocationTracker";
+export { TokenFactoryImpl } from "./TokenFactoryImpl";
