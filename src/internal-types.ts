@@ -1,5 +1,4 @@
 import { LexerTypings, Location, StateName, Token, TokenType } from "./types";
-import {RegexMatcher} from "./compiledState/RegexMatcher";
 
 export interface TokenFactory<T extends LexerTypings> {
   createToken(match: Match<T>): Token<T>;

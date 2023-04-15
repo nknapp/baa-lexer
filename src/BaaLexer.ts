@@ -3,7 +3,7 @@ import { compileState } from "./compiledState";
 import { mapValues } from "./utils/mapValues";
 import { TokenFactoryImpl } from "./TokenFactory/TokenFactoryImpl";
 import { CompiledStateDict } from "./internal-types";
-import { createTokenIterator } from "./TokenIterator/TokenIterator";
+import { TokenIterator } from "./TokenIterator";
 
 export class BaaLexer<T extends LexerTypings> implements Lexer<T> {
   readonly #states: CompiledStateDict<T>;
@@ -13,6 +13,6 @@ export class BaaLexer<T extends LexerTypings> implements Lexer<T> {
   }
 
   lex(string: string): IterableIterator<Token<T>> {
-    return createTokenIterator(this.#states, string, new TokenFactoryImpl());
+    return new TokenIterator(this.#states, string, new TokenFactoryImpl());
   }
 }

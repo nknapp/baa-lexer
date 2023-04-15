@@ -1,13 +1,14 @@
-import { LexerTypings, Location } from "../types";
+import { LexerTypings } from "../types";
 import { LocationTracker } from "./LocationTracker";
-import { Match } from "../internal-types";
+import {Match, TokenFactory} from "../internal-types";
 
-export class TokenFactoryImpl<T extends LexerTypings> {
+export class TokenFactoryImpl<T extends LexerTypings> implements TokenFactory<T> {
   #location = new LocationTracker();
+  currentLocation = this.#location.current
 
   createToken(match: Match<T>) {
     const start = this.#location.current;
-    const end = this.#location.advance(match.text, {
+    const end = this.currentLocation = this.#location.advance(match.text, {
       multiline: match.rule.lineBreaks,
     });
     return {
@@ -17,9 +18,5 @@ export class TokenFactoryImpl<T extends LexerTypings> {
       start,
       end,
     };
-  }
-
-  get currentLocation(): Location {
-    return this.#location.current;
   }
 }

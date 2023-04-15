@@ -11,19 +11,19 @@ export interface StateStack<T extends LexerTypings> {
 
 export function createStateStack<T extends LexerTypings>(states: CompiledStateDict<T>) {
   const stateStack: CompiledState<T>[] = [states.main];
+  let currentIndex = 0
   const result: StateStack<T> = {
     current: states.main,
     push(name: StateName<T>) {
       this.current = states[name];
-      stateStack.unshift(this.current);
+      stateStack[++currentIndex] = this.current
     },
     pop() {
-      stateStack.shift();
-      this.current = stateStack[0];
+      this.current = stateStack[--currentIndex];
     },
     next(name: StateName<T>) {
       this.current = states[name];
-      stateStack[0] = this.current;
+      stateStack[currentIndex] = this.current
     }
   }
   return result;
