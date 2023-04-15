@@ -1,6 +1,6 @@
 import { LexerTypings, MooState } from "../types";
 import { splitRules } from "./splitRules";
-import { RuleBasedCompiledState } from "./RuleBasedCompiledState";
+import { ruleState } from "./ruleState";
 import { CompiledRule, CompiledState } from "../internal-types";
 import { compileRule } from "./compileRule";
 import { createMatcher } from "./createMatcher";
@@ -13,7 +13,7 @@ export function compileState<T extends LexerTypings>(
   for (const { type, rule } of match) {
     compiledMatchRules.push(compileRule(type, rule));
   }
-  return new RuleBasedCompiledState<T>(
+  return ruleState(
     createMatcher(compiledMatchRules, { sticky: fallback == null }),
     fallback ? compileRule(fallback.type, fallback.rule) : null,
     error ? compileRule(error.type, error.rule) : null
