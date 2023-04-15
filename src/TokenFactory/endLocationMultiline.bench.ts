@@ -82,3 +82,4 @@ function iterateIndexOf(startPosition: Location, substring: string): Location {
     column: substring.length - lastLineBreak - 1,
   };
 }
+
