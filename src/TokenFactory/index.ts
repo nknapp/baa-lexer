@@ -1,1 +1,1 @@
-export { TokenFactoryImpl } from "./TokenFactoryImpl";
+export { createTokenFactory } from "./TokenFactoryImpl";
