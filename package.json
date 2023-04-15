@@ -25,6 +25,7 @@
     "dev:build": "vite build --watch",
     "test-and-build": "yarn test && yarn build",
     "clean": "rm dist dist-node -rf",
+    "test-perf-build": "yarn test && yarn perf --run && yarn build",
     "---- chores ----": "",
     "format": "prettier -w .",
     "prepare": "husky install",

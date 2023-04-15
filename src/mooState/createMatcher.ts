@@ -1,15 +1,16 @@
 import { LexerTypings } from "../types";
 import { CompiledRule, Matcher } from "../internal-types";
-import { createSingleCharMatcher, isSingleCharRule } from "./SingleCharMatcher";
-import { RegexMatcher } from "./RegexMatcher";
+import { createStickySingleCharMatcher, isSingleCharRule } from "./StickySingleCharMatcher";
+import { createRegexMatcher } from "./RegexMatcher";
 
 export function createMatcher<T extends LexerTypings>(
   rules: CompiledRule<T>[],
-  { sticky = false }
+  sticky = false
 ): Matcher<T> {
+  if (!sticky) return createRegexMatcher(rules, sticky);
+
   const singleCharRules: CompiledRule<T>[] = [];
   const rest: CompiledRule<T>[] = [];
-  if (!sticky) return new RegexMatcher(rules);
 
   for (const rule of rules) {
     if (isSingleCharRule(rule)) {
@@ -19,16 +20,13 @@ export function createMatcher<T extends LexerTypings>(
     }
   }
   if (singleCharRules.length > 0) {
-    const singleChar = createSingleCharMatcher(singleCharRules);
-    const regex = new RegexMatcher(rest, { sticky });
+    const singleChar = createStickySingleCharMatcher(singleCharRules);
+    const regex = createRegexMatcher(rest, sticky);
     return {
       match(string: string, offset: number) {
         return singleChar.match(string, offset) ?? regex.match(string, offset);
       },
-      expectedTypes() {
-        return rules.map((rule) => rule.type);
-      },
     };
   }
-  return new RegexMatcher(rest, { sticky });
+  return createRegexMatcher(rest, sticky);
 }

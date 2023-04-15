@@ -1,5 +1,5 @@
-import { LexerTypings, Rule, StateName, TokenType } from "../types";
-import {CompiledRule, Transform} from "../internal-types";
+import { LexerTypings, Rule, TokenType } from "../types";
+import { CompiledRule } from "../internal-types";
 
 export function compileRule<T extends LexerTypings>(
   type: TokenType<T>,
@@ -13,10 +13,10 @@ export function compileRule<T extends LexerTypings>(
       next: undefined,
       lineBreaks: false,
       value: undefined,
-      match: rule
-    }
+      match: rule,
+    };
   }
-  const r = rule as Partial<Omit<CompiledRule<T>, "type">>
+  const r = rule as Partial<Omit<CompiledRule<T>, "type">>;
   return {
     type,
     pop: r.pop,
@@ -24,7 +24,6 @@ export function compileRule<T extends LexerTypings>(
     next: r.next,
     lineBreaks: r.lineBreaks,
     value: r.value,
-    match: r.match ?? null
-  }
+    match: r.match ?? null,
+  };
 }
-

@@ -1,5 +1,5 @@
 import { Lexer, LexerTypings, MooStates, Token } from "./types";
-import { compileState } from "./compiledState";
+import { compileMooState } from "./mooState";
 import { mapValues } from "./utils/mapValues";
 import { TokenFactoryImpl } from "./TokenFactory/TokenFactoryImpl";
 import { CompiledStateDict } from "./internal-types";
@@ -9,7 +9,7 @@ export class BaaLexer<T extends LexerTypings> implements Lexer<T> {
   readonly #states: CompiledStateDict<T>;
 
   constructor(states: MooStates<T>) {
-    this.#states = mapValues(states, (state) => compileState(state));
+    this.#states = mapValues(states, (state) => compileMooState(state));
   }
 
   lex(string: string): IterableIterator<Token<T>> {

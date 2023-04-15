@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {createSingleCharMatcher, isSingleCharRule} from "./SingleCharMatcher";
+import {createStickySingleCharMatcher, isSingleCharRule} from "./StickySingleCharMatcher";
 import { CompiledRule, Matcher } from "../internal-types";
 import { TestTypes } from "../../performance/types";
 import { compileRule } from "./compileRule";
@@ -11,18 +11,18 @@ const ruleSingleB = compileRule("B", "b");
 
 describe("SingleCharMatcher", () => {
   it("the create-function throws an exception if any rule does not apply ", () => {
-    expect(() => createSingleCharMatcher([ruleDoubleA, ruleSingleB])).toThrow(
+    expect(() => createStickySingleCharMatcher([ruleDoubleA, ruleSingleB])).toThrow(
       new Error("All rules must be single chars")
     );
   });
 
   it("return no match for an empty string", () => {
-    const matcher = requireSingleCharMatcher([ruleSingleA]);
+    const matcher = requireStickySingleCharMatcher([ruleSingleA]);
     expect(matcher.match("", 0)).toBeNull();
   });
 
   it("returns a match for a string rule", () => {
-    const matcher = requireSingleCharMatcher([ruleSingleA]);
+    const matcher = requireStickySingleCharMatcher([ruleSingleA]);
     expect(matcher.match("a", 0)).toEqual({
       rule: ruleSingleA,
       text: "a",
@@ -31,17 +31,17 @@ describe("SingleCharMatcher", () => {
   });
 
   it("returns no match for a matching chars after the offset", () => {
-    const matcher = requireSingleCharMatcher([ruleSingleA]);
+    const matcher = requireStickySingleCharMatcher([ruleSingleA]);
     expect(matcher.match("ba", 0)).toBeNull();
   });
 
   it("returns no match for a matching chars after the offset", () => {
-    const matcher = requireSingleCharMatcher([ruleSingleA]);
+    const matcher = requireStickySingleCharMatcher([ruleSingleA]);
     expect(matcher.match("ab", 1)).toBeNull();
   });
 
   it("returns a match for any valid string rule", () => {
-    const matcher: Matcher<TestTypes> = requireSingleCharMatcher([
+    const matcher: Matcher<TestTypes> = requireStickySingleCharMatcher([
       ruleSingleA,
       ruleSingleB,
     ]);
@@ -57,13 +57,6 @@ describe("SingleCharMatcher", () => {
     });
   });
 
-  it("returns expectedTokens for its rules", () => {
-    const matcher = requireSingleCharMatcher([
-      ruleSingleA,
-      ruleSingleB,
-    ]);
-    expect(matcher.expectedTypes()).toEqual(["A", "B"]);
-  });
 
   describe("isSingleCharRule", () => {
     it("returns true for rules that contain a single char", () => {
@@ -81,10 +74,10 @@ describe("SingleCharMatcher", () => {
   })
 });
 
-function requireSingleCharMatcher<T extends LexerTypings>(
+function requireStickySingleCharMatcher<T extends LexerTypings>(
   rules: CompiledRule<T>[]
 ): Matcher<TestTypes> {
-  const matcher = createSingleCharMatcher(rules);
+  const matcher = createStickySingleCharMatcher(rules);
   if (matcher == null) throw new Error("Expected matcher to be created");
   return matcher;
 }

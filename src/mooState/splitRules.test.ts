@@ -16,7 +16,7 @@ describe("splitRules", () => {
     const result = splitRules({
       A: { match: /a/ },
     });
-    expect(result.match).toEqual([{ type: "A", rule: { match: /a/ } }]);
+    expect(result.match).toEqual([{ type: "A", match: /a/ }]);
   });
 
   it("state with multiple match rule", () => {
@@ -25,8 +25,8 @@ describe("splitRules", () => {
       B: { match: /b/ },
     });
     expect(result.match).toEqual([
-      { type: "A", rule: { match: /a/ } },
-      { type: "B", rule: { match: /b/ } },
+      { type: "A", match: /a/ },
+      { type: "B", match: /b/ },
     ]);
   });
 
@@ -35,8 +35,8 @@ describe("splitRules", () => {
       A: { match: /a/ },
       B: { fallback: true },
     });
-    expect(result.fallback).toEqual({ type: "B", rule: { fallback: true } });
-    expect(result.match).toEqual([{ type: "A", rule: { match: /a/ } }]);
+    expect(result.fallback).toEqual({ type: "B", match: null });
+    expect(result.match).toEqual([{ type: "A", match: /a/ }]);
   });
 
   it("state with a error rule", () => {
@@ -44,7 +44,7 @@ describe("splitRules", () => {
       A: { match: /a/ },
       B: { error: true },
     });
-    expect(result.error).toEqual({ type: "B", rule: { error: true } });
-    expect(result.match).toEqual([{ type: "A", rule: { match: /a/ } }]);
+    expect(result.error).toEqual({ type: "B", match: null });
+    expect(result.match).toEqual([{ type: "A", match: /a/ }]);
   });
 });

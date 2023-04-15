@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { compileState } from "./index";
+import { compileMooState } from "./index";
 import { LexerTypings, MooState } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
 
 describe("compileState", function () {
   it("a state without fallback rule matches at the current offset", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/ },
     });
 
@@ -23,7 +23,7 @@ describe("compileState", function () {
       expectedTokenTypes: string[],
       foundChar: string
     ) {
-      const compiledState = compileState(state1);
+      const compiledState = compileMooState(state1);
       try {
         for (let i = 0; i < string.length; i++) {
           compiledState.nextMatch(string, i);
@@ -68,7 +68,7 @@ describe("compileState", function () {
     });
 
     it("delivers error token", () => {
-      const state = compileState({
+      const state = compileMooState({
         A: { match: /a/ },
         ERROR: { error: true },
       });
@@ -81,7 +81,7 @@ describe("compileState", function () {
   });
 
   it("'push' property is part of the match", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/, push: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -92,7 +92,7 @@ describe("compileState", function () {
   });
 
   it("'pop' property is part of the match", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/, pop: 1 },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -103,7 +103,7 @@ describe("compileState", function () {
   });
 
   it("'next' property is part of the match", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/, next: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -114,7 +114,7 @@ describe("compileState", function () {
   });
 
   it("'lineBreaks' property is part of the match for match-rules", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/, lineBreaks: true },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -125,7 +125,7 @@ describe("compileState", function () {
   });
 
   it("'lineBreaks' property is part of the match for fallback-rules", () => {
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/ },
       B: { fallback: true, lineBreaks: true },
     });
@@ -138,7 +138,7 @@ describe("compileState", function () {
 
   it("'value' property is part of the match", () => {
     const value = (v: string) => `(${v})`;
-    const state = compileState({
+    const state = compileMooState({
       A: { match: /a/, value },
     });
     expect(state.nextMatch("a", 0)).toEqual({

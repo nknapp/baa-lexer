@@ -1,16 +1,19 @@
-import { LexerTypings } from "../types";
+import { LexerTypings, MooState } from "../types";
+import { splitRules } from "./splitRules";
+import { createMatcher } from "./createMatcher";
+import { CompiledState, Match } from "../internal-types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
-import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 
-export function ruleState<T extends LexerTypings>(
-  matcher: Matcher<T>,
-  fallback: CompiledRule<T> | null,
-  error: CompiledRule<T> | null
+export function compileMooState<T extends LexerTypings>(
+  state: MooState<T>
 ): CompiledState<T> {
+  const { error, match, fallback } = splitRules(state);
+  const matcher = createMatcher(match, fallback == null);
+
   let pendingMatch: Match<T> | null = null;
 
   function throwError(string: string, offset: number): never {
-    const expectedTokens = matcher.expectedTypes();
+    const expectedTokens = match.map(rule => rule.type)
     throw new InternalSyntaxError(expectedTokens, string[offset]);
   }
 
@@ -30,18 +33,13 @@ export function ruleState<T extends LexerTypings>(
           text: string.slice(offset),
         };
       }
-      if (match.offset > offset) {
-        if (fallback) {
-          pendingMatch = match;
-          return {
-            rule: fallback,
-            offset,
-            text: string.slice(offset, match.offset),
-          };
-        } else {
-          // This cannot happen, because if there is no fallback, the regex gets the "/y" flag
-          throw new Error("Unexpected error");
-        }
+      if (match.offset > offset && fallback) {
+        pendingMatch = match;
+        return {
+          rule: fallback,
+          offset,
+          text: string.slice(offset, match.offset),
+        };
       }
       return match;
     },

@@ -34,5 +34,4 @@ export type CompiledStateDict<T extends LexerTypings> = Record<
 
 export interface Matcher<T extends LexerTypings> {
   match(string: string, offset: number): Match<T> | null
-  expectedTypes(): TokenType<T>[];
 }
