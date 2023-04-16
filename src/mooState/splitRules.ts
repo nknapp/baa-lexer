@@ -1,5 +1,4 @@
 import { LexerTypings, MooState } from "../types";
-import { entries } from "../utils/entries";
 import { CompiledRule } from "../internal-types";
 import { compileRule } from "./compileRule";
 
@@ -31,3 +30,7 @@ export function splitRules<T extends LexerTypings>(
     fallback,
   };
 }
+
+const entries = Object.entries as <K extends string, V>(
+    object: Partial<Record<K, V>>
+) => [K, V][];

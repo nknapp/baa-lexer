@@ -3,7 +3,7 @@ import { TokenType } from "../types";
 import { CompiledRule, Match, Matcher } from "../internal-types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
 
-export function createCompiledMooStateFn<T extends LexerTypings>(
+export function createCompiledState<T extends LexerTypings>(
   types: TokenType<T>[],
   matcher: Matcher<T>,
   fallback: CompiledRule<T> | null,

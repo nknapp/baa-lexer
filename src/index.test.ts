@@ -3,20 +3,13 @@ import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
 import { runTwiceAndExpectTokens } from "./test-utils/expectToken";
-import { baaFn } from "./baaFn";
 
 function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
   return baa(states);
 }
 
-function createFnLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
-  return baaFn(states);
-}
 
-describe.each([
-  { name: "baa", createLexer },
-  { name: "baaFn", createLexer: createFnLexer },
-])("moo-like config $name", ({ createLexer }) => {
+describe("moo-like config $name", () => {
   it("parses an empty string", () => {
     const lexer = createLexer({
       main: {

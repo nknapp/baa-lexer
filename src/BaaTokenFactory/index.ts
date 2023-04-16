@@ -1,0 +1,1 @@
+export {BaaTokenFactory} from './BaaTokenFactory'

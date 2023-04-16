@@ -1,11 +1,11 @@
 import { LexerTypings } from "../types";
-import { createLocationTracker } from "./locationTrackerFn";
 import { Match, TokenFactory } from "../internal-types";
+import {LocationTracker} from "./LocationTracker";
 
-export class TokenFactoryImpl<T extends LexerTypings>
+export class BaaTokenFactory<T extends LexerTypings>
   implements TokenFactory<T>
 {
-  private _location = createLocationTracker();
+  private _location = new LocationTracker();
   currentLocation = this._location.current;
 
   createToken(match: Match<T>) {

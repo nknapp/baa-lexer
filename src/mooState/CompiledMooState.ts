@@ -2,7 +2,7 @@ import { LexerTypings, TokenType } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
 import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 
-export class RuleBasedCompiledState<T extends LexerTypings>
+export class CompiledMooState<T extends LexerTypings>
   implements CompiledState<T>
 {
   private readonly _types: TokenType<T>[];

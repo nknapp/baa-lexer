@@ -1,8 +1,9 @@
 import { Lexer, LexerTypings, MooStates, StateName } from "./types";
 import { mapValues } from "./utils/mapValues";
 import { CompiledState } from "./internal-types";
-import { compileMooStateFn } from "./mooState/compileMooState";
-import { BaaLexer } from "./Lexer/BaaLexer";
+import { compileMooState } from "./mooState";
+import { BaaLexer } from "./BaaLexer";
+import { BaaTokenFactory } from "./BaaTokenFactory";
 
 export type {
   MooStates,
@@ -18,7 +19,7 @@ export { withLookAhead } from "./utils/withLookAhead";
 export function baa<T extends LexerTypings>(mooStates: MooStates<T>): Lexer<T> {
   const states: Record<StateName<T>, CompiledState<T>> = mapValues(
     mooStates,
-    (state) => compileMooStateFn(state)
+    (state) => compileMooState(state)
   );
-  return new BaaLexer<T>(states);
+  return new BaaLexer<T>(states, () => new BaaTokenFactory());
 }
