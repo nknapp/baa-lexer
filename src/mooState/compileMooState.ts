@@ -1,21 +1,28 @@
-import { LexerTypings, MooState } from "../types";
+import { LexerTypings, MooState, TokenType } from "../types";
 import { splitRules } from "./splitRules";
 import { createMatcher } from "./createMatcher";
-import { CompiledState, Match } from "../internal-types";
+import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
+import {RuleBasedCompiledState} from "./RuleBasedCompiledState";
 
 export function compileMooState<T extends LexerTypings>(
-  state: MooState<T>
+    state: MooState<T>
 ): CompiledState<T> {
   const { error, match, fallback } = splitRules(state);
   const matcher = createMatcher(match, fallback == null);
+  const expectedTokens = Object.keys(state)
 
+ // return new RuleBasedCompiledState(expectedTokens, matcher, fallback, error)
+  return createCompiledMooStateFn(expectedTokens, matcher, fallback, error);
+}
+
+function createCompiledMooStateFn<T extends LexerTypings>(
+  types: TokenType<T>[],
+  matcher: Matcher<T>,
+  fallback: CompiledRule<T> | null,
+  error: CompiledRule<T> | null
+) {
   let pendingMatch: Match<T> | null = null;
-
-  function throwError(string: string, offset: number): never {
-    const expectedTokens = match.map(rule => rule.type)
-    throw new InternalSyntaxError(expectedTokens, string[offset]);
-  }
 
   return {
     nextMatch(string: string, offset: number): Match<T> {
@@ -26,7 +33,8 @@ export function compileMooState<T extends LexerTypings>(
       }
       const match = matcher.match(string, offset);
       if (match == null) {
-        const rule = fallback ?? error ?? throwError(string, offset);
+        const rule = fallback ?? error
+        if (rule == null) throw new InternalSyntaxError(types, string[offset]);
         return {
           rule,
           offset,
