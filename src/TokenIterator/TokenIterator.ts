@@ -8,60 +8,6 @@ const DONE = {
   value: undefined,
 } as const;
 
-export function createTokenIterator<T extends LexerTypings>(
-  states: CompiledStateDict<T>,
-  string: string,
-  tokenFactory: TokenFactory<T>
-): IterableIterator<Token<T>> & { nextToken(): Token<T> | null} {
-
-  let offset = 0;
-  const stateStack = createStateStack(states);
-
-
-  function nextMatchOrSyntaxError() {
-    try {
-      return stateStack.current.nextMatch(string, offset);
-    } catch (error) {
-      if (error instanceof InternalSyntaxError) {
-        throw new Error(syntaxError(error));
-      }
-      throw error;
-    }
-  }
-  function syntaxError(error: InternalSyntaxError) {
-    const { line, column } = tokenFactory.currentLocation;
-    const types = error.expectedTokenTypes
-        .map((type) => "`" + type + "`")
-        .join(", ");
-    return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
-  }
-
-
-  return {
-    [Symbol.iterator](): IterableIterator<Token<T>> {
-      return this;
-    },
-    next(): IteratorResult<Token<T>> {
-      const token = this.nextToken();
-      return token == null ? DONE : { done: false, value: token };
-    },
-    nextToken(): Token<T> | null {
-      if (offset >= string.length) {
-        return null;
-      }
-      const match = nextMatchOrSyntaxError();
-      offset += match.text.length;
-      const token = tokenFactory.createToken(match);
-
-      if (match.rule.push) stateStack.push(match.rule.push);
-      if (match.rule.pop) stateStack.pop();
-      if (match.rule.next) stateStack.next(match.rule.next);
-
-      return token;
-    }
-  }
-}
-
 export class TokenIterator<T extends LexerTypings>
   implements IterableIterator<Token<T>>
 {
