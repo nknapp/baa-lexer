@@ -4,7 +4,6 @@ import { compileMooState } from "./mooState";
 import { TokenFactoryImpl } from "./TokenFactory/TokenFactory";
 import {CompiledState, CompiledStateDict} from "./internal-types";
 import {TokenIterator} from "./TokenIterator";
-import {createTokenIterator} from "./TokenIterator/tokenIteratorFn";
 
 
 export type {
@@ -30,6 +29,6 @@ class BaaLexer<T extends LexerTypings> {
     this.#states = states
   }
   lex(string: string): IterableIterator<Token<T>> {
-    return createTokenIterator(this.#states, string, new TokenFactoryImpl());
+    return new TokenIterator(this.#states, string, new TokenFactoryImpl());
   }
 }
