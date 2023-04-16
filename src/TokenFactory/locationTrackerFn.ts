@@ -9,11 +9,7 @@ export function createLocationTracker() {
   };
 }
 
-function nextLocation(
-    current: Location,
-    token: string,
-    multiline: boolean
-) {
+function nextLocation(current: Location, token: string, multiline: boolean) {
   if (!multiline) {
     return singleLine(current, token);
   }

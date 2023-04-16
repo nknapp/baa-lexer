@@ -30,7 +30,8 @@ module.exports = {
         patterns: [
           {
             group: ["src/*", "baa-lexer"],
-            message: "Use relative import instead (except in test-related files",
+            message:
+              "Use relative import instead (except in test-related files",
           },
         ],
       },

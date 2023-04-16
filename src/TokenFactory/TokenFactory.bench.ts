@@ -1,6 +1,6 @@
 import { describe, bench } from "vitest";
 import { TokenFactoryImpl } from "./TokenFactory";
-import {createTokenFactory} from "./tokenFactoryFn";
+import { createTokenFactory } from "./tokenFactoryFn";
 
 const string = "abcdefg\n".repeat(1000);
 
@@ -18,13 +18,13 @@ describe("TokenFactory", () => {
   });
 
   bench("fn", () => {
-      const tokenFactory = createTokenFactory();
-      for (let i = 0; i < string.length; i += 5) {
-          tokenFactory.createToken({
-              rule: RULE,
-              offset: i,
-              text: string.slice(i, i + 5),
-          });
-      }
+    const tokenFactory = createTokenFactory();
+    for (let i = 0; i < string.length; i += 5) {
+      tokenFactory.createToken({
+        rule: RULE,
+        offset: i,
+        text: string.slice(i, i + 5),
+      });
+    }
   });
 });

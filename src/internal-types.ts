@@ -10,11 +10,11 @@ export type Transform = (original: string) => string;
 export interface CompiledRule<T extends LexerTypings> {
   type: TokenType<T>;
   match: string | RegExp | null;
-  push?: StateName<T>
+  push?: StateName<T>;
   pop?: 1;
   next?: StateName<T>;
   lineBreaks?: boolean;
-  value?: Transform
+  value?: Transform;
 }
 
 export interface Match<T extends LexerTypings> {
@@ -33,5 +33,5 @@ export type CompiledStateDict<T extends LexerTypings> = Record<
 >;
 
 export interface Matcher<T extends LexerTypings> {
-  match(string: string, offset: number): Match<T> | null
+  match(string: string, offset: number): Match<T> | null;
 }

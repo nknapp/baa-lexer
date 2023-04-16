@@ -16,11 +16,11 @@ export function splitRules<T extends LexerTypings>(
   let error: CompiledRule<T> | null = null;
 
   for (const [type, rule] of entries(state)) {
-    const compiledRule = compileRule(type, rule) ;
+    const compiledRule = compileRule(type, rule);
     if (Object.hasOwn(rule as object, "fallback")) {
-      fallback = compiledRule
+      fallback = compiledRule;
     } else if (Object.hasOwn(rule as object, "error")) {
-      error = compiledRule
+      error = compiledRule;
     } else {
       match.push(compiledRule);
     }

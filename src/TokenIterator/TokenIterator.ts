@@ -11,21 +11,21 @@ const DONE = {
 export class TokenIterator<T extends LexerTypings>
   implements IterableIterator<Token<T>>
 {
-  readonly #string: string;
-  readonly #states: StateStack<T>;
-  readonly #tokenFactory: TokenFactory<T>;
+  private readonly _string: string;
+  private readonly _states: StateStack<T>;
+  private readonly _tokenFactory: TokenFactory<T>;
 
-  #offset: number;
+  private _offset: number;
 
   constructor(
     states: CompiledStateDict<T>,
     string: string,
     tokenFactory: TokenFactory<T>
   ) {
-    this.#string = string;
-    this.#offset = 0;
-    this.#states = createStateStack(states);
-    this.#tokenFactory = tokenFactory;
+    this._string = string;
+    this._offset = 0;
+    this._states = createStateStack(states);
+    this._tokenFactory = tokenFactory;
   }
 
   [Symbol.iterator](): IterableIterator<Token<T>> {
@@ -38,32 +38,32 @@ export class TokenIterator<T extends LexerTypings>
   }
 
   nextToken(): Token<T> | null {
-    if (this.#offset >= this.#string.length) {
+    if (this._offset >= this._string.length) {
       return null;
     }
-    const match = this.#nextMatchOrSyntaxError();
-    this.#offset += match.text.length;
-    const token = this.#tokenFactory.createToken(match);
+    const match = this._nextMatchOrSyntaxError();
+    this._offset += match.text.length;
+    const token = this._tokenFactory.createToken(match);
 
-    if (match.rule.push) this.#states.push(match.rule.push);
-    if (match.rule.pop) this.#states.pop();
-    if (match.rule.next) this.#states.next(match.rule.next);
+    if (match.rule.push) this._states.push(match.rule.push);
+    if (match.rule.pop) this._states.pop();
+    if (match.rule.next) this._states.next(match.rule.next);
 
     return token;
   }
 
-  #nextMatchOrSyntaxError() {
+  private _nextMatchOrSyntaxError() {
     try {
-      return this.#states.current.nextMatch(this.#string, this.#offset);
+      return this._states.current.nextMatch(this._string, this._offset);
     } catch (error) {
       if (error instanceof InternalSyntaxError) {
-        throw new Error(this.#syntaxError(error));
+        throw new Error(this._syntaxError(error));
       }
       throw error;
     }
   }
-  #syntaxError(error: InternalSyntaxError) {
-    const { line, column } = this.#tokenFactory.currentLocation;
+  private _syntaxError(error: InternalSyntaxError) {
+    const { line, column } = this._tokenFactory.currentLocation;
     const types = error.expectedTokenTypes
       .map((type) => "`" + type + "`")
       .join(", ");

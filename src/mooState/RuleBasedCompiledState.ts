@@ -5,12 +5,12 @@ import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 export class RuleBasedCompiledState<T extends LexerTypings>
   implements CompiledState<T>
 {
-  readonly #types: TokenType<T>[];
-  readonly #matcher: Matcher<T>;
-  readonly #fallback: CompiledRule<T> | null = null;
-  readonly #error: CompiledRule<T> | null = null;
+  private readonly _types: TokenType<T>[];
+  private readonly _matcher: Matcher<T>;
+  private readonly _fallback: CompiledRule<T> | null = null;
+  private readonly _error: CompiledRule<T> | null = null;
 
-  #pendingMatch: Match<T> | null = null;
+  private _pendingMatch: Match<T> | null = null;
 
   constructor(
     types: TokenType<T>[],
@@ -18,23 +18,23 @@ export class RuleBasedCompiledState<T extends LexerTypings>
     fallback: CompiledRule<T> | null,
     error: CompiledRule<T> | null
   ) {
-    this.#types = types;
-    this.#matcher = matcher;
-    this.#fallback = fallback;
-    this.#error = error;
+    this._types = types;
+    this._matcher = matcher;
+    this._fallback = fallback;
+    this._error = error;
   }
 
   nextMatch(string: string, offset: number): Match<T> {
-    if (this.#pendingMatch != null) {
-      const match = this.#pendingMatch;
-      this.#pendingMatch = null;
+    if (this._pendingMatch != null) {
+      const match = this._pendingMatch;
+      this._pendingMatch = null;
       return match;
     }
-    const match = this.#matcher.match(string, offset);
+    const match = this._matcher.match(string, offset);
     if (match == null) {
-      const rule = this.#fallback ?? this.#error;
+      const rule = this._fallback ?? this._error;
       if (rule == null) {
-        throw new InternalSyntaxError(this.#types, string[offset]);
+        throw new InternalSyntaxError(this._types, string[offset]);
       }
       return {
         rule,
@@ -43,10 +43,10 @@ export class RuleBasedCompiledState<T extends LexerTypings>
       };
     }
     if (match.offset > offset) {
-      if (this.#fallback) {
-        this.#pendingMatch = match;
+      if (this._fallback) {
+        this._pendingMatch = match;
         return {
-          rule: this.#fallback,
+          rule: this._fallback,
           offset,
           text: string.slice(offset, match.offset),
         };

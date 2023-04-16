@@ -31,12 +31,12 @@ describe("LocationTracker", () => {
 
   it("handles single-line tokens correctly, even if 'multiline' is specified", () => {
     const locationTracker = createLocationTracker();
-    locationTracker.advance("abc", {multiline: true});
+    locationTracker.advance("abc", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 1,
       column: 3,
     });
-    locationTracker.advance("abc", {multiline: true});
+    locationTracker.advance("abc", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 1,
       column: 6,
@@ -45,7 +45,7 @@ describe("LocationTracker", () => {
 
   it("advances a single newline", () => {
     const locationTracker = createLocationTracker();
-    locationTracker.advance("\n", {multiline: true});
+    locationTracker.advance("\n", { multiline: true });
     expect(locationTracker.current).toEqual({
       line: 2,
       column: 0,
@@ -75,7 +75,6 @@ describe("LocationTracker", () => {
     });
   });
 
-
   it("'advance' returns the new location", () => {
     const locationTracker = createLocationTracker();
     locationTracker.advance("a\nbc", { multiline: true });
@@ -94,37 +93,35 @@ describe("LocationTracker", () => {
 
   describe("nextline", () => {
     it("return 1 for a single newline", () => {
-      expect(nextLine("\n",0)).toEqual(1)
-    })
+      expect(nextLine("\n", 0)).toEqual(1);
+    });
     it("jumps to the first char of the new line", () => {
-      expect(nextLine(" \n ",0)).toEqual(2)
-    })
+      expect(nextLine(" \n ", 0)).toEqual(2);
+    });
 
     it("jumps to the end of the string if no newline is there", () => {
-      expect(nextLine("ab",0)).toEqual(2)
-    })
+      expect(nextLine("ab", 0)).toEqual(2);
+    });
 
     it("starts searching a provided offset", () => {
-      expect(nextLine("012\n45\n78",4)).toEqual(7)
-    })
+      expect(nextLine("012\n45\n78", 4)).toEqual(7);
+    });
 
     it("can be used in for-next-loop for count lines and determine last newline", () => {
       let lines = 0;
-      const string = "012\n45\n78"
-      let lastNewline = 0
-      for (let i=0; i<string.length; i=nextLine(string, i)) {
+      const string = "012\n45\n78";
+      let lastNewline = 0;
+      for (let i = 0; i < string.length; i = nextLine(string, i)) {
         lines++;
-        lastNewline = i
+        lastNewline = i;
       }
-      expect(lines).toEqual(3)
-      expect(lastNewline).toEqual(7)
-    })
-
-  })
+      expect(lines).toEqual(3);
+      expect(lastNewline).toEqual(7);
+    });
+  });
 });
-
 
 function nextLine(string: string, offset: number): number {
   const nextNewline = string.indexOf("\n", offset);
-  return nextNewline < 0 ? string.length : nextNewline + 1
+  return nextNewline < 0 ? string.length : nextNewline + 1;
 }

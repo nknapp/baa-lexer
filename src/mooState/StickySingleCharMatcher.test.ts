@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import {createStickySingleCharMatcher, isSingleCharRule} from "./StickySingleCharMatcher";
+import {
+  createStickySingleCharMatcher,
+  isSingleCharRule,
+} from "./StickySingleCharMatcher";
 import { CompiledRule, Matcher } from "../internal-types";
 import { TestTypes } from "../../performance/types";
 import { compileRule } from "./compileRule";
@@ -11,9 +14,9 @@ const ruleSingleB = compileRule("B", "b");
 
 describe("SingleCharMatcher", () => {
   it("the create-function throws an exception if any rule does not apply ", () => {
-    expect(() => createStickySingleCharMatcher([ruleDoubleA, ruleSingleB])).toThrow(
-      new Error("All rules must be single chars")
-    );
+    expect(() =>
+      createStickySingleCharMatcher([ruleDoubleA, ruleSingleB])
+    ).toThrow(new Error("All rules must be single chars"));
   });
 
   it("return no match for an empty string", () => {
@@ -57,21 +60,20 @@ describe("SingleCharMatcher", () => {
     });
   });
 
-
   describe("isSingleCharRule", () => {
     it("returns true for rules that contain a single char", () => {
-      expect(isSingleCharRule(compileRule("A","a"))).toBe(true)
-      expect(isSingleCharRule(compileRule("B","c"))).toBe(true)
-    })
+      expect(isSingleCharRule(compileRule("A", "a"))).toBe(true);
+      expect(isSingleCharRule(compileRule("B", "c"))).toBe(true);
+    });
 
     it("returns false for rules that contain a multiple chars", () => {
-      expect(isSingleCharRule(compileRule("A","aa"))).toBe(false)
-    })
+      expect(isSingleCharRule(compileRule("A", "aa"))).toBe(false);
+    });
 
     it("returns false for rules that contain a Regexes", () => {
-      expect(isSingleCharRule(compileRule("A",/a/))).toBe(false)
-    })
-  })
+      expect(isSingleCharRule(compileRule("A", /a/))).toBe(false);
+    });
+  });
 });
 
 function requireStickySingleCharMatcher<T extends LexerTypings>(

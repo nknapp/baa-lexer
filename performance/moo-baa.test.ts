@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { allTests } from "./allTests";
-import { baa  } from "baa-lexer";
+import { baa } from "baa-lexer";
 import moo, { Rules as MooRules } from "moo";
 import { baaTokenToMooToken } from "./baaTokenToMooToken";
 

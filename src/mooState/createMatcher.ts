@@ -1,6 +1,9 @@
 import { LexerTypings } from "../types";
 import { CompiledRule, Matcher } from "../internal-types";
-import { createStickySingleCharMatcher, isSingleCharRule } from "./StickySingleCharMatcher";
+import {
+  createStickySingleCharMatcher,
+  isSingleCharRule,
+} from "./StickySingleCharMatcher";
 import { createRegexMatcher } from "./RegexMatcher";
 
 export function createMatcher<T extends LexerTypings>(

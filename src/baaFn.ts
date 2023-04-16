@@ -14,7 +14,9 @@ export type {
 } from "./types";
 
 export { withLookAhead } from "./utils/withLookAhead";
-export function baaFn<T extends LexerTypings>(mooStates: MooStates<T>): Lexer<T> {
+export function baaFn<T extends LexerTypings>(
+  mooStates: MooStates<T>
+): Lexer<T> {
   const states = mapValues(mooStates, (state) => compileMooState(state));
   return {
     lex(string: string): IterableIterator<Token<T>> {
