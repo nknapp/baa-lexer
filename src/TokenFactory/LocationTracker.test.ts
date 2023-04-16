@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createLocationTracker } from "./LocationTracker";
+import { createLocationTracker } from "./locationTrackerFn";
 
 describe("LocationTracker", () => {
   it("has an initial location of 1:0", () => {

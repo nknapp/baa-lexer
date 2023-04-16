@@ -1,6 +1,6 @@
 import { LexerTypings } from "../types";
-import { createLocationTracker } from "./LocationTracker";
 import { Match, TokenFactory } from "../internal-types";
+import { createLocationTracker } from "./locationTrackerFn";
 
 export function createTokenFactory<T extends LexerTypings>(): TokenFactory<T> {
   const location = createLocationTracker();

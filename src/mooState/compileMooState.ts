@@ -3,7 +3,6 @@ import { splitRules } from "./splitRules";
 import { createMatcher } from "./createMatcher";
 import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
-import {RuleBasedCompiledState} from "./RuleBasedCompiledState";
 
 export function compileMooState<T extends LexerTypings>(
     state: MooState<T>
