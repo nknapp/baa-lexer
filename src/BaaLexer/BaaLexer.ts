@@ -11,6 +11,6 @@ export class BaaLexer<T extends LexerTypings> {
     this._states = states;
   }
   lex(string: string): IterableIterator<BaaToken<T>> {
-    return new TokenIterator(this._states, string, this._createTokenFactory());
+    return new TokenIterator(this._states, string, this._createTokenFactory(),);
   }
 }

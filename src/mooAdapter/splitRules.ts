@@ -1,27 +1,26 @@
 import { LexerTypings, MooState } from "../types";
-import { BaaRule } from "../internal-types";
-import { compileRule } from "./compileRule";
+import { BaaMatchRule, BaaRule } from "../internal-types";
+import { convertMooRule } from "./convertMooRule";
 
 export interface SplitRulesReturn<T extends LexerTypings> {
-  match: BaaRule<T>[];
+  match: BaaMatchRule<T>[];
   error: BaaRule<T> | null;
   fallback: BaaRule<T> | null;
 }
 export function splitRules<T extends LexerTypings>(
   state: MooState<T>
 ): SplitRulesReturn<T> {
-  const match: BaaRule<T>[] = [];
+  const match: BaaMatchRule<T>[] = [];
   let fallback: BaaRule<T> | null = null;
   let error: BaaRule<T> | null = null;
 
   for (const [type, rule] of entries(state)) {
-    const compiledRule = compileRule(type, rule);
     if (Object.hasOwn(rule as object, "fallback")) {
-      fallback = compiledRule;
+      fallback = convertMooRule(type, rule);
     } else if (Object.hasOwn(rule as object, "error")) {
-      error = compiledRule;
+      error = convertMooRule(type, rule);
     } else {
-      match.push(compiledRule);
+      match.push(convertMooRule(type, rule) as BaaMatchRule<T>);
     }
   }
   return {
@@ -32,5 +31,5 @@ export function splitRules<T extends LexerTypings>(
 }
 
 const entries = Object.entries as <K extends string, V>(
-    object: Partial<Record<K, V>>
+  object: Partial<Record<K, V>>
 ) => [K, V][];

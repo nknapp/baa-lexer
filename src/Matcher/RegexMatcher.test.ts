@@ -1,17 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { createRegexMatcher } from "./RegexMatcher";
-import { compileRule } from "../mooState/compileRule";
+import { convertMooRule } from "../mooAdapter/convertMooRule";
+import {BaaMatchRule } from "../internal-types";
+import {LexerTypings} from "baa-lexer";
 
-const ruleRegexA = compileRule("A", /a/);
+const ruleRegexA = convertMooRule("A", /a/) as BaaMatchRule<LexerTypings>;
+
 describe("RegexMatcher", () => {
   it("an empty string does not match", () => {
+    if (ruleRegexA.match == null) throw new Error();
     const matcher = createRegexMatcher([ruleRegexA], false);
     expect(matcher.match("", 0)).toBeNull();
-  });
-
-  it("cannot be built with a fallback rule", () => {
-    expect(() =>
-      createRegexMatcher([compileRule("A", { fallback: true })], false)
-    ).toThrowError(new Error("All rules must have a 'match' property."));
   });
 });

@@ -1,5 +1,5 @@
 import { LexerTypings, TokenType } from "../types";
-import { InternalSyntaxError } from "../InternalSyntaxError";
+import { UnexpectedToken} from "../errors";
 import { BaaRule, StateProcessor, Match, Matcher } from "../internal-types";
 
 export class BaaStateProcessor<T extends LexerTypings>
@@ -34,7 +34,7 @@ export class BaaStateProcessor<T extends LexerTypings>
     if (match == null) {
       const rule = this._fallback ?? this._error;
       if (rule == null) {
-        throw new InternalSyntaxError(this._types, string[offset]);
+        throw new UnexpectedToken(this._types, string[offset]);
       }
       return {
         rule,

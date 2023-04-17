@@ -35,7 +35,7 @@ describe("splitRules", () => {
       A: { match: /a/ },
       B: { fallback: true },
     });
-    expect(result.fallback).toEqual({ type: "B", match: null });
+    expect(result.fallback).toEqual({ type: "B" });
     expect(result.match).toEqual([{ type: "A", match: /a/ }]);
   });
 
@@ -44,7 +44,7 @@ describe("splitRules", () => {
       A: { match: /a/ },
       B: { error: true },
     });
-    expect(result.error).toEqual({ type: "B", match: null });
+    expect(result.error).toEqual({ type: "B" });
     expect(result.match).toEqual([{ type: "A", match: /a/ }]);
   });
 });

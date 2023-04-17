@@ -3,17 +3,17 @@ export interface LexerTypings {
   tokenType: string;
 }
 
-export type Rule<T extends LexerTypings> =
-  | MatchRule<T>
-  | FallbackRule
-  | ErrorRule;
+export type MooRule<T extends LexerTypings> =
+  | MooMatchRule<T>
+  | MooFallbackRule
+  | MooErrorRule;
 
-export type MatchRule<T extends LexerTypings> =
-  | ObjectMatchRule<T>
+export type MooMatchRule<T extends LexerTypings> =
+  | MooObjectMatchRule<T>
   | RegExp
   | string;
 
-export interface ObjectMatchRule<T extends LexerTypings> {
+export interface MooObjectMatchRule<T extends LexerTypings> {
   match: RegExp | string;
   lineBreaks?: boolean;
   push?: StateName<T>;
@@ -22,18 +22,18 @@ export interface ObjectMatchRule<T extends LexerTypings> {
   value?: (original: string) => string;
 }
 
-export interface FallbackRule {
+export interface MooFallbackRule {
   fallback: true;
   lineBreaks?: boolean;
 }
 
-export interface ErrorRule {
+export interface MooErrorRule {
   error: true;
   lineBreaks?: boolean;
 }
 
 export type MooState<T extends LexerTypings> = {
-  [P in TokenType<T>]?: Rule<T>;
+  [P in TokenType<T>]?: MooRule<T>;
 };
 
 export type MooStates<T extends LexerTypings> = Record<

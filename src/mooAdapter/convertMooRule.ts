@@ -1,10 +1,10 @@
-import { LexerTypings, Rule, TokenType } from "../types";
+import { LexerTypings, MooRule, TokenType } from "../types";
 import { BaaRule } from "../internal-types";
 
-export function compileRule<T extends LexerTypings>(
+export function convertMooRule<T extends LexerTypings>(
   type: TokenType<T>,
-  rule: Rule<T>
-): BaaRule<T> {
+  rule: MooRule<T>
+) {
   if (rule instanceof RegExp || typeof rule === "string") {
     return {
       type,
@@ -24,6 +24,6 @@ export function compileRule<T extends LexerTypings>(
     next: r.next,
     lineBreaks: r.lineBreaks,
     value: r.value,
-    match: r.match ?? null,
+    match: r.match,
   };
 }

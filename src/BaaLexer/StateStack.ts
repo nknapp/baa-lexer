@@ -20,6 +20,7 @@ export function createStateStack<T extends LexerTypings>(
       stateStack[++currentIndex] = this.current;
     },
     pop() {
+      if (currentIndex === 0) throw new Error("Cannot pop empty state stack")
       this.current = stateStack[--currentIndex];
     },
     next(name: StateName<T>) {

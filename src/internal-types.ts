@@ -9,12 +9,16 @@ export type Transform = (original: string) => string;
 
 export interface BaaRule<T extends LexerTypings> {
   type: TokenType<T>;
-  match: string | RegExp | null;
+  match?: string | RegExp;
   push?: StateName<T>;
   pop?: 1;
   next?: StateName<T>;
   lineBreaks?: boolean;
   value?: Transform;
+}
+
+export interface BaaMatchRule<T extends LexerTypings> extends BaaRule<T>{
+  match: string | RegExp
 }
 
 export interface Match<T extends LexerTypings> {

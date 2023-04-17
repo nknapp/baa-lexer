@@ -1,5 +1,5 @@
-import { LexerTypings, BaaToken } from "../types";
-import { InternalSyntaxError } from "../InternalSyntaxError";
+import {LexerTypings, BaaToken, Location} from "../types";
+import { ParseError } from "../errors";
 import { createStateStack, StateStack } from "./StateStack";
 import { StateProcessorDict, TokenFactory } from "../internal-types";
 
@@ -20,7 +20,7 @@ export class TokenIterator<T extends LexerTypings>
   constructor(
     states: StateProcessorDict<T>,
     string: string,
-    tokenFactory: TokenFactory<T>
+    tokenFactory: TokenFactory<T>,
   ) {
     this._string = string;
     this._offset = 0;
@@ -41,32 +41,26 @@ export class TokenIterator<T extends LexerTypings>
     if (this._offset >= this._string.length) {
       return null;
     }
-    const match = this._nextMatchOrSyntaxError();
-    this._offset += match.text.length;
-    const token = this._tokenFactory.createToken(match);
-
-    if (match.rule.push) this._states.push(match.rule.push);
-    if (match.rule.pop) this._states.pop();
-    if (match.rule.next) this._states.next(match.rule.next);
-
-    return token;
-  }
-
-  private _nextMatchOrSyntaxError() {
     try {
-      return this._states.current.nextMatch(this._string, this._offset);
+      const match = this._states.current.nextMatch(this._string, this._offset);
+      this._offset += match.text.length;
+      const token = this._tokenFactory.createToken(match);
+
+      if (match.rule.push) this._states.push(match.rule.push);
+      if (match.rule.pop) this._states.pop();
+      if (match.rule.next) this._states.next(match.rule.next);
+      return token
     } catch (error) {
-      if (error instanceof InternalSyntaxError) {
-        throw new Error(this._syntaxError(error));
+      if (error instanceof ParseError) {
+        error.message = augmentErrorMessage(error.message, this._tokenFactory.currentLocation);
       }
-      throw error;
+      throw error
     }
   }
-  private _syntaxError(error: InternalSyntaxError) {
-    const { line, column } = this._tokenFactory.currentLocation;
-    const types = error.expectedTokenTypes
-      .map((type) => "`" + type + "`")
-      .join(", ");
-    return `Syntax error at ${line}:${column}, expected one of ${types} but got '${error.foundChar}'`;
-  }
+}
+
+function augmentErrorMessage(message: string, location: Location) : string {
+  const { line, column } = location
+  const newMessage = message[0].toLowerCase() + message.slice(1)
+  return `Syntax error at ${line}:${column}, ${newMessage}`
 }

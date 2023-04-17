@@ -5,12 +5,12 @@ import {
 } from "./StickySingleCharMatcher";
 import { BaaRule, Matcher } from "../internal-types";
 import { TestTypes } from "../../performance/types";
-import { compileRule } from "../mooState/compileRule";
+import { convertMooRule } from "../mooAdapter/convertMooRule";
 import { LexerTypings } from "baa-lexer";
 
-const ruleDoubleA = compileRule("AA", "aa");
-const ruleSingleA = compileRule("A", "a");
-const ruleSingleB = compileRule("B", "b");
+const ruleDoubleA = convertMooRule("AA", "aa");
+const ruleSingleA = convertMooRule("A", "a");
+const ruleSingleB = convertMooRule("B", "b");
 
 describe("SingleCharMatcher", () => {
   it("the create-function throws an exception if any rule does not apply ", () => {
@@ -62,16 +62,16 @@ describe("SingleCharMatcher", () => {
 
   describe("isSingleCharRule", () => {
     it("returns true for rules that contain a single char", () => {
-      expect(isSingleCharRule(compileRule("A", "a"))).toBe(true);
-      expect(isSingleCharRule(compileRule("B", "c"))).toBe(true);
+      expect(isSingleCharRule(convertMooRule("A", "a"))).toBe(true);
+      expect(isSingleCharRule(convertMooRule("B", "c"))).toBe(true);
     });
 
     it("returns false for rules that contain a multiple chars", () => {
-      expect(isSingleCharRule(compileRule("A", "aa"))).toBe(false);
+      expect(isSingleCharRule(convertMooRule("A", "aa"))).toBe(false);
     });
 
     it("returns false for rules that contain a Regexes", () => {
-      expect(isSingleCharRule(compileRule("A", /a/))).toBe(false);
+      expect(isSingleCharRule(convertMooRule("A", /a/))).toBe(false);
     });
   });
 });

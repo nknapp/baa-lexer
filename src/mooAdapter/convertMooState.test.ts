@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { compileMooState } from "./index";
+import { mooState } from "./index";
 import { LexerTypings, MooState } from "../types";
-import { InternalSyntaxError } from "../InternalSyntaxError";
+import {ParseError, UnexpectedToken} from "../errors";
 
 describe("compileState", function () {
   it("a state without fallback rule matches at the current offset", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/ },
     });
 
@@ -23,16 +23,16 @@ describe("compileState", function () {
       expectedTokenTypes: string[],
       foundChar: string
     ) {
-      const compiledState = compileMooState(state1);
+      const compiledState = mooState(state1);
       try {
         for (let i = 0; i < string.length; i++) {
           compiledState.nextMatch(string, i);
         }
         expect.fail("Should throw an exception");
       } catch (error) {
-        expect(error).toBeInstanceOf(InternalSyntaxError);
-        expect(error).toHaveProperty("expectedTokenTypes", expectedTokenTypes);
-        expect(error).toHaveProperty("foundChar", foundChar);
+        expect(error).toBeInstanceOf(UnexpectedToken);
+        expect(error).toHaveProperty("expected", expectedTokenTypes);
+        expect(error).toHaveProperty("found", foundChar);
       }
     }
 
@@ -68,7 +68,7 @@ describe("compileState", function () {
     });
 
     it("delivers error token", () => {
-      const state = compileMooState({
+      const state = mooState({
         A: { match: /a/ },
         ERROR: { error: true },
       });
@@ -81,7 +81,7 @@ describe("compileState", function () {
   });
 
   it("'push' property is part of the match", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/, push: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -92,7 +92,7 @@ describe("compileState", function () {
   });
 
   it("'pop' property is part of the match", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/, pop: 1 },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -103,7 +103,7 @@ describe("compileState", function () {
   });
 
   it("'next' property is part of the match", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/, next: "newState" },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -114,7 +114,7 @@ describe("compileState", function () {
   });
 
   it("'lineBreaks' property is part of the match for match-rules", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/, lineBreaks: true },
     });
     expect(state.nextMatch("a", 0)).toEqual({
@@ -125,7 +125,7 @@ describe("compileState", function () {
   });
 
   it("'lineBreaks' property is part of the match for fallback-rules", () => {
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/ },
       B: { fallback: true, lineBreaks: true },
     });
@@ -138,7 +138,7 @@ describe("compileState", function () {
 
   it("'value' property is part of the match", () => {
     const value = (v: string) => `(${v})`;
-    const state = compileMooState({
+    const state = mooState({
       A: { match: /a/, value },
     });
     expect(state.nextMatch("a", 0)).toEqual({

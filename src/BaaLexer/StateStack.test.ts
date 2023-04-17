@@ -69,4 +69,13 @@ describe("StateStack", function () {
     stack.pop();
     expect(stack.current).toEqual(compiledStateC);
   });
+
+  it('throws on popping empty stack', () => {
+    const stack = createStateStack({
+      main: compiledStateA,
+    });
+
+    expect(() => stack.pop()).toThrow("Cannot pop empty state stack")
+
+  })
 });

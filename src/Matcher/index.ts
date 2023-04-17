@@ -1,19 +1,19 @@
 import { LexerTypings } from "../types";
-import { BaaRule, Matcher } from "../internal-types";
+import {BaaMatchRule, Matcher} from "../internal-types";
 import {
   createStickySingleCharMatcher,
   isSingleCharRule,
 } from "./StickySingleCharMatcher";
 import { createRegexMatcher } from "./RegexMatcher";
 
-export function index<T extends LexerTypings>(
-  rules: BaaRule<T>[],
+export function createMatcher<T extends LexerTypings>(
+  rules: BaaMatchRule<T>[],
   sticky = false
 ): Matcher<T> {
   if (!sticky) return createRegexMatcher(rules, sticky);
 
-  const singleCharRules: BaaRule<T>[] = [];
-  const rest: BaaRule<T>[] = [];
+  const singleCharRules: BaaMatchRule<T>[] = [];
+  const rest: BaaMatchRule<T>[] = [];
 
   for (const rule of rules) {
     if (isSingleCharRule(rule)) {

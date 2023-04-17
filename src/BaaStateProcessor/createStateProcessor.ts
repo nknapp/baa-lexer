@@ -1,7 +1,7 @@
 import { LexerTypings } from "../types";
 import { TokenType } from "../types";
 import {BaaRule, Match, Matcher, StateProcessor} from "../internal-types";
-import { InternalSyntaxError } from "../InternalSyntaxError";
+import {ParseError, UnexpectedToken} from "../errors";
 
 export function createStateProcessor<T extends LexerTypings>(
   types: TokenType<T>[],
@@ -21,7 +21,7 @@ export function createStateProcessor<T extends LexerTypings>(
       const match = matcher.match(string, offset);
       if (match == null) {
         const rule = fallback ?? error;
-        if (rule == null) throw new InternalSyntaxError(types, string[offset]);
+        if (rule == null) throw new UnexpectedToken(types, string[offset]);
         return {
           rule,
           offset,
