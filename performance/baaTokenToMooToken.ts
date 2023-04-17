@@ -2,7 +2,9 @@ import { Lexer } from "moo";
 import { BaaToken } from "baa-lexer";
 import { TestTypes } from "./types";
 
-export function* baaTokenToMooToken(moo: Lexer): Generator<BaaToken<TestTypes>> {
+export function* baaTokenToMooToken(
+  moo: Lexer
+): Generator<BaaToken<TestTypes>> {
   const first = moo.next();
   if (first == null) return;
   let previous = first;

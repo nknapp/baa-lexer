@@ -1,13 +1,19 @@
-import { BaaToken, LexerTypings, Lexer, baa, withLookAhead } from "./index";
+import {
+  baa,
+  BaaToken,
+  Lexer,
+  LexerTypings,
+  MooStates,
+  ParseError,
+  withLookAhead,
+} from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
-import { MooStates } from "./index";
 import { runTwiceAndExpectTokens } from "./test-utils/expectToken";
 
 function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
   return baa(states);
 }
-
 
 describe("moo-like config $name", () => {
   it("parses an empty string", () => {
@@ -172,6 +178,24 @@ describe("moo-like config $name", () => {
       token("CLOSE", ")", ")", "1:3", "1:4"),
       token("A", "a", "a", "1:4", "1:5"),
     ]);
+  });
+
+  it("throws error when popping empty stack", () => {
+    const lexer = createLexer({
+      main: {
+        A: { match: /a/ },
+        B: { match: /b/, pop: 1 },
+      },
+    });
+    try {
+      for (const ignoredToken of lexer.lex("ab")) {
+        /* ignore token */
+      }
+      expect.fail("Expect exception to be thrown")
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as Error).message).toEqual("Syntax error at 1:1, cannot pop empty state stack")
+    }
   });
 
   it("changes state if a 'next' property is set.", () => {

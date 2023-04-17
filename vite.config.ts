@@ -9,13 +9,6 @@ export default defineConfig({
       formats: ["es", "umd"],
     },
     minify: "esbuild",
-    terserOptions: {
-      mangle: {
-        properties: {
-          regex: /^_/,
-        },
-      },
-    },
   },
   resolve: {
     alias: {

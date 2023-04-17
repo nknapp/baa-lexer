@@ -1,5 +1,5 @@
 import { LexerTypings } from "../types";
-import {BaaMatchRule, Match, Matcher} from "../internal-types";
+import { BaaMatchRule, Match, Matcher } from "../internal-types";
 
 export function createRegexMatcher<T extends LexerTypings>(
   rules: BaaMatchRule<T>[],

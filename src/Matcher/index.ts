@@ -1,5 +1,5 @@
 import { LexerTypings } from "../types";
-import {BaaMatchRule, Matcher} from "../internal-types";
+import { BaaMatchRule, Matcher } from "../internal-types";
 import {
   createStickySingleCharMatcher,
   isSingleCharRule,

@@ -1,4 +1,10 @@
-import { LexerTypings, Location, StateName, BaaToken, TokenType } from "./types";
+import {
+  LexerTypings,
+  Location,
+  StateName,
+  BaaToken,
+  TokenType,
+} from "./types";
 
 export interface TokenFactory<T extends LexerTypings> {
   createToken(match: Match<T>): BaaToken<T>;
@@ -17,8 +23,8 @@ export interface BaaRule<T extends LexerTypings> {
   value?: Transform;
 }
 
-export interface BaaMatchRule<T extends LexerTypings> extends BaaRule<T>{
-  match: string | RegExp
+export interface BaaMatchRule<T extends LexerTypings> extends BaaRule<T> {
+  match: string | RegExp;
 }
 
 export interface Match<T extends LexerTypings> {

@@ -17,8 +17,10 @@
     "build": "vite build && tsc -p ./tsconfig.build.json && size-limit",
     "perf": "vitest bench performance/moo-baa.bench.ts",
     "test": "concurrently --kill-others-on-fail npm:test:*",
+    "test:lint": "eslint .",
     "test:unit": "vitest --run",
     "test:types": "tsc --build",
+    "example:custom": "vite-node examples/custom",
     "dev": "concurrently -k npm:dev:*",
     "dev:unit": "vitest --ui",
     "dev:types": "tsc --watch",
@@ -46,6 +48,7 @@
     "moo": "^0.5.2",
     "prettier": "^2.8.7",
     "size-limit": "^8.2.4",
+    "terser": "^5.16.9",
     "typescript": "^5.0.3",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"

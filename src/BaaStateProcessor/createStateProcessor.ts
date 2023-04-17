@@ -1,7 +1,7 @@
 import { LexerTypings } from "../types";
 import { TokenType } from "../types";
-import {BaaRule, Match, Matcher, StateProcessor} from "../internal-types";
-import {ParseError, UnexpectedToken} from "../errors";
+import { BaaRule, Match, Matcher, StateProcessor } from "../internal-types";
+import { UnexpectedToken } from "../errors";
 
 export function createStateProcessor<T extends LexerTypings>(
   types: TokenType<T>[],

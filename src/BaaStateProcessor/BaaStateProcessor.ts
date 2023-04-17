@@ -1,5 +1,5 @@
 import { LexerTypings, TokenType } from "../types";
-import { UnexpectedToken} from "../errors";
+import { UnexpectedToken } from "../errors";
 import { BaaRule, StateProcessor, Match, Matcher } from "../internal-types";
 
 export class BaaStateProcessor<T extends LexerTypings>

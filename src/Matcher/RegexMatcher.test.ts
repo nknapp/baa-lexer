@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createRegexMatcher } from "./RegexMatcher";
 import { convertMooRule } from "../mooAdapter/convertMooRule";
-import {BaaMatchRule } from "../internal-types";
-import {LexerTypings} from "baa-lexer";
+import { BaaMatchRule } from "../internal-types";
+import { LexerTypings } from "baa-lexer";
 
 const ruleRegexA = convertMooRule("A", /a/) as BaaMatchRule<LexerTypings>;
 

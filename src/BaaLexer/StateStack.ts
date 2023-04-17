@@ -1,5 +1,6 @@
 import { StateProcessor, StateProcessorDict } from "../internal-types";
 import { LexerTypings, StateName } from "../types";
+import { ParseError } from "../errors";
 
 export interface StateStack<T extends LexerTypings> {
   current: StateProcessor<T>;
@@ -20,7 +21,8 @@ export function createStateStack<T extends LexerTypings>(
       stateStack[++currentIndex] = this.current;
     },
     pop() {
-      if (currentIndex === 0) throw new Error("Cannot pop empty state stack")
+      if (currentIndex === 0)
+        throw new ParseError("Cannot pop empty state stack");
       this.current = stateStack[--currentIndex];
     },
     next(name: StateName<T>) {

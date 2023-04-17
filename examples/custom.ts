@@ -4,12 +4,11 @@ import {
   createStateProcessor,
   createTokenFactory,
   Match,
-  Matcher,
 } from "../src";
 import { mooState } from "../src/mooAdapter";
 
 type MyLexerTypings = {
-  tokenType: "A" | "B" | "OPEN" | "CLOSE";
+  tokenType: "A" | "B" | "FALLBACK" | "OPEN" | "CLOSE";
   stateName: "braces";
 };
 
@@ -22,45 +21,48 @@ const A = {
   type: "A",
 } satisfies BaaRule<MyLexerTypings>;
 
-class CustomMatcher implements Matcher<MyLexerTypings> {
-  match(string: string, offset: number): Match<MyLexerTypings> | null {
-    switch (string.charCodeAt(offset)) {
-      case 40:
-        return {
-          rule: OPEN,
-          text: "(",
-          offset,
-        };
-      case 97:
-        return {
-          rule: A,
-          text: "a",
-          offset,
-        };
-    }
-    return null;
-  }
-}
+const customRegex = /[(a]/g;
+const customMatcher = createStateProcessor<MyLexerTypings>(
+    ["A", "OPEN"],
+    {
+      match(string: string, offset: number): Match<MyLexerTypings> | null {
+        customRegex.lastIndex = offset
+        const match = customRegex.exec(string)
+        if (match == null || match.index == null) return null
+      switch (string.charCodeAt(match.index)) {
+          case 40:
+            return {
+              rule: OPEN,
+              text: "(",
+              offset: match.index,
+            };
+          case 97:
+            return {
+              rule: A,
+              text: "a",
+              offset: match.index,
+            };
+        }
+        return null;
+      }
+    },
+    { type: 'FALLBACK', lineBreaks: true },
+    null
+);
 
 const lexer = createLexer<MyLexerTypings>(
   {
-    main: createStateProcessor<MyLexerTypings>(
-      ["A", "OPEN"],
-      new CustomMatcher(),
-      null,
-      null
-    ),
+    main: customMatcher,
     braces: mooState({
       B: "b",
       CLOSE: {
         match: ")",
-        pop: 1,
+        next: "main"
       },
     }),
   },
   createTokenFactory
 );
 
-
 // eslint-disable-next-line no-console
-console.log([...lexer.lex("a(b)a")])
+console.log([...lexer.lex("a  (b)a")]);

@@ -14,7 +14,7 @@ export type {
   MooState,
 } from "./types";
 
-export { ParseError, UnexpectedToken} from './errors'
+export { ParseError, UnexpectedToken } from "./errors";
 
 export { createTokenFactory } from "./BaaTokenFactory";
 export { createMatcher } from "./Matcher";

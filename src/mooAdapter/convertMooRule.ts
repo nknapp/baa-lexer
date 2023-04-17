@@ -4,7 +4,7 @@ import { BaaRule } from "../internal-types";
 export function convertMooRule<T extends LexerTypings>(
   type: TokenType<T>,
   rule: MooRule<T>
-) {
+): BaaRule<T> {
   if (rule instanceof RegExp || typeof rule === "string") {
     return {
       type,

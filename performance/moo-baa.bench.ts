@@ -6,7 +6,6 @@ import { allTests } from "./allTests";
 import { baaTokenToMooToken } from "./baaTokenToMooToken";
 
 describe.each(allTests)("moo-baa test: $name ($index)", ({ rules, text }) => {
-
   const baaClassLexer = mooBaa(rules);
   bench("baa", () => {
     for (const ignoredToken of baaClassLexer.lex(text)) {
