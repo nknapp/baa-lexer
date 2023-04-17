@@ -1,3 +1,9 @@
+## [0.2.2](https://github.com/nknapp/baa-lexer/compare/v0.2.1...v0.2.2) (2023-04-17)
+
+### Bug Fixes
+
+- fix concurrency issues with fallback token ([cdecedd](https://github.com/nknapp/baa-lexer/commit/cdecedd2e674dfb7e9c3741194465463cbbb37a6))
+
 ## [0.2.1](https://github.com/nknapp/baa-lexer/compare/v0.2.0...v0.2.1) (2023-04-17)
 
 ### Bug Fixes
