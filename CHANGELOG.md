@@ -3,3 +3,8 @@
 ### Bug Fixes
 
 - release fixup and add changelog ([bf7ad3f](https://github.com/nknapp/baa-lexer/commit/bf7ad3f21051da560fb42ce9a1b5adeb3e33a8ec))
+
+### Previous releases
+
+- Initial release
+- CI Setup
