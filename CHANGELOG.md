@@ -1,3 +1,9 @@
+# [0.2.0](https://github.com/nknapp/baa-lexer/compare/v0.1.4...v0.2.0) (2023-04-17)
+
+### Features
+
+- export internal-types as well ([27311b9](https://github.com/nknapp/baa-lexer/commit/27311b9247dd1c20c4a75877b3c818c470b2de5d))
+
 ## [0.1.4](https://github.com/nknapp/baa-lexer/compare/v0.1.3...v0.1.4) (2023-04-17)
 
 ### Bug Fixes
