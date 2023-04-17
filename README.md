@@ -68,8 +68,9 @@ interface Typings {
 
 and pass it as generic to the `baa` function, you will get auto-completion for
 types within the configuration as well as for the "type" field in the created tokens.
+The following screenshot highlights all places that are type-checked and auto-completed.
 
-![](./img/baa-type-autocomplete.gif)
+![](./img/baa-type-autocomplete.png)
 
 ## Benchmarks
 

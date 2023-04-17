@@ -1,22 +1,21 @@
-import {baa} from "baa-lexer";
+import { baa } from "baa-lexer";
 
 interface Typings {
-    tokenType: "A" | "B",
-    stateName: "main" | "other"
+  tokenType: "OPEN" | "CLOSE";
+  stateName: "main" | "other";
 }
 
 const lexer = baa<Typings>({
-    main: {
-        A: { match: "a", push: "other" }
-    },
-    other: {
-        B: { match: "b", pop: 1 }
-    }
-})
-
+  main: {
+    OPEN: { match: "(", push: "other" },
+  },
+  other: {
+    CLOSE: { match: ")", pop: 1 },
+  },
+});
 
 for (const token of lexer.lex("abc")) {
-    switch (token.type) {
-      case "A":
-    }
+  switch (token.type) {
+    case "OPEN":
+  }
 }
