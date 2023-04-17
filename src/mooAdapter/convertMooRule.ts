@@ -1,5 +1,4 @@
-import { LexerTypings, MooRule, TokenType } from "../types";
-import { BaaRule } from "../internal-types";
+import { LexerTypings, MooRule, TokenType, BaaRule } from "../types";
 
 export function convertMooRule<T extends LexerTypings>(
   type: TokenType<T>,

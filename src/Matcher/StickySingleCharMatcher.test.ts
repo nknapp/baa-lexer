@@ -3,7 +3,7 @@ import {
   createStickySingleCharMatcher,
   isSingleCharRule,
 } from "./StickySingleCharMatcher";
-import { BaaRule, Matcher } from "../internal-types";
+import { BaaRule, Matcher } from "../types";
 import { TestTypes } from "../../performance/types";
 import { convertMooRule } from "../mooAdapter/convertMooRule";
 import { LexerTypings } from "baa-lexer";

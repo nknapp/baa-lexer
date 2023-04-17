@@ -1,6 +1,10 @@
-import { Lexer, LexerTypings } from "../types";
+import {
+  Lexer,
+  LexerTypings,
+  StateProcessorDict,
+  TokenFactory,
+} from "../types";
 import { BaaLexer } from "./BaaLexer";
-import { StateProcessorDict, TokenFactory } from "../internal-types";
 
 export { BaaLexer } from "./BaaLexer";
 

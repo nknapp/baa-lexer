@@ -1,5 +1,9 @@
-import { StateProcessor, StateProcessorDict } from "../internal-types";
-import { LexerTypings, StateName } from "../types";
+import {
+  StateProcessor,
+  StateProcessorDict,
+  LexerTypings,
+  StateName,
+} from "../types";
 import { ParseError } from "../errors";
 
 export interface StateStack<T extends LexerTypings> {

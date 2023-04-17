@@ -39,7 +39,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["scripts/**/*","examples/**/*"],
+      files: ["scripts/**/*", "examples/**/*"],
       rules: { "no-console": "off", "no-restricted-imports": "off" },
       env: { node: true },
     },

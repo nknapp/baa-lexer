@@ -1,5 +1,5 @@
 import { LexerTypings } from "../types";
-import { BaaRule, Match, Matcher } from "../internal-types";
+import { BaaRule, Match, Matcher } from "../types";
 
 interface StringMatchingRule<T extends LexerTypings> extends BaaRule<T> {
   match: string;

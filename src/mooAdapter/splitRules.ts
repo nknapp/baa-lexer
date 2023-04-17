@@ -1,5 +1,4 @@
-import { LexerTypings, MooState } from "../types";
-import { BaaMatchRule, BaaRule } from "../internal-types";
+import { BaaMatchRule, BaaRule, LexerTypings, MooState } from "../types";
 import { convertMooRule } from "./convertMooRule";
 
 export interface SplitRulesReturn<T extends LexerTypings> {

@@ -1,9 +1,11 @@
-import { LexerTypings, StateName, BaaToken } from "../types";
 import {
+  LexerTypings,
+  StateName,
+  BaaToken,
   StateProcessor,
   StateProcessorDict,
   TokenFactory,
-} from "../internal-types";
+} from "../types";
 import { TokenIterator } from "./TokenIterator";
 
 export class BaaLexer<T extends LexerTypings> {

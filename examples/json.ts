@@ -2,7 +2,19 @@ import { baa, LexerTypings } from "baa-lexer";
 
 interface Typings extends LexerTypings {
   stateName: "main";
-  tokenType: "{" | "}" | "[" | "]" | "," | ":" | "space" | "NUMBER" | "STRING" | "TRUE" | "FALSE" | "NULL";
+  tokenType:
+    | "{"
+    | "}"
+    | "["
+    | "]"
+    | ","
+    | ":"
+    | "space"
+    | "NUMBER"
+    | "STRING"
+    | "TRUE"
+    | "FALSE"
+    | "NULL";
 }
 
 const lexer = baa<Typings>({
@@ -23,7 +35,7 @@ const lexer = baa<Typings>({
 });
 
 for (const token of lexer.lex('{ "abc": "x" }')) {
-    switch (token.type) {
-      case "FALSE":
-    }
+  switch (token.type) {
+    case "FALSE":
+  }
 }

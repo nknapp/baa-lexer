@@ -191,10 +191,12 @@ describe("moo-like config", () => {
       for (const ignoredToken of lexer.lex("ab")) {
         /* ignore token */
       }
-      expect.fail("Expect exception to be thrown")
+      expect.fail("Expect exception to be thrown");
     } catch (error) {
-      expect(error).toBeInstanceOf(ParseError)
-      expect((error as Error).message).toEqual("Syntax error at 1:1, cannot pop empty state stack")
+      expect(error).toBeInstanceOf(ParseError);
+      expect((error as Error).message).toEqual(
+        "Syntax error at 1:1, cannot pop empty state stack"
+      );
     }
   });
 

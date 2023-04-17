@@ -1,7 +1,6 @@
-import { LexerTypings, MooState } from "../types";
+import { LexerTypings, MooState, StateProcessor } from "../types";
 import { splitRules } from "./splitRules";
 import { createMatcher } from "../Matcher";
-import { StateProcessor } from "../internal-types";
 import { createStateProcessor } from "../BaaStateProcessor";
 
 export function mooState<T extends LexerTypings>(

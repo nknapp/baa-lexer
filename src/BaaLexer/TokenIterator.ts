@@ -1,7 +1,12 @@
-import { LexerTypings, BaaToken, Location } from "../types";
+import {
+  LexerTypings,
+  BaaToken,
+  Location,
+  StateProcessorDict,
+  TokenFactory,
+} from "../types";
 import { ParseError } from "../errors";
 import { createStateStack, StateStack } from "./StateStack";
-import { StateProcessorDict, TokenFactory } from "../internal-types";
 
 const DONE = {
   done: true,

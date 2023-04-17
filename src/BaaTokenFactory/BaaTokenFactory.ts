@@ -1,5 +1,4 @@
-import { LexerTypings } from "../types";
-import { Match, TokenFactory } from "../internal-types";
+import { LexerTypings, Match, TokenFactory } from "../types";
 import { LocationTracker } from "./LocationTracker";
 
 export class BaaTokenFactory<T extends LexerTypings>

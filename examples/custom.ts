@@ -23,31 +23,31 @@ const A = {
 
 const customRegex = /[(a]/g;
 const customMatcher = createStateProcessor<MyLexerTypings>(
-    ["A", "OPEN"],
-    {
-      match(string: string, offset: number): Match<MyLexerTypings> | null {
-        customRegex.lastIndex = offset
-        const match = customRegex.exec(string)
-        if (match == null || match.index == null) return null
+  ["A", "OPEN"],
+  {
+    match(string: string, offset: number): Match<MyLexerTypings> | null {
+      customRegex.lastIndex = offset;
+      const match = customRegex.exec(string);
+      if (match == null || match.index == null) return null;
       switch (string.charCodeAt(match.index)) {
-          case 40:
-            return {
-              rule: OPEN,
-              text: "(",
-              offset: match.index,
-            };
-          case 97:
-            return {
-              rule: A,
-              text: "a",
-              offset: match.index,
-            };
-        }
-        return null;
+        case 40:
+          return {
+            rule: OPEN,
+            text: "(",
+            offset: match.index,
+          };
+        case 97:
+          return {
+            rule: A,
+            text: "a",
+            offset: match.index,
+          };
       }
+      return null;
     },
-    { type: 'FALLBACK', lineBreaks: true },
-    null
+  },
+  { type: "FALLBACK", lineBreaks: true },
+  null
 );
 
 const lexer = createLexer<MyLexerTypings>(
@@ -57,7 +57,7 @@ const lexer = createLexer<MyLexerTypings>(
       B: "b",
       CLOSE: {
         match: ")",
-        next: "main"
+        next: "main",
       },
     }),
   },
