@@ -13,7 +13,7 @@
   },
   "type": "module",
   "files": [
-    "dist/"
+    "dist"
   ],
   "repository": "github:nknapp/baa-lexer",
   "homepage": "https://github.com/nknapp/baa-lexer",
@@ -39,7 +39,9 @@
     "---- examples ---": "",
     "example:custom": "vite-node examples/custom",
     "example:simple": "vite-node examples/simple",
-    "example:json": "vite-node examples/json"
+    "example:json": "vite-node examples/json",
+    "---- npm workflow ----": "",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@size-limit/file": "^8.2.4",
