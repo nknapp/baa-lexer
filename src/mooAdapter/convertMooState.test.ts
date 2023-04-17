@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mooState } from "./index";
 import { LexerTypings, MooState } from "../types";
-import {ParseError, UnexpectedToken} from "../errors";
+import { UnexpectedToken } from "../errors";
 
 describe("compileState", function () {
   it("a state without fallback rule matches at the current offset", () => {
