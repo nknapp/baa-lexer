@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/nknapp/baa-lexer/compare/v0.2.0...v0.2.1) (2023-04-17)
+
+### Bug Fixes
+
+- remove non-concurrent fields from StateProcessor ([ca19ca7](https://github.com/nknapp/baa-lexer/commit/ca19ca78def23f02a9f569795d0a9fe53ca4d178))
+
 # [0.2.0](https://github.com/nknapp/baa-lexer/compare/v0.1.4...v0.2.0) (2023-04-17)
 
 ### Features
