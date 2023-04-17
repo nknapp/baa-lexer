@@ -4,7 +4,7 @@ import { index } from "../Matcher";
 import { StateProcessor } from "../internal-types";
 import { createStateProcessor } from "../BaaStateProcessor";
 
-export function compileMooState<T extends LexerTypings>(
+export function mooState<T extends LexerTypings>(
   state: MooState<T>
 ): StateProcessor<T> {
   const { error, match, fallback } = splitRules(state);
