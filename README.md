@@ -27,7 +27,6 @@ architecture a bit. In the end, I tried to optimize speed and build size. I don'
 lot of difference whether you use `moo` or `baa`. `moo` is more popular and may be better supported in the long run.
 I will use `baa` in [handlebars-ng](https.//handlebars-ng.knappi.org) though._
 
-
 ## Usage
 
 The [examples/](examples) show you how to use `baa`. One of the simple examples is this:
@@ -115,26 +114,22 @@ and it took me a long while to understand all the optimizations they implemented
 
 It tried to take modular approach. Basically the whole program is divided into
 
-- The Lexer: Responsible for creating an IterableIterator of tokens which then manages state transitions. 
+- The Lexer: Responsible for creating an IterableIterator of tokens which then manages state transitions.
   Uses the TokenFactory to create the actual tokens.
 - The Matcher: Finds the next token match. There are different strategies
   - RegexMatcher: Creates a large regex to find the next match
-  - StickySingleCharMatcher: Uses an array to map char-codes to rules. Can only find single-char tokens, 
+  - StickySingleCharMatcher: Uses an array to map char-codes to rules. Can only find single-char tokens,
     but this can be done much faster than with Regex.
-- The StateProcessor: Uses the Matcher to find the next match, interleaves matches for fallback 
+- The StateProcessor: Uses the Matcher to find the next match, interleaves matches for fallback
   and error rules.
 - The TokenFactory: Keeps track of the current location and creates tokens from matches.
 - The `mooAdapter` takes a `moo`-config and combines all those components so that they do what they should.
 
 ## Advances usage
 
-You do not have to use the `mooAdapter` though: Most the internal components are exposed, so 
+You do not have to use the `mooAdapter` though: Most the internal components are exposed, so
 you can use them yourself. You can create a `StateProcess` and pass your own `Matcher` instance
 to it. You can create a completely new `StateProcessor` with completely custom logic.
 
-The program could also be extended to allow a custom `TokenFactory`, applying the token format that 
+The program could also be extended to allow a custom `TokenFactory`, applying the token format that
 you need (but I won't do this unless somebody needs it).
-
-
-
-
