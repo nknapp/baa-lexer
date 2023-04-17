@@ -1,8 +1,8 @@
 import { LexerTypings } from "../types";
-import { CompiledRule, Match, Matcher } from "../internal-types";
+import { BaaRule, Match, Matcher } from "../internal-types";
 
 export function createRegexMatcher<T extends LexerTypings>(
-  rules: CompiledRule<T>[],
+  rules: BaaRule<T>[],
   sticky: boolean
 ): Matcher<T> {
   const groups = rules.map(toRegexCaptureGroup);
@@ -28,7 +28,7 @@ export function createRegexMatcher<T extends LexerTypings>(
   };
 }
 
-function toRegexCaptureGroup(rule: CompiledRule<LexerTypings>): string {
+function toRegexCaptureGroup(rule: BaaRule<LexerTypings>): string {
   if (rule.match == null) {
     throw new Error("All rules must have a 'match' property.");
   }

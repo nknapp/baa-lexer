@@ -1,4 +1,4 @@
-import { Token, LexerTypings, Lexer, baa, withLookAhead } from "./index";
+import { BaaToken, LexerTypings, Lexer, baa, withLookAhead } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { MooStates } from "./index";
@@ -442,7 +442,7 @@ describe("moo-like config $name", () => {
 });
 
 type LocationSpec = `${number}:${number}`;
-type TestToken = Token<{ tokenType: string; stateName: string }>;
+type TestToken = BaaToken<{ tokenType: string; stateName: string }>;
 
 function token(
   type: string,

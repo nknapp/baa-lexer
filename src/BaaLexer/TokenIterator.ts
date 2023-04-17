@@ -1,7 +1,7 @@
-import { LexerTypings, Token } from "../types";
+import { LexerTypings, BaaToken } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
 import { createStateStack, StateStack } from "./StateStack";
-import { CompiledStateDict, TokenFactory } from "../internal-types";
+import { StateProcessorDict, TokenFactory } from "../internal-types";
 
 const DONE = {
   done: true,
@@ -9,7 +9,7 @@ const DONE = {
 } as const;
 
 export class TokenIterator<T extends LexerTypings>
-  implements IterableIterator<Token<T>>
+  implements IterableIterator<BaaToken<T>>
 {
   private readonly _string: string;
   private readonly _states: StateStack<T>;
@@ -18,7 +18,7 @@ export class TokenIterator<T extends LexerTypings>
   private _offset: number;
 
   constructor(
-    states: CompiledStateDict<T>,
+    states: StateProcessorDict<T>,
     string: string,
     tokenFactory: TokenFactory<T>
   ) {
@@ -28,16 +28,16 @@ export class TokenIterator<T extends LexerTypings>
     this._tokenFactory = tokenFactory;
   }
 
-  [Symbol.iterator](): IterableIterator<Token<T>> {
+  [Symbol.iterator](): IterableIterator<BaaToken<T>> {
     return this;
   }
 
-  next(): IteratorResult<Token<T>> {
+  next(): IteratorResult<BaaToken<T>> {
     const token = this.nextToken();
     return token == null ? DONE : { done: false, value: token };
   }
 
-  nextToken(): Token<T> | null {
+  nextToken(): BaaToken<T> | null {
     if (this._offset >= this._string.length) {
       return null;
     }

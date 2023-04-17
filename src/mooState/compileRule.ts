@@ -1,10 +1,10 @@
 import { LexerTypings, Rule, TokenType } from "../types";
-import { CompiledRule } from "../internal-types";
+import { BaaRule } from "../internal-types";
 
 export function compileRule<T extends LexerTypings>(
   type: TokenType<T>,
   rule: Rule<T>
-): CompiledRule<T> {
+): BaaRule<T> {
   if (rule instanceof RegExp || typeof rule === "string") {
     return {
       type,
@@ -16,7 +16,7 @@ export function compileRule<T extends LexerTypings>(
       match: rule,
     };
   }
-  const r = rule as Partial<Omit<CompiledRule<T>, "type">>;
+  const r = rule as Partial<Omit<BaaRule<T>, "type">>;
   return {
     type,
     pop: r.pop,

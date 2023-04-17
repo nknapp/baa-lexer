@@ -1,4 +1,4 @@
-import { Lexer, LexerTypings, Token } from "baa-lexer";
+import { Lexer, LexerTypings, BaaToken } from "baa-lexer";
 import { expect } from "vitest";
 import { parseLocation } from "./parseLocation";
 
@@ -20,7 +20,7 @@ export function runTwiceAndExpectTokens<T extends LexerTypings>(
 }
 
 type LocationSpec = `${number}:${number}`;
-type TestToken = Token<{ tokenType: string; stateName: string }>;
+type TestToken = BaaToken<{ tokenType: string; stateName: string }>;
 
 export function token(
   type: string,

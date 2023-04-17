@@ -1,22 +1,22 @@
 import { LexerTypings, TokenType } from "../types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
-import { CompiledRule, CompiledState, Match, Matcher } from "../internal-types";
+import { BaaRule, StateProcessor, Match, Matcher } from "../internal-types";
 
-export class CompiledMooState<T extends LexerTypings>
-  implements CompiledState<T>
+export class BaaStateProcessor<T extends LexerTypings>
+  implements StateProcessor<T>
 {
   private readonly _types: TokenType<T>[];
   private readonly _matcher: Matcher<T>;
-  private readonly _fallback: CompiledRule<T> | null = null;
-  private readonly _error: CompiledRule<T> | null = null;
+  private readonly _fallback: BaaRule<T> | null = null;
+  private readonly _error: BaaRule<T> | null = null;
 
   private _pendingMatch: Match<T> | null = null;
 
   constructor(
     types: TokenType<T>[],
     matcher: Matcher<T>,
-    fallback: CompiledRule<T> | null,
-    error: CompiledRule<T> | null
+    fallback: BaaRule<T> | null,
+    error: BaaRule<T> | null
   ) {
     this._types = types;
     this._matcher = matcher;

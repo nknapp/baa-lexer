@@ -1,18 +1,18 @@
 import { LexerTypings, MooState } from "../types";
-import { CompiledRule } from "../internal-types";
+import { BaaRule } from "../internal-types";
 import { compileRule } from "./compileRule";
 
 export interface SplitRulesReturn<T extends LexerTypings> {
-  match: CompiledRule<T>[];
-  error: CompiledRule<T> | null;
-  fallback: CompiledRule<T> | null;
+  match: BaaRule<T>[];
+  error: BaaRule<T> | null;
+  fallback: BaaRule<T> | null;
 }
 export function splitRules<T extends LexerTypings>(
   state: MooState<T>
 ): SplitRulesReturn<T> {
-  const match: CompiledRule<T>[] = [];
-  let fallback: CompiledRule<T> | null = null;
-  let error: CompiledRule<T> | null = null;
+  const match: BaaRule<T>[] = [];
+  let fallback: BaaRule<T> | null = null;
+  let error: BaaRule<T> | null = null;
 
   for (const [type, rule] of entries(state)) {
     const compiledRule = compileRule(type, rule);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createRegexMatcher } from "./RegexMatcher";
-import { compileRule } from "./compileRule";
+import { compileRule } from "../mooState/compileRule";
 
 const ruleRegexA = compileRule("A", /a/);
 describe("RegexMatcher", () => {

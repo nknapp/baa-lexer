@@ -1,7 +1,7 @@
 import { LexerTypings } from "baa-lexer";
-import { CompiledState, Match } from "../internal-types";
+import { StateProcessor, Match } from "../internal-types";
 
-export class DummyCompiledState implements CompiledState<LexerTypings> {
+export class DummyStateProcessor implements StateProcessor<LexerTypings> {
   name: string;
 
   constructor(name: string) {

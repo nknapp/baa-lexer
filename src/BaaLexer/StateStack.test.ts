@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { createStateStack } from "./StateStack";
-import { DummyCompiledState } from "../test-utils/DummyCompiledState";
+import { DummyStateProcessor } from "../test-utils/DummyStateProcessor";
 
-const compiledStateA = new DummyCompiledState("A");
-const compiledStateB = new DummyCompiledState("B");
-const compiledStateC = new DummyCompiledState("C");
+const compiledStateA = new DummyStateProcessor("A");
+const compiledStateB = new DummyStateProcessor("B");
+const compiledStateC = new DummyStateProcessor("C");
 
 describe("StateStack", function () {
   it("initially contains the main state", () => {

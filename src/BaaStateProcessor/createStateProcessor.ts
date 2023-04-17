@@ -1,14 +1,14 @@
 import { LexerTypings } from "../types";
 import { TokenType } from "../types";
-import { CompiledRule, Match, Matcher } from "../internal-types";
+import {BaaRule, Match, Matcher, StateProcessor} from "../internal-types";
 import { InternalSyntaxError } from "../InternalSyntaxError";
 
-export function createCompiledState<T extends LexerTypings>(
+export function createStateProcessor<T extends LexerTypings>(
   types: TokenType<T>[],
   matcher: Matcher<T>,
-  fallback: CompiledRule<T> | null,
-  error: CompiledRule<T> | null
-) {
+  fallback: BaaRule<T> | null,
+  error: BaaRule<T> | null
+): StateProcessor<T> {
   let pendingMatch: Match<T> | null = null;
 
   return {

@@ -1,12 +1,12 @@
 import { LexerTypings } from "../types";
-import { CompiledRule, Match, Matcher } from "../internal-types";
+import { BaaRule, Match, Matcher } from "../internal-types";
 
-interface StringMatchingRule<T extends LexerTypings> extends CompiledRule<T> {
+interface StringMatchingRule<T extends LexerTypings> extends BaaRule<T> {
   match: string;
 }
 
 export function createStickySingleCharMatcher<T extends LexerTypings>(
-  rules: CompiledRule<T>[]
+  rules: BaaRule<T>[]
 ): Matcher<T> {
   if (!everyRuleIsSingleChar(rules)) {
     throw new Error("All rules must be single chars");
@@ -31,13 +31,13 @@ export function createStickySingleCharMatcher<T extends LexerTypings>(
 }
 
 export function isSingleCharRule<T extends LexerTypings>(
-  rule: CompiledRule<T>
+  rule: BaaRule<T>
 ): rule is StringMatchingRule<T> {
   return typeof rule.match === "string" && rule.match.length === 1;
 }
 
 function everyRuleIsSingleChar<T extends LexerTypings>(
-  rules: CompiledRule<T>[]
+  rules: BaaRule<T>[]
 ): rules is StringMatchingRule<T>[] {
   return rules.every((rule) => isSingleCharRule(rule));
 }

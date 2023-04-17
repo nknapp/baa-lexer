@@ -1,17 +1,17 @@
-import { CompiledState, CompiledStateDict } from "../internal-types";
+import { StateProcessor, StateProcessorDict } from "../internal-types";
 import { LexerTypings, StateName } from "../types";
 
 export interface StateStack<T extends LexerTypings> {
-  current: CompiledState<T>;
+  current: StateProcessor<T>;
   push(name: StateName<T>): void;
   next(name: StateName<T>): void;
   pop(): void;
 }
 
 export function createStateStack<T extends LexerTypings>(
-  states: CompiledStateDict<T>
+  states: StateProcessorDict<T>
 ) {
-  const stateStack: CompiledState<T>[] = [states.main];
+  const stateStack: StateProcessor<T>[] = [states.main];
   let currentIndex = 0;
   const result: StateStack<T> = {
     current: states.main,

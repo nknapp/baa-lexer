@@ -44,7 +44,7 @@ export type MooStates<T extends LexerTypings> = Record<
 export type StateName<T extends LexerTypings> = T["stateName"] | "main";
 export type TokenType<T extends LexerTypings> = T["tokenType"];
 
-export interface Token<T extends LexerTypings> {
+export interface BaaToken<T extends LexerTypings> {
   type: TokenType<T>;
   original: string;
   value: string;
@@ -58,5 +58,5 @@ export interface Location {
 }
 
 export interface Lexer<T extends LexerTypings> {
-  lex(string: string): IterableIterator<Token<T>>;
+  lex(string: string): IterableIterator<BaaToken<T>>;
 }

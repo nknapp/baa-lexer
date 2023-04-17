@@ -1,13 +1,13 @@
-import { LexerTypings, Location, StateName, Token, TokenType } from "./types";
+import { LexerTypings, Location, StateName, BaaToken, TokenType } from "./types";
 
 export interface TokenFactory<T extends LexerTypings> {
-  createToken(match: Match<T>): Token<T>;
+  createToken(match: Match<T>): BaaToken<T>;
   currentLocation: Location;
 }
 
 export type Transform = (original: string) => string;
 
-export interface CompiledRule<T extends LexerTypings> {
+export interface BaaRule<T extends LexerTypings> {
   type: TokenType<T>;
   match: string | RegExp | null;
   push?: StateName<T>;
@@ -18,18 +18,18 @@ export interface CompiledRule<T extends LexerTypings> {
 }
 
 export interface Match<T extends LexerTypings> {
-  rule: CompiledRule<T>;
+  rule: BaaRule<T>;
   text: string;
   offset: number;
 }
 
-export interface CompiledState<T extends LexerTypings> {
+export interface StateProcessor<T extends LexerTypings> {
   nextMatch(string: string, offset: number): Match<T>;
 }
 
-export type CompiledStateDict<T extends LexerTypings> = Record<
+export type StateProcessorDict<T extends LexerTypings> = Record<
   StateName<T>,
-  CompiledState<T>
+  StateProcessor<T>
 >;
 
 export interface Matcher<T extends LexerTypings> {
