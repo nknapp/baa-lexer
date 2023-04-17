@@ -1,6 +1,6 @@
 ![](img/baa-sheep-lemmling.svg)
 
-[Image by lemmling](https://openclipart.org/artist/lemmling)
+[Original image by lemmling on OpenClipArt.org](https://openclipart.org/detail/17637/cartoon-sheep)
 
 # Baa!
 
