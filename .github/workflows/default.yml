@@ -9,7 +9,7 @@ jobs:
         with:
           node-version: 18
       - run: yarn
-      - run: test-ci
+      - run: yarn test-ci
       - name: Release
         if: github.ref == 'refs/heads/main'
         env:
