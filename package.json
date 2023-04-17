@@ -1,6 +1,6 @@
 {
   "name": "baa-lexer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/baa-lexer.umd.cjs",
   "module": "dist/baa-lexer.js",
   "types": "dist/index.d.ts",
@@ -52,6 +52,7 @@
     "moo": "^0.5.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.7",
+    "semantic-release": "^21.0.1",
     "size-limit": "^8.2.4",
     "terser": "^5.16.9",
     "typescript": "^5.0.3",
