@@ -31,7 +31,7 @@ module.exports = {
           {
             group: ["src/*", "baa-lexer"],
             message:
-              "Use relative import instead (except in test-related files",
+              "Use relative import instead (except in test-related files)",
           },
         ],
       },
@@ -39,7 +39,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["scripts/**/*"],
+      files: ["scripts/**/*","examples/**/*"],
       rules: { "no-console": "off", "no-restricted-imports": "off" },
       env: { node: true },
     },

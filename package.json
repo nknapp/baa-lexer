@@ -21,6 +21,8 @@
     "test:unit": "vitest --run",
     "test:types": "tsc --build",
     "example:custom": "vite-node examples/custom",
+    "example:simple": "vite-node examples/simple",
+    "example:json": "vite-node examples/json",
     "dev": "concurrently -k npm:dev:*",
     "dev:unit": "vitest --ui",
     "dev:types": "tsc --watch",
@@ -59,7 +61,7 @@
   },
   "size-limit": [
     {
-      "limit": "35 kB",
+      "limit": "2.2 kB",
       "path": "dist/baa-lexer*.js"
     }
   ]

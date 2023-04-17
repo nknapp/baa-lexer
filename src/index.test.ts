@@ -15,7 +15,7 @@ function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
   return baa(states);
 }
 
-describe("moo-like config $name", () => {
+describe("moo-like config", () => {
   it("parses an empty string", () => {
     const lexer = createLexer({
       main: {
