@@ -54,6 +54,8 @@ This will result in the following tokens:
 { type: 'B', original: 'b', value: 'b', start: { line: 1, column: 2 }, end: { line: 1, column: 3 } }
 ```
 
+For a complete list of rules, have a look at [the tests](./src/index.test.ts)
+
 ## Using types
 
 If you create a type
