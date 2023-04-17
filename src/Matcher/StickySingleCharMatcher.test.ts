@@ -4,7 +4,6 @@ import {
   isSingleCharRule,
 } from "./StickySingleCharMatcher";
 import { BaaRule, Matcher } from "../types";
-import { TestTypes } from "../../performance/types";
 import { convertMooRule } from "../mooAdapter/convertMooRule";
 import { LexerTypings } from "baa-lexer";
 
@@ -44,7 +43,7 @@ describe("SingleCharMatcher", () => {
   });
 
   it("returns a match for any valid string rule", () => {
-    const matcher: Matcher<TestTypes> = requireStickySingleCharMatcher([
+    const matcher: Matcher<LexerTypings> = requireStickySingleCharMatcher([
       ruleSingleA,
       ruleSingleB,
     ]);
@@ -78,7 +77,7 @@ describe("SingleCharMatcher", () => {
 
 function requireStickySingleCharMatcher<T extends LexerTypings>(
   rules: BaaRule<T>[]
-): Matcher<TestTypes> {
+): Matcher<LexerTypings> {
   const matcher = createStickySingleCharMatcher(rules);
   if (matcher == null) throw new Error("Expected matcher to be created");
   return matcher;

@@ -1,11 +1,6 @@
-import { MooStates } from "baa-lexer";
-
-export interface TestTypes {
-  stateName: string;
-  tokenType: string;
-}
+import { LexerTypings, MooStates } from "baa-lexer";
 
 export interface PerformanceTest {
-  rules: MooStates<TestTypes>;
+  rules: MooStates<LexerTypings>;
   texts: string[];
 }
