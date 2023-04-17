@@ -12,6 +12,11 @@
     }
   },
   "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "repository": "github:nknapp/baa-lexer",
+  "homepage": "https://github.com/nknapp/baa-lexer",
   "license": "MIT",
   "scripts": {
     "build": "vite build && tsc -p ./tsconfig.build.json",
