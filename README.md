@@ -1,5 +1,7 @@
 ![](img/baa-sheep-lemmling.svg)
 
+[Image by lemmling](https://openclipart.org/artist/lemmling)
+
 # Baa!
 
 Baa is a highly-optimised tokenizer/lexer written in TypeScript. It is inspired by [moo](https://github.com/no-context/moo)
