@@ -310,17 +310,71 @@ describe("moo-like config", () => {
       main: {
         A: { match: /a/ },
         B: { match: /b/ },
+        C: { match: /c/ },
       },
     });
 
-    const tokens1 = lexer.lex("ab");
-    const tokens2 = lexer.lex("ba");
+    const tokens1 = lexer.lex("abc");
+    const tokens2 = lexer.lex("cba");
 
     expect(tokens1.next().value).toEqual(token("A", "a", "a", "1:0", "1:1"));
-    expect(tokens2.next().value).toEqual(token("B", "b", "b", "1:0", "1:1"));
+    expect(tokens2.next().value).toEqual(token("C", "c", "c", "1:0", "1:1"));
 
     expect(tokens1.next().value).toEqual(token("B", "b", "b", "1:1", "1:2"));
-    expect(tokens2.next().value).toEqual(token("A", "a", "a", "1:1", "1:2"));
+    expect(tokens2.next().value).toEqual(token("B", "b", "b", "1:1", "1:2"));
+
+    expect(tokens1.next().value).toEqual(token("C", "c", "c", "1:2", "1:3"));
+    expect(tokens2.next().value).toEqual(token("A", "a", "a", "1:2", "1:3"));
+  });
+
+  it("allows concurrent parsing in multiple states", () => {
+    const lexer = createLexer({
+      main: {
+        A: /a/,
+        C: /c/,
+        OPEN: { match: /\(/, push: "braces" },
+      },
+      braces: {
+        B: /b/,
+        CLOSE: { match: /\)/, pop: 1 },
+      },
+    });
+
+    const tokens1 = lexer.lex("(b)");
+    const tokens2 = lexer.lex("c");
+
+    expect(tokens1.next().value).toEqual(token("OPEN", "(", "(", "1:0", "1:1"));
+    expect(tokens2.next().value).toEqual(token("C", "c", "c", "1:0", "1:1"));
+
+    expect(tokens1.next().value).toEqual(token("B", "b", "b", "1:1", "1:2"));
+    expect(tokens2.next().done).toBe(true);
+
+    expect(tokens1.next().value).toEqual(
+      token("CLOSE", ")", ")", "1:2", "1:3")
+    );
+
+    expect(tokens1.next().done).toBe(true);
+  });
+
+  it("allows concurrent parsing with fallback tokens", () => {
+    const lexer = createLexer({
+      main: {
+        A: /a/,
+        C: /c/,
+        FALLBACK: { fallback: true },
+      },
+    });
+
+    const tokens1 = lexer.lex(" a");
+    const tokens2 = lexer.lex("c");
+
+    expect(tokens1.next().value.type).toEqual("FALLBACK");
+    expect(tokens2.next().value.type).toEqual("C");
+
+    expect(tokens1.next().value.type).toEqual("A");
+    expect(tokens2.next().done).toBe(true);
+
+    expect(tokens1.next().done).toBe(true);
   });
 
   it("identifies line-breaks in the fallback rule", () => {
