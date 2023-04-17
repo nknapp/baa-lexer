@@ -1,26 +1,42 @@
 {
   "name": "baa-lexer",
   "version": "0.0.1",
-  "main": "dist/index.js",
+  "main": "dist/baa-lexer.umd.cjs",
+  "module": "dist/baa-lexer.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/baa-lexer.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/baa-lexer.umd.cjs"
+    }
+  },
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "vite build && tsc -p ./tsconfig.build.json",
-    "perf": "vite-node scripts/performance-test.ts",
+    "build": "vite build && tsc -p ./tsconfig.build.json && size-limit",
+    "perf": "vitest bench performance/moo-baa.bench.ts",
     "test": "concurrently --kill-others-on-fail npm:test:*",
+    "test:lint": "eslint .",
     "test:unit": "vitest --run",
     "test:types": "tsc --build",
+    "example:custom": "vite-node examples/custom",
+    "example:simple": "vite-node examples/simple",
+    "example:json": "vite-node examples/json",
     "dev": "concurrently -k npm:dev:*",
     "dev:unit": "vitest --ui",
     "dev:types": "tsc --watch",
     "dev:build": "vite build --watch",
     "test-and-build": "yarn test && yarn build",
     "clean": "rm dist dist-node -rf",
+    "test-perf-build": "yarn test && yarn perf --run && yarn build",
     "---- chores ----": "",
+    "format": "prettier -w .",
     "prepare": "husky install",
     "deps": "yarn upgrade-interactive"
   },
   "devDependencies": {
+    "@size-limit/file": "^8.2.4",
     "@types/moo": "^0.5.5",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
@@ -33,14 +49,20 @@
     "lint-staged": "^13.2.0",
     "moo": "^0.5.2",
     "prettier": "^2.8.7",
+    "size-limit": "^8.2.4",
+    "terser": "^5.16.9",
     "typescript": "^5.0.3",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"
-
   },
-
   "lint-staged": {
     "*.{js,ts,tsx,mjs,cjs}": "eslint --fix",
     "*.{js,ts,css,mdx,md,yaml,astro,mjs,cjs,json}": "prettier --write"
-  }
+  },
+  "size-limit": [
+    {
+      "limit": "2.2 kB",
+      "path": "dist/baa-lexer*.js"
+    }
+  ]
 }
