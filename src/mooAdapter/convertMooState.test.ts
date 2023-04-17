@@ -3,13 +3,17 @@ import { mooState } from "./index";
 import { LexerTypings, MooState } from "../types";
 import { UnexpectedToken } from "../errors";
 
+function baaContext() {
+  return { pendingMatch: null };
+}
+
 describe("compileState", function () {
   it("a state without fallback rule matches at the current offset", () => {
     const state = mooState({
       A: { match: /a/ },
     });
 
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       offset: 0,
       rule: expect.objectContaining({ type: "A" }),
       text: "a",
@@ -26,7 +30,7 @@ describe("compileState", function () {
       const compiledState = mooState(state1);
       try {
         for (let i = 0; i < string.length; i++) {
-          compiledState.nextMatch(string, i);
+          compiledState.nextMatch(string, i, baaContext());
         }
         expect.fail("Should throw an exception");
       } catch (error) {
@@ -72,7 +76,7 @@ describe("compileState", function () {
         A: { match: /a/ },
         ERROR: { error: true },
       });
-      expect(state.nextMatch("ba", 0)).toEqual({
+      expect(state.nextMatch("ba", 0, baaContext())).toEqual({
         rule: expect.objectContaining({ type: "ERROR" }),
         text: "ba",
         offset: 0,
@@ -84,7 +88,7 @@ describe("compileState", function () {
     const state = mooState({
       A: { match: /a/, push: "newState" },
     });
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "A", push: "newState" }),
       text: "a",
       offset: 0,
@@ -95,7 +99,7 @@ describe("compileState", function () {
     const state = mooState({
       A: { match: /a/, pop: 1 },
     });
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "A", pop: 1 }),
       text: "a",
       offset: 0,
@@ -106,7 +110,7 @@ describe("compileState", function () {
     const state = mooState({
       A: { match: /a/, next: "newState" },
     });
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "A", next: "newState" }),
       text: "a",
       offset: 0,
@@ -117,7 +121,7 @@ describe("compileState", function () {
     const state = mooState({
       A: { match: /a/, lineBreaks: true },
     });
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "A", lineBreaks: true }),
       text: "a",
       offset: 0,
@@ -129,7 +133,7 @@ describe("compileState", function () {
       A: { match: /a/ },
       B: { fallback: true, lineBreaks: true },
     });
-    expect(state.nextMatch("b", 0)).toEqual({
+    expect(state.nextMatch("b", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "B", lineBreaks: true }),
       text: "b",
       offset: 0,
@@ -141,7 +145,7 @@ describe("compileState", function () {
     const state = mooState({
       A: { match: /a/, value },
     });
-    expect(state.nextMatch("a", 0)).toEqual({
+    expect(state.nextMatch("a", 0, baaContext())).toEqual({
       rule: expect.objectContaining({ type: "A", value }),
       text: "a",
       offset: 0,

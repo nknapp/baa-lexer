@@ -4,6 +4,7 @@ import {
   Location,
   StateProcessorDict,
   TokenFactory,
+  BaaContext,
 } from "../types";
 import { ParseError } from "../errors";
 import { createStateStack, StateStack } from "./StateStack";
@@ -19,6 +20,7 @@ export class TokenIterator<T extends LexerTypings>
   private readonly _string: string;
   private readonly _states: StateStack<T>;
   private readonly _tokenFactory: TokenFactory<T>;
+  private readonly _context: BaaContext<T>;
 
   private _offset: number;
 
@@ -31,6 +33,7 @@ export class TokenIterator<T extends LexerTypings>
     this._offset = 0;
     this._states = createStateStack(states);
     this._tokenFactory = tokenFactory;
+    this._context = { pendingMatch: null };
   }
 
   [Symbol.iterator](): IterableIterator<BaaToken<T>> {
@@ -48,7 +51,11 @@ export class TokenIterator<T extends LexerTypings>
     }
     const location = this._tokenFactory.currentLocation;
     try {
-      const match = this._states.current.nextMatch(this._string, this._offset);
+      const match = this._states.current.nextMatch(
+        this._string,
+        this._offset,
+        this._context
+      );
       this._offset += match.text.length;
 
       const token = this._tokenFactory.createToken(match);

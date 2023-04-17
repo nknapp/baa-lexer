@@ -88,8 +88,11 @@ export interface Match<T extends LexerTypings> {
   offset: number;
 }
 
+export interface BaaContext<T extends LexerTypings> {
+  pendingMatch: Match<T> | null;
+}
 export interface StateProcessor<T extends LexerTypings> {
-  nextMatch(string: string, offset: number): Match<T>;
+  nextMatch(string: string, offset: number, context: BaaContext<T>): Match<T>;
 }
 
 export type StateProcessorDict<T extends LexerTypings> = Record<

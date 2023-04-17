@@ -5,6 +5,7 @@ import {
   StateProcessor,
   Match,
   Matcher,
+  BaaContext,
 } from "../types";
 import { UnexpectedToken } from "../errors";
 
@@ -15,8 +16,6 @@ export class BaaStateProcessor<T extends LexerTypings>
   private readonly _matcher: Matcher<T>;
   private readonly _fallback: BaaRule<T> | null = null;
   private readonly _error: BaaRule<T> | null = null;
-
-  private _pendingMatch: Match<T> | null = null;
 
   constructor(
     types: TokenType<T>[],
@@ -30,10 +29,10 @@ export class BaaStateProcessor<T extends LexerTypings>
     this._error = error;
   }
 
-  nextMatch(string: string, offset: number): Match<T> {
-    if (this._pendingMatch != null) {
-      const match = this._pendingMatch;
-      this._pendingMatch = null;
+  nextMatch(string: string, offset: number, context: BaaContext<T>): Match<T> {
+    if (context.pendingMatch != null) {
+      const match = context.pendingMatch;
+      context.pendingMatch = null;
       return match;
     }
     const match = this._matcher.match(string, offset);
@@ -50,7 +49,7 @@ export class BaaStateProcessor<T extends LexerTypings>
     }
     if (match.offset > offset) {
       if (this._fallback) {
-        this._pendingMatch = match;
+        context.pendingMatch = match;
         return {
           rule: this._fallback,
           offset,
