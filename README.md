@@ -80,7 +80,7 @@ See [performance/](./performance) for the exact tests and run then yourself with
 yarn perf
 ```
 
-These are the results, but be aware that results may very strongly:
+These are the results, but be aware that results may vary a lot:
 
 ```
  BENCH  Summary
