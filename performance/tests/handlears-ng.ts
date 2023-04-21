@@ -115,5 +115,6 @@ export default {
       "{{a5}}" +
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n"
     ).repeat(1),
+    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr\n " + "{{a1}}",
   ],
 } satisfies PerformanceTest;
