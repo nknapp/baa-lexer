@@ -10,6 +10,7 @@ Baa is a highly-optimised tokenizer/lexer written in TypeScript. It is inspired 
 It accepts most of moo's configurations, but lacks some features.
 
 - No support for arrays of [keywords](https://github.com/no-context/moo#keywords).
+- No support for rules that are arrays of rule definitions.
 - No support for regular expressions with unicode flag
 - Less dynamic checks (e.g. silently drops all provided regex flags)
 
