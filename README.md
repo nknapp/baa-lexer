@@ -28,11 +28,21 @@ architecture a bit. In the end, I tried to optimize speed and build size. I don'
 lot of difference whether you use `moo` or `baa`. `moo` is more popular and may be better supported in the long run.
 I will use `baa` in [handlebars-ng](https://handlebars-ng.knappi.org) though._
 
+## Installation
+
+Install the baa-lexer with
+
+```
+npm install baa-lexer
+```
+
 ## Usage
 
 The [examples/](examples) show you how to use `baa`. One of the simple examples is this:
 
 ```ts
+import { baa } from "baa-lexer";
+
 const lexer = baa({
   main: {
     A: "a",
@@ -46,7 +56,7 @@ for (const token of lexer.lex("a b")) {
 }
 ```
 
-This will result in the following tokens:
+This will print in the following tokens:
 
 ```
 { type: 'A',  original: 'a', value: 'a', start: { line: 1, column: 0 }, end: { line: 1, column: 1 } }
