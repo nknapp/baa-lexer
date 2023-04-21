@@ -1,3 +1,9 @@
+## [0.2.3](https://github.com/nknapp/baa-lexer/compare/v0.2.2...v0.2.3) (2023-04-21)
+
+### Bug Fixes
+
+- fix example in README ([c676e57](https://github.com/nknapp/baa-lexer/commit/c676e57a746ad6c9b55c4fe805925b21830479e6))
+
 ## [0.2.2](https://github.com/nknapp/baa-lexer/compare/v0.2.1...v0.2.2) (2023-04-17)
 
 ### Bug Fixes
