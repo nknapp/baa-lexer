@@ -26,7 +26,7 @@ Advantages:
 _Note: This was mostly an exercise for me to practice test-driven development and think about
 architecture a bit. In the end, I tried to optimize speed and build size. I don't think it makes a
 lot of difference whether you use `moo` or `baa`. `moo` is more popular and may be better supported in the long run.
-I will use `baa` in [handlebars-ng](https.//handlebars-ng.knappi.org) though._
+I will use `baa` in [handlebars-ng](https://handlebars-ng.knappi.org) though._
 
 ## Usage
 
