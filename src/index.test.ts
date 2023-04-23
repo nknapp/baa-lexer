@@ -1,23 +1,19 @@
 import {
   baa,
   BaaToken,
-  Lexer,
-  LexerTypings,
-  MooStates,
   ParseError,
   withLookAhead,
+  createLexer,
+  mooState,
+  createTokenFactory,
 } from "./index";
 import { parseLocation } from "./test-utils/parseLocation";
 import { describe, expect, it } from "vitest";
 import { runTwiceAndExpectTokens } from "./test-utils/expectToken";
 
-function createLexer<T extends LexerTypings>(states: MooStates<T>): Lexer<T> {
-  return baa(states);
-}
-
 describe("moo-like config", () => {
   it("parses an empty string", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -31,7 +27,7 @@ describe("moo-like config", () => {
   });
 
   it("parses simple tokens", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -50,7 +46,7 @@ describe("moo-like config", () => {
   });
 
   it("allows fallback tokens", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -68,7 +64,7 @@ describe("moo-like config", () => {
   });
 
   it("allows a string, that only consists of fallback", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -84,7 +80,7 @@ describe("moo-like config", () => {
   });
 
   it("allows a string, that ends with fallback", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -101,7 +97,7 @@ describe("moo-like config", () => {
   });
 
   it("identifies boundary of fallback token surrounded by multi-char tokens", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /aa/,
@@ -119,7 +115,7 @@ describe("moo-like config", () => {
   });
 
   it("throws an error if no token matches", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /aa/,
@@ -137,7 +133,7 @@ describe("moo-like config", () => {
   });
 
   it("returns an error token containing the rest of the string, if one is configured and nothing matches", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /aa/,
@@ -154,7 +150,7 @@ describe("moo-like config", () => {
   });
 
   it("changes state if a 'push' or 'pop' property is set.", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         OPEN: {
@@ -181,7 +177,7 @@ describe("moo-like config", () => {
   });
 
   it("throws error when popping empty stack", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         B: { match: /b/, pop: 1 },
@@ -201,7 +197,7 @@ describe("moo-like config", () => {
   });
 
   it("changes state if a 'next' property is set.", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         OPEN: {
@@ -228,7 +224,7 @@ describe("moo-like config", () => {
   });
 
   it("'pop' at the end of the string", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         OPEN: {
@@ -254,7 +250,7 @@ describe("moo-like config", () => {
   });
 
   it("pops state correcty when a fallback rule occurs after state-change", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { fallback: true },
         OPEN: {
@@ -281,7 +277,7 @@ describe("moo-like config", () => {
   });
 
   it("resets state when lexer is used again", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { fallback: true },
         OPEN: {
@@ -306,7 +302,7 @@ describe("moo-like config", () => {
   });
 
   it("allows concurrent parsing", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         B: { match: /b/ },
@@ -328,7 +324,7 @@ describe("moo-like config", () => {
   });
 
   it("allows concurrent parsing in multiple states", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: /a/,
         C: /c/,
@@ -357,7 +353,7 @@ describe("moo-like config", () => {
   });
 
   it("allows concurrent parsing with fallback tokens", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: /a/,
         C: /c/,
@@ -378,7 +374,7 @@ describe("moo-like config", () => {
   });
 
   it("identifies line-breaks in the fallback rule", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /aa/,
@@ -397,7 +393,7 @@ describe("moo-like config", () => {
   });
 
   it("identifies line-breaks in the match rule", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -416,7 +412,7 @@ describe("moo-like config", () => {
   });
 
   it("transforms values", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: {
           match: /a/,
@@ -431,7 +427,7 @@ describe("moo-like config", () => {
   });
 
   it("uses lookahead to determine token type", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A1: {
           match: withLookAhead(/a/, /1/),
@@ -454,7 +450,7 @@ describe("moo-like config", () => {
   });
 
   it("fallback as last token", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: /a/ },
         B: { fallback: true },
@@ -467,7 +463,7 @@ describe("moo-like config", () => {
   });
 
   it("allows shorthand rules that are just a regex", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: /a/,
         B: /b/,
@@ -480,7 +476,7 @@ describe("moo-like config", () => {
   });
 
   it("allows shorthand rules that are just a string", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: "a",
         B: "b",
@@ -493,7 +489,7 @@ describe("moo-like config", () => {
   });
 
   it("allows strings in match rules instead of regex", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: "a" },
         B: { match: "b" },
@@ -506,7 +502,7 @@ describe("moo-like config", () => {
   });
 
   it("allows strings in match rules instead of regex, with fallback rule", () => {
-    const lexer = createLexer({
+    const lexer = baa({
       main: {
         A: { match: "a" },
         B: { match: "b" },
@@ -518,6 +514,25 @@ describe("moo-like config", () => {
       token("FALLBACK", "c", "c", "1:1", "1:2"),
       token("B", "b", "b", "1:2", "1:3"),
     ]);
+  });
+});
+
+describe("advanced usage", () => {
+  it("creates lexer with 'createLexer' and 'mooState'", () => {
+    const lexer = createLexer(
+      {
+        main: mooState({
+          A: {
+            match: /a/,
+          },
+          B: {
+            match: /b/,
+          },
+        }),
+      },
+      createTokenFactory
+    );
+    runTwiceAndExpectTokens(lexer, "", []);
   });
 });
 

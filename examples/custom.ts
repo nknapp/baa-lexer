@@ -4,8 +4,8 @@ import {
   createStateProcessor,
   createTokenFactory,
   Match,
-} from "../src";
-import { mooState } from "../src/mooAdapter";
+  mooState,
+} from "baa-lexer";
 
 type MyLexerTypings = {
   tokenType: "A" | "B" | "FALLBACK" | "OPEN" | "CLOSE";

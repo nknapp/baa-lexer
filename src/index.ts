@@ -18,6 +18,7 @@ export { createMatcher } from "./Matcher";
 export { createStateProcessor } from "./BaaStateProcessor";
 export { createLexer } from "./BaaLexer";
 export { withLookAhead } from "./utils/withLookAhead";
+export { mooState } from "./mooAdapter";
 
 export function baa<T extends LexerTypings>(mooStates: MooStates<T>): Lexer<T> {
   const states: Record<StateName<T>, StateProcessor<T>> = mapValues(
