@@ -1,3 +1,9 @@
+## [0.2.4](https://github.com/nknapp/baa-lexer/compare/v0.2.3...v0.2.4) (2023-04-23)
+
+### Bug Fixes
+
+- export 'createLexer' function ([a313ca3](https://github.com/nknapp/baa-lexer/commit/a313ca3384739da14432e0ddfcc8d3a18158e970))
+
 ## [0.2.3](https://github.com/nknapp/baa-lexer/compare/v0.2.2...v0.2.3) (2023-04-21)
 
 ### Bug Fixes
