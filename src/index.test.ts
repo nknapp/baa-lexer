@@ -449,6 +449,27 @@ describe("moo-like config", () => {
     ]);
   });
 
+  it("applies lookahead to all expressions of a union", () => {
+    const lexer = baa({
+      main: {
+        BOOL: {
+          match: withLookAhead(/true|false/, / /),
+        },
+        ID: {
+          match: withLookAhead(/\w+/, / /),
+        },
+        SPACE: {
+          match: / /,
+        },
+      },
+    });
+
+    runTwiceAndExpectTokens(lexer, "true_ ", [
+      token("ID", "true_", "true_", "1:0", "1:5"),
+      token("SPACE", " ", " ", "1:5", "1:6"),
+    ]);
+  });
+
   it("fallback as last token", () => {
     const lexer = baa({
       main: {
