@@ -1,3 +1,9 @@
+## [0.2.5](https://github.com/nknapp/baa-lexer/compare/v0.2.4...v0.2.5) (2023-05-22)
+
+### Bug Fixes
+
+- apply lookahead in union regex to all parts ([86908b9](https://github.com/nknapp/baa-lexer/commit/86908b9902d2bcf13df1550ff951c0e45f18fcb3))
+
 ## [0.2.4](https://github.com/nknapp/baa-lexer/compare/v0.2.3...v0.2.4) (2023-04-23)
 
 ### Bug Fixes
