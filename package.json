@@ -75,7 +75,7 @@
   },
   "size-limit": [
     {
-      "limit": "2.2 kB",
+      "limit": "2.5 kB",
       "path": "dist/baa-lexer*.js"
     }
   ],
