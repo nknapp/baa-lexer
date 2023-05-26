@@ -536,6 +536,18 @@ describe("moo-like config", () => {
       token("B", "b", "b", "1:2", "1:3"),
     ]);
   });
+
+  it("matches the first rules if multiple rules have the same regex", () => {
+    const lexer = baa({
+      main: {
+        A: { match: /abc/ },
+        B: { match: /abc/ },
+      },
+    });
+    runTwiceAndExpectTokens(lexer, "abc", [
+      token("A", "abc", "abc", "1:0", "1:3"),
+    ]);
+  });
 });
 
 describe("advanced usage", () => {
