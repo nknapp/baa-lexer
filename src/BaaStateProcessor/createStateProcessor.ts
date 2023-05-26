@@ -46,5 +46,12 @@ export function createStateProcessor<T extends LexerTypings>(
       }
       return match;
     },
+    debug() {
+      return {
+        type: "baaState",
+        matcher: matcher.debug(),
+        fallback,
+      };
+    },
   };
 }

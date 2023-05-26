@@ -24,6 +24,13 @@ export function createRegexMatcher<T extends LexerTypings>(
       }
       return null;
     },
+    debug() {
+      return {
+        type: "regexMatcher",
+        rules,
+        sticky,
+      };
+    },
   };
 }
 

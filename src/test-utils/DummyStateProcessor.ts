@@ -19,4 +19,8 @@ export class DummyStateProcessor implements StateProcessor<LexerTypings> {
       text: "dummy",
     };
   }
+
+  debug(): Record<string, unknown> {
+    return { type: "dummyState" };
+  }
 }

@@ -6,7 +6,7 @@ export interface LexerTypings {
 export type StateName<T extends LexerTypings> = T["stateName"] | "main";
 export type TokenType<T extends LexerTypings> = T["tokenType"];
 
-export interface Lexer<T extends LexerTypings> {
+export interface Lexer<T extends LexerTypings> extends Debuggable {
   lex(string: string): IterableIterator<BaaToken<T>>;
 }
 
@@ -20,11 +20,11 @@ export type StateProcessorDict<T extends LexerTypings> = Record<
   StateProcessor<T>
 >;
 
-export interface StateProcessor<T extends LexerTypings> {
+export interface StateProcessor<T extends LexerTypings> extends Debuggable {
   nextMatch(string: string, offset: number, context: BaaContext<T>): Match<T>;
 }
 
-export interface Matcher<T extends LexerTypings> {
+export interface Matcher<T extends LexerTypings> extends Debuggable {
   match(string: string, offset: number): Match<T> | null;
 }
 
@@ -103,4 +103,13 @@ export interface MooFallbackRule {
 export interface MooErrorRule {
   error: true;
   lineBreaks?: boolean;
+}
+
+export interface Debuggable {
+  /**
+   * Warning: The result of this method is intended
+   * for debugging purposes only and should be read by humans.
+   * Semantic versioning does not apply to this method.
+   */
+  debug(): Record<string, unknown>;
 }

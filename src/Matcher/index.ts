@@ -25,6 +25,12 @@ export function createMatcher<T extends LexerTypings>(
     const singleChar = createStickySingleCharMatcher(singleCharRules);
     const regex = createRegexMatcher(rest, sticky);
     return {
+      debug(): Record<string, unknown> {
+        return {
+          singleCharMatcher: singleChar.debug(),
+          regexMatcher: regex.debug(),
+        };
+      },
       match(string: string, offset: number) {
         return singleChar.match(string, offset) ?? regex.match(string, offset);
       },

@@ -555,6 +555,30 @@ describe("advanced usage", () => {
     );
     runTwiceAndExpectTokens(lexer, "", []);
   });
+
+  it("can display its internal configuration for debugging purposes", () => {
+    const lexer = baa({
+      main: {
+        A: { match: "a" },
+        B: { match: "b" },
+        FALLBACK: { fallback: true },
+      },
+    });
+    expect(lexer.debug()).toEqual({
+      main: {
+        type: "baaState",
+        matcher: {
+          type: "regexMatcher",
+          rules: [
+            { type: "A", match: "a" },
+            { type: "B", match: "b" },
+          ],
+          sticky: false,
+        },
+        fallback: { type: "FALLBACK" },
+      },
+    });
+  });
 });
 
 type LocationSpec = `${number}:${number}`;

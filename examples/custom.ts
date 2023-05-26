@@ -45,6 +45,9 @@ const customMatcher = createStateProcessor<MyLexerTypings>(
       }
       return null;
     },
+    debug() {
+      return { type: "customMatcher" };
+    },
   },
   { type: "FALLBACK", lineBreaks: true },
   null

@@ -27,6 +27,9 @@ export function createStickySingleCharMatcher<T extends LexerTypings>(
         text: matchingRule.match,
       };
     },
+    debug(): Record<string, unknown> {
+      return { type: "stickySingleCharMatcher", rules };
+    },
   };
 }
 
