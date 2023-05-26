@@ -1,3 +1,9 @@
+## [0.3.1](https://github.com/nknapp/baa-lexer/compare/v0.3.0...v0.3.1) (2023-05-26)
+
+### Performance Improvements
+
+- remove redundant rules ([c01ca0b](https://github.com/nknapp/baa-lexer/commit/c01ca0ba860e19d33f53edff1c37126ee87a8b23))
+
 # [0.3.0](https://github.com/nknapp/baa-lexer/compare/v0.2.5...v0.3.0) (2023-05-26)
 
 ### Features
