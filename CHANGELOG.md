@@ -1,3 +1,9 @@
+# [0.3.0](https://github.com/nknapp/baa-lexer/compare/v0.2.5...v0.3.0) (2023-05-26)
+
+### Features
+
+- add debug method for human inspection ([7f9d13c](https://github.com/nknapp/baa-lexer/commit/7f9d13c98b487aae7a9b4fa57886dde4239cb075))
+
 ## [0.2.5](https://github.com/nknapp/baa-lexer/compare/v0.2.4...v0.2.5) (2023-05-22)
 
 ### Bug Fixes
